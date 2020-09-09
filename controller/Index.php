@@ -11,6 +11,8 @@ namespace app\wechat\controller;
 
 use app\BaseController;
 use app\Request;
+use app\wechat\model\WechatAuthToken;
+use app\wechat\model\WechatOfficeUsers;
 use app\wechat\service\OfficeService;
 
 class Index extends BaseController
@@ -35,67 +37,57 @@ class Index extends BaseController
     }
 
     /**
-     *授权回调地址
+     * 授权回调地址
      * @param $appid
      * @throws \Exception
+     * @return \think\response\Json
      */
     function callback($appid)
     {
         $officeService = new OfficeService($appid);
         $user = $officeService->getApp()->oauth->user();
         $original = $user->getOriginal();
+        $openId = $original['openid'];
+        $officeUsers = WechatOfficeUsers::where('open_id', $openId)->findOrEmpty();
         if (!empty($original['scope']) && $original['scope'] == "snsapi_base") {
             //静默授权只拿到用户的openid
-            $postData = [
-                'app_id' => $appid,
-                'open_id' => $original['openid'],
-            ];
+            $officeUsers->open_id = $openId;
+            $officeUsers->app_id = $appid;
         } else {
             //非静默授权可以拿到用户的具体信息
-            $postData = [
-                'app_id' => $appid,
-                'open_id' => $original['openid'],
-                'nick_name' => $original['nickname'],
-                'sex' => $original['sex'],
-                'avatar_url' => $original['headimgurl'],
-                'country' => $original['country'],
-                'province' => $original['province'],
-                'city' => $original['city'],
-                'language' => $original['language'],
-                'union_id' => empty($original['unionid']) ? '' : $original['unionid'],
-            ];
+            $officeUsers->open_id = $openId;
+            $officeUsers->app_id = $appid;
+            $officeUsers->nick_name = $original['nickname'];
+            $officeUsers->sex = $original['sex'];
+            $officeUsers->avatar_url = $original['headimgurl'];
+            $officeUsers->country = $original['country'];
+            $officeUsers->province = $original['province'];
+            $officeUsers->city = $original['city'];
+            $officeUsers->language = $original['language'];
+            $officeUsers->union_id = empty($original['unionid']) ? '' : $original['unionid'];
         }
-        $officeUsers = new OfficeUsersModel();
-        $isExist = $officeUsers->where(['app_id' => $appid, 'open_id' => $postData['open_id']])->find();
-        if ($isExist) {
-            $postData['update_time'] = time();
-            $res = $officeUsers->where(['id' => $isExist['id']])->save($postData);
-        } else {
-            $postData['create_time'] = time();
-            $res = $officeUsers->add($postData);
-        }
-        if ($res) {
+
+        if ($officeUsers->save()) {
             $redirectUrl = session('redirect_url');
             if ($redirectUrl) {
-                $autoTokenModel = new AutoTokenModel();
-                $autoToken = $autoTokenModel->createAuthToken($postData['app_id'], $postData['open_id']);
-                if ($autoToken) {
+                $autoTokenModel = new WechatAuthToken();
+                $autoTokenRes = $autoTokenModel->createAuthToken($officeUsers->app_id, $officeUsers->open_id);
+                if ($autoTokenRes) {
                     //创建token成功，返回待code
                     if (strpos($redirectUrl, '?')) {
-                        $redirectUrl .= "&code=" . $autoToken['code'];
+                        $redirectUrl .= "&code=" . $autoTokenModel->code;
                     } else {
-                        $redirectUrl .= "?code=" . $autoToken['code'];
+                        $redirectUrl .= "?code=" . $autoTokenModel->code;
                     }
                     redirect($redirectUrl);
                 } else {
-                    $this->ajaxReturn(self::createReturn(true, [], '创建登录信息失败'));
+                    return json(self::createReturn(true, [], '创建登录信息失败'));
                 }
             } else {
-                $this->ajaxReturn(self::createReturn(true, null, '获取信息成功,但未设置回掉URL'));
+                return json(self::createReturn(true, null, '获取信息成功,但未设置回掉URL'));
             }
         } else {
-            $this->ajaxReturn(self::createReturn(false, null, '获取用户信息失败'));
+            return json(self::createReturn(false, null, '获取用户信息失败'));
         }
     }
-
 }

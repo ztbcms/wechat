@@ -163,12 +163,12 @@
                     showOauthUrl: function (app_id) {
                         var urlObj = window.Ztbcms.parserUrl(window.location.href);
                         console.log(urlObj);
-                        layer.alert(urlObj.protocol + '//' + urlObj.host + "{:urlx('wechat/index/oauth')}/appid/" + app_id)
+                        layer.alert(urlObj.protocol + '//' + urlObj.host + "{:urlx('wechat/index/oauth',[],false)}/appid/" + app_id)
                     },
                     showOauthBase: function (app_id) {
                         var urlObj = window.Ztbcms.parserUrl(window.location.href);
                         console.log(urlObj);
-                        layer.alert(urlObj.protocol + '//' + urlObj.host + "{:urlx('wechat/index/oauthBase')}/appid/" + app_id)
+                        layer.alert(urlObj.protocol + '//' + urlObj.host + "{:urlx('wechat/index/oauthBase',[],false)}/appid/" + app_id)
                     }
                 }
             })
