@@ -20,14 +20,13 @@ use think\Request;
 class Wxpay extends AdminController
 {
     /**
-     *
      * @return array
      */
     function handleRefund()
     {
         //获取所有的公众号
         $applicationModel = new WechatApplication();
-        $appIds = $applicationModel->value('app_id');
+        $appIds = $applicationModel->column('app_id');
         foreach ($appIds as $appId) {
             try {
                 $wxpayService = new WxpayService($appId);
