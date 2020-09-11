@@ -90,4 +90,22 @@ class Index extends BaseController
             return json(self::createReturn(false, null, '获取用户信息失败'));
         }
     }
+
+    /**
+     * 用户静默授权
+     * @param $appid
+     * @param Request $request
+     * @throws \Exception
+     */
+    public function oauthBase($appid, Request $request)
+    {
+        $redirectUrl = urldecode($request->param('redirect_url', ''));
+        $office = new OfficeService($appid);
+        if ($redirectUrl) {
+            session('redirect_url', $redirectUrl);
+        }
+        $response = $office->getApp()->oauth->scopes(['snsapi_base'])
+            ->redirect(urlx("Wechat/index/callback") . "/appid/{$appid}");
+        $response->send();
+    }
 }

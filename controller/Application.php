@@ -16,6 +16,11 @@ use think\Request;
 
 class Application extends AdminController
 {
+    /**
+     * 删除应用
+     * @param Request $request
+     * @return array
+     */
     public function deleteApplication(Request $request)
     {
         $id = $request->post('id', '');
@@ -28,6 +33,11 @@ class Application extends AdminController
         }
     }
 
+    /**
+     * 获取应用详情
+     * @param Request $request
+     * @return array
+     */
     public function getApplicationDetail(Request $request)
     {
         $id = $request->get('id', '');
@@ -39,6 +49,11 @@ class Application extends AdminController
         }
     }
 
+    /**
+     * 创建应用
+     * @param Request $request
+     * @return array|string
+     */
     public function createApplication(Request $request)
     {
         if ($request->post()) {
@@ -49,7 +64,7 @@ class Application extends AdminController
             $application->app_id = $request->post('app_id');
             $application->secret = $request->post('secret');
             $application->mch_id = $request->post('mch_id', '');
-            $application->key = $request->post('key', '');
+            $application->mch_key = $request->post('mch_key', '');
             $application->cert_path = $request->post('cert_path', '');
             $application->key_path = $request->post('key_path', '');
             $application->token = $request->post('token', '');
@@ -63,6 +78,11 @@ class Application extends AdminController
         return View::fetch('createApplication');
     }
 
+    /**
+     * 获取应用列表
+     * @throws \think\db\exception\DbException
+     * @return array
+     */
     public function getApplicationList()
     {
         $where = [];

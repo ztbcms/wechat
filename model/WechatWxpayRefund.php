@@ -12,10 +12,13 @@ namespace app\wechat\model;
 use think\Model;
 use think\model\concern\SoftDelete;
 
-class WechatOfficeUsers extends Model
+class WechatWxpayRefund extends Model
 {
     use SoftDelete;
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
-    protected $name = 'tp6_wechat_office_user';
+    protected $name = 'tp6_wechat_wxpay_refund';
+
+    const STATUS_YES = 1;
+    const STATUS_NO = 0;
 }

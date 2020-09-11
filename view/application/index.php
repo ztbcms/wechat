@@ -46,7 +46,7 @@
                         <template slot-scope="scope">
                             <div style="text-align: left">
                                 <p>mch_id : {{ scope.row.mch_id }}</p>
-                                <p>key : {{ scope.row.key }}</p>
+                                <p>key : {{ scope.row.mch_key }}</p>
                             </div>
                         </template>
                     </el-table-column>

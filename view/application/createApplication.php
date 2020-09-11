@@ -24,7 +24,7 @@
                     <el-input v-model="form.mch_id"></el-input>
                 </el-form-item>
                 <el-form-item label="微信支付key">
-                    <el-input v-model="form.key"></el-input>
+                    <el-input v-model="form.mch_key"></el-input>
                 </el-form-item>
                 <el-form-item v-if="form.account_type == 'office'" label="token">
                     <el-input v-model="form.token"></el-input>
@@ -65,7 +65,7 @@
                         app_id: "",
                         secret: "",
                         mch_id: "",
-                        key: "",
+                        mch_key: "",
                         cert_path: "",
                         key_path: "",
                         token: "",
@@ -124,9 +124,9 @@
                             success: function (res) {
                                 if (res.status) {
                                     layer.msg('操作成功');
-                                    _this.getDetail();
                                     setTimeout(function () {
                                         window.parent.layer.closeAll();
+                                        location.href = "{:urlx('wechat/application/index')}";
                                     }, 2000);
                                 } else {
                                     layer.msg(res.msg)
