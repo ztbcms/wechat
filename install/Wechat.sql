@@ -50,6 +50,34 @@ CREATE TABLE `cms_tp6_wechat_office_user` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `cms_tp6_wechat_office_template` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `app_id` varchar(64) NOT NULL DEFAULT '',
+  `template_id` varchar(128) DEFAULT NULL COMMENT '模板id',
+  `title` varchar(32) DEFAULT '' COMMENT '模板消息标题',
+  `example` varchar(512) DEFAULT NULL COMMENT '模板消息示例',
+  `content` varchar(512) DEFAULT '' COMMENT '模板消息内容',
+  `primary_industry` varchar(32) DEFAULT '' COMMENT '第一行业',
+  `deputy_industry` varchar(32) DEFAULT '' COMMENT '第二行业',
+  `create_time` int(11) DEFAULT '0' COMMENT '添加时间',
+  `update_time` int(11) DEFAULT '0' COMMENT '更新时间',
+  `delete_time` int(11) DEFAULT '0' COMMENT '删除时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `cms_tp6_wechat_office_template_send_record` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `app_id` varchar(64) DEFAULT '',
+  `open_id` varchar(128) DEFAULT '' COMMENT '接受用户open_id',
+  `template_id` varchar(128) DEFAULT '' COMMENT '发送模板id',
+  `url` varchar(512) DEFAULT '' COMMENT '跳转url',
+  `miniprogram` varchar(1024) DEFAULT '' COMMENT '小程序跳转信息',
+  `post_data` varchar(1024) DEFAULT '' COMMENT '发送信息',
+  `result` varchar(128) DEFAULT '' COMMENT '调用结果',
+  `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE `cms_tp6_wechat_wxpay_order` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `app_id` varchar(64) DEFAULT '',

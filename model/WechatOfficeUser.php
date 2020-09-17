@@ -12,7 +12,7 @@ namespace app\wechat\model;
 use think\Model;
 use think\model\concern\SoftDelete;
 
-class WechatOfficeUsers extends Model
+class WechatOfficeUser extends Model
 {
     use SoftDelete;
     protected $deleteTime = 'delete_time';

@@ -11,6 +11,8 @@ namespace app\wechat\service;
 
 use app\common\service\BaseService;
 use app\wechat\model\WechatApplication;
+use app\wechat\model\WechatOfficeTemplate;
+use app\wechat\model\WechatOfficeTemplateSendRecord;
 use EasyWeChat\Factory;
 
 class OfficeService extends BaseService
@@ -40,7 +42,8 @@ class OfficeService extends BaseService
             ->where('account_type', WechatApplication::ACCOUNT_TYPE_OFFICE)
             ->findOrEmpty();
         if ($application->isEmpty()) {
-            throw new \Exception('找不到该应用信息');
+            $this->setError('找不到该应用信息');
+            return false;
         }
         $config = [
             'app_id' => $application->app_id,
@@ -60,4 +63,77 @@ class OfficeService extends BaseService
         $this->app = Factory::officialAccount($config);
     }
 
+    /**
+     * 获取模块列表
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return bool
+     */
+    function getTemplateList()
+    {
+        $res = $this->getApp()->template_message->getPrivateTemplates();
+        if (!empty($res['template_list'])) {
+            $templateList = $res['template_list'];
+            foreach ($templateList as $template) {
+                $officeTemplateListModel = WechatOfficeTemplate::where('template_id', $template['template_id'])->findOrEmpty();
+                $officeTemplateListModel->app_id = $this->appId;
+                $officeTemplateListModel->template_id = $template['template_id'];
+                $officeTemplateListModel->title = $template['title'];
+                $officeTemplateListModel->example = $template['example'];
+                $officeTemplateListModel->content = $template['content'];
+                $officeTemplateListModel->primary_industry = $template['primary_industry'];
+                $officeTemplateListModel->deputy_industry = $template['deputy_industry'];
+                if ($officeTemplateListModel->save()) {
+                    return true;
+                }
+            }
+        }
+        $this->setError('获取模板消息列表失败');
+        return false;
+    }
+
+    /**
+     * 发送公众号模板消息
+     * @param $openId
+     * @param $templateId
+     * @param $data
+     * @param string $url
+     * @param array $miniProgram
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return bool
+     */
+    function sendTemplateMsg($openId, $templateId, $data, $url = '', $miniProgram = [])
+    {
+        $postData = [
+            'touser' => $openId,
+            'template_id' => $templateId,
+            'url' => $url,
+            'miniprogram' => $miniProgram,
+            'data' => $data,
+        ];
+        $res = $this->getApp()->template_message->send($postData);
+
+        $templateSendRecord = new WechatOfficeTemplateSendRecord();
+        $templateSendRecord->app_id = $this->appId;
+        $templateSendRecord->open_id = $openId;
+        $templateSendRecord->template_id = $templateId;
+        $templateSendRecord->url = $url;
+        $templateSendRecord->miniprogram = json_encode($miniProgram);
+        $templateSendRecord->post_data = json_encode($data);
+        $templateSendRecord->save();
+
+        if ($res['errcode'] == 0) {
+            //发送成功
+            $templateSendRecord->result = "发送成功";
+            $templateSendRecord->save();
+            return true;
+        } else {
+            $this->setError($res['errmsg']);
+            $templateSendRecord->result = $res['errmsg'];
+            $templateSendRecord->save();
+            return false;
+        }
+    }
 }

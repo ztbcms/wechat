@@ -12,11 +12,18 @@ namespace app\wechat\controller;
 use app\BaseController;
 use app\Request;
 use app\wechat\model\WechatAuthToken;
-use app\wechat\model\WechatOfficeUsers;
+use app\wechat\model\WechatOfficeUser;
 use app\wechat\service\OfficeService;
+use think\facade\View;
 
 class Index extends BaseController
 {
+
+    function index($appid)
+    {
+        return View::fetch('index', ['appid' => $appid]);
+    }
+
     /**
      * 用户信息授权
      *
@@ -31,8 +38,9 @@ class Index extends BaseController
         if ($redirectUrl) {
             session('redirect_url', $redirectUrl);
         }
+        $url = $request->domain() . urlx("Wechat/index/callback", [], '') . "/appid/{$appid}";
         $response = $office->getApp()->oauth->scopes(['snsapi_userinfo'])
-            ->redirect(urlx("Wechat/index/callback") . "/appid/{$appid}");
+            ->redirect($url);
         $response->send();
     }
 
@@ -48,7 +56,7 @@ class Index extends BaseController
         $user = $officeService->getApp()->oauth->user();
         $original = $user->getOriginal();
         $openId = $original['openid'];
-        $officeUsers = WechatOfficeUsers::where('open_id', $openId)->findOrEmpty();
+        $officeUsers = WechatOfficeUser::where('open_id', $openId)->findOrEmpty();
         if (!empty($original['scope']) && $original['scope'] == "snsapi_base") {
             //静默授权只拿到用户的openid
             $officeUsers->open_id = $openId;
@@ -104,8 +112,9 @@ class Index extends BaseController
         if ($redirectUrl) {
             session('redirect_url', $redirectUrl);
         }
+        $url = $request->domain() . urlx("Wechat/index/callback", [], '') . "/appid/{$appid}";
         $response = $office->getApp()->oauth->scopes(['snsapi_base'])
-            ->redirect(urlx("Wechat/index/callback") . "/appid/{$appid}");
+            ->redirect($url);
         $response->send();
     }
 }

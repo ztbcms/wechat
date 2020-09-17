@@ -86,7 +86,7 @@
                         label="创建时间"
                         min-width="180">
                         <template slot-scope="scope">
-                            {{scope.row.create_time|getFormatDatetime}}
+                            {{scope.row.create_time}}
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -157,7 +157,7 @@
                             if (e !== 'confirm') {
                                 return;
                             }
-                            _this.httpPost('{:urlx("wechat/office/deleteUsers")}', postData, function (res) {
+                            _this.httpPost('{:urlx("wechat/office/deleteUser")}', postData, function (res) {
                                 if (res.status) {
                                     _this.$message.success('删除成功');
                                     _this.getRefunds();
