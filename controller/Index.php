@@ -117,4 +117,22 @@ class Index extends BaseController
             ->redirect($url);
         $response->send();
     }
+
+    /**
+     *  获取前端网页调用配置
+     * @param $appid
+     * @param Request $request
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
+     * @throws \EasyWeChat\Kernel\Exceptions\RuntimeException
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @return array
+     */
+    function getJssdk($appid, Request $request)
+    {
+        $url = $request->get('url');
+        $officeService = new OfficeService($appid);
+        $res = $officeService->getJssdk(urldecode($url));
+        return self::createReturn(true, $res);
+    }
 }

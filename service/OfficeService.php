@@ -136,4 +136,26 @@ class OfficeService extends BaseService
             return false;
         }
     }
+
+    /**
+     * @param $url
+     * @param array $APIs
+     * @param bool $debug
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
+     * @throws \EasyWeChat\Kernel\Exceptions\RuntimeException
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @return array|bool
+     */
+    function getJssdk($url, $APIs = [], $debug = false)
+    {
+        $this->getError()->jssdk->setUrl($url);
+        $res = $this->app->jssdk->buildConfig($APIs, $debug, false, false);
+        if ($res) {
+            return ['config' => $res];
+        } else {
+            $this->setError("获取配置错误");
+            return false;
+        }
+    }
 }
