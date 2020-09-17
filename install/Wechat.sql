@@ -5,7 +5,7 @@ CREATE TABLE `cms_tp6_wechat_application` (
   `app_id` varchar(64) DEFAULT '' COMMENT '应用app_id',
   `secret` varchar(128) DEFAULT '' COMMENT '应用secret',
   `mch_id` varchar(64) DEFAULT '' COMMENT '微信支付mch_id',
-  `key` varchar(128) DEFAULT '' COMMENT '微信支付key',
+  `mch_key` varchar(128) DEFAULT '' COMMENT '微信支付key',
   `cert_path` varchar(4096) DEFAULT '' COMMENT '微信支付公钥',
   `key_path` varchar(4096) DEFAULT '' COMMENT '微信支付私钥',
   `token` varchar(128) DEFAULT '' COMMENT '接收服务消息的token',

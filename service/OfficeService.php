@@ -149,8 +149,8 @@ class OfficeService extends BaseService
      */
     function getJssdk($url, $APIs = [], $debug = false)
     {
-        $this->getError()->jssdk->setUrl($url);
-        $res = $this->app->jssdk->buildConfig($APIs, $debug, false, false);
+        $this->getApp()->jssdk->setUrl($url);
+        $res = $this->getApp()->jssdk->buildConfig($APIs, $debug, false, false);
         if ($res) {
             return ['config' => $res];
         } else {
