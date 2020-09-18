@@ -10,10 +10,11 @@ namespace app\wechat\controller;
 
 
 use app\BaseController;
+use app\common\exception\BaseApiException;
 use app\Request;
-use app\wechat\model\WechatAuthToken;
 use app\wechat\model\WechatOfficeUser;
 use app\wechat\service\OfficeService;
+use think\facade\Cache;
 use think\facade\View;
 
 class Index extends BaseController
@@ -35,10 +36,12 @@ class Index extends BaseController
     {
         $redirectUrl = urldecode($request->param('redirect_url', ''));
         $office = new OfficeService($appid);
-        if ($redirectUrl) {
-            session('redirect_url', $redirectUrl);
+        if (!$redirectUrl) {
+            throw new BaseApiException('未设置回调URL');
         }
-        $url = $request->domain() . urlx("Wechat/index/callback", [], '') . "/appid/{$appid}";
+        $token = md5(time() . rand(100000, 999999));
+        Cache::set($token, $redirectUrl);
+        $url = $request->domain() . urlx("wechat/index/callback", [], '') . "/appid/{$appid}/token/{$token}";
         $response = $office->getApp()->oauth->scopes(['snsapi_userinfo'])
             ->redirect($url);
         $response->send();
@@ -47,55 +50,27 @@ class Index extends BaseController
     /**
      * 授权回调地址
      * @param $appid
-     * @throws \Exception
-     * @return \think\response\Json
+     * @param $token
+     * @throws BaseApiException
+     * @return \think\response\Json|\think\response\Redirect|void
      */
-    function callback($appid)
+    function callback($appid, $token)
     {
-        $officeService = new OfficeService($appid);
-        $user = $officeService->getApp()->oauth->user();
-        $original = $user->getOriginal();
-        $openId = $original['openid'];
-        $officeUsers = WechatOfficeUser::where('open_id', $openId)->findOrEmpty();
-        if (!empty($original['scope']) && $original['scope'] == "snsapi_base") {
-            //静默授权只拿到用户的openid
-            $officeUsers->open_id = $openId;
-            $officeUsers->app_id = $appid;
-        } else {
-            //非静默授权可以拿到用户的具体信息
-            $officeUsers->open_id = $openId;
-            $officeUsers->app_id = $appid;
-            $officeUsers->nick_name = $original['nickname'];
-            $officeUsers->sex = $original['sex'];
-            $officeUsers->avatar_url = $original['headimgurl'];
-            $officeUsers->country = $original['country'];
-            $officeUsers->province = $original['province'];
-            $officeUsers->city = $original['city'];
-            $officeUsers->language = $original['language'];
-            $officeUsers->union_id = empty($original['unionid']) ? '' : $original['unionid'];
+        $redirectUrl = Cache::pull($token);
+        $autoTokenModel = WechatOfficeUser::oauthUser($appid);
+        if (!$redirectUrl) {
+            throw new BaseApiException('获取信息成功,但未设置回调URL');
         }
-
-        if ($officeUsers->save()) {
-            $redirectUrl = session('redirect_url');
-            if ($redirectUrl) {
-                $autoTokenModel = new WechatAuthToken();
-                $autoTokenRes = $autoTokenModel->createAuthToken($officeUsers->app_id, $officeUsers->open_id);
-                if ($autoTokenRes) {
-                    //创建token成功，返回待code
-                    if (strpos($redirectUrl, '?')) {
-                        $redirectUrl .= "&code=" . $autoTokenModel->code;
-                    } else {
-                        $redirectUrl .= "?code=" . $autoTokenModel->code;
-                    }
-                    redirect($redirectUrl);
-                } else {
-                    return json(self::createReturn(true, [], '创建登录信息失败'));
-                }
+        if ($autoTokenModel->code) {
+            //创建token成功，返回待code
+            if (strpos($redirectUrl, '?')) {
+                $redirectUrl .= "&code=" . $autoTokenModel->code;
             } else {
-                return json(self::createReturn(true, null, '获取信息成功,但未设置回掉URL'));
+                $redirectUrl .= "?code=" . $autoTokenModel->code;
             }
+            return redirect($redirectUrl);
         } else {
-            return json(self::createReturn(false, null, '获取用户信息失败'));
+            throw new BaseApiException('创建授权信息失败');
         }
     }
 

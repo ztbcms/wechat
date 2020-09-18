@@ -11,8 +11,10 @@ namespace app\wechat\service;
 
 use app\common\service\BaseService;
 use app\wechat\model\WechatApplication;
+use app\wechat\model\WechatAuthToken;
 use app\wechat\model\WechatOfficeTemplate;
 use app\wechat\model\WechatOfficeTemplateSendRecord;
+use app\wechat\model\WechatOfficeUser;
 use EasyWeChat\Factory;
 
 class OfficeService extends BaseService
@@ -61,6 +63,28 @@ class OfficeService extends BaseService
         ];
         $this->appId = $appId;
         $this->app = Factory::officialAccount($config);
+    }
+
+    /**
+     * 通过code获取授权用户信息
+     * @param $code
+     * @return array|bool|\think\Model
+     */
+    function getOauthUserByCode($code)
+    {
+        $tokenUser = WechatAuthToken::where('code', $code)->findOrEmpty();
+        if ($tokenUser->isEmpty()) {
+            $this->setError('未找到授权信息');
+            return false;
+        }
+        $wechatOfficeUser = WechatOfficeUser::where('app_id', $tokenUser->app_id)
+            ->where('open_id', $tokenUser->open_id)
+            ->findOrEmpty();
+        if ($wechatOfficeUser->isEmpty()) {
+            $this->setError('未找到授权信息');
+            return false;
+        }
+        return $wechatOfficeUser;
     }
 
     /**

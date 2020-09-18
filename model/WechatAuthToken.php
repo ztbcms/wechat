@@ -32,10 +32,6 @@ class WechatAuthToken extends Model
         $this->token = sha1($appid . time() . rand(10000, 99999));
         $this->expire_time = time() + self::TOKEN_EXPIRE_TIME;
         $this->refresh_token = sha1($appid . time() . rand(10000, 99999));
-        if ($this->save()) {
-            return $this;
-        } else {
-            return false;
-        }
+        $this->save();
     }
 }
