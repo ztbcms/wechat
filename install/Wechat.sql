@@ -120,3 +120,35 @@ CREATE TABLE `cms_tp6_wechat_wxpay_refund` (
   `delete_time` int(11) DEFAULT '0' COMMENT '删除时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `cms_tp6_wechat_mini_users`  (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `app_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '公众号app_id',
+  `open_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户openid',
+  `union_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '开发平台unionid',
+  `nick_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '昵称',
+  `gender` tinyint(4) NULL DEFAULT NULL COMMENT '性别1男2女',
+  `language` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '所用语音',
+  `city` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '城市',
+  `province` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '省份',
+  `country` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '国家',
+  `avatar_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '头像',
+  `access_token` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '登录凭证',
+  `create_time` int(10) NULL DEFAULT 0 COMMENT '创建时间',
+  `update_time` int(10) NULL DEFAULT 0 COMMENT '更新时间',
+  `delete_time` int(11) DEFAULT '0' COMMENT '删除时间',
+  PRIMARY KEY (`id`) USING BTREE
+)  ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `cms_tp6_wechat_mini_phone_number`  (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `app_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
+  `open_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `country_code` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '国家代码',
+  `phone_number` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '电话号码',
+  `pure_phone_number` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '不知道是什么',
+  `create_time` int(11) NULL DEFAULT 0 COMMENT '创建时间',
+  `update_time` int(11) NULL DEFAULT 0 COMMENT '更新时间',
+  `delete_time` int(11) NULL DEFAULT 0 COMMENT '删除时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

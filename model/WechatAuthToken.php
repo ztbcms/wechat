@@ -9,6 +9,8 @@
 namespace app\wechat\model;
 
 
+use app\wechat\model\mini\WechatMiniUser;
+use app\wechat\model\WechatOfficeUser;
 use think\Model;
 use think\model\concern\SoftDelete;
 
@@ -21,7 +23,8 @@ class WechatAuthToken extends Model
     protected $updateTime = false;
 
     const TOKEN_EXPIRE_TIME = 604800;//默认一个星期过期
-
+    const ACCOUNT_TYPE_OFFICE = "office";
+    const ACCOUNT_TYPE_MINI = "mini";
 
     public function createAuthToken($appid, $openId, $appAccountType = 'office')
     {
@@ -33,5 +36,40 @@ class WechatAuthToken extends Model
         $this->expire_time = time() + self::TOKEN_EXPIRE_TIME;
         $this->refresh_token = sha1($appid . time() . rand(10000, 99999));
         $this->save();
+    }
+
+    /**
+     * 通过token 获取用户信息
+     * @param $token
+     * @return array|bool|mixed|Model|null
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    function getUserInfoByToken($token)
+    {
+        $where = [
+            'token'       => $token,
+            'expire_time' => ['gt', time()]
+        ];
+        $res = $this->where($where)->find();
+        if ($res) {
+            $userWhere = [
+                'app_id'  => $res['app_id'],
+                'open_id' => $res['open_id']
+            ];
+            if ($res['app_account_type'] == self::ACCOUNT_TYPE_OFFICE) {
+                //公众号用户
+                $WechatOfficeUser = new WechatOfficeUser();
+                $userInfo = $WechatOfficeUser->where($userWhere)->find();
+            } else {
+                //小程序用户
+                $WechatMiniUser = new WechatMiniUser();
+                $userInfo = $WechatMiniUser->where($userWhere)->find();
+            }
+            return $userInfo;
+        } else {
+            return false;
+        }
     }
 }

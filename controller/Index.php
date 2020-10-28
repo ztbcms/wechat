@@ -14,6 +14,7 @@ use app\common\exception\BaseApiException;
 use app\Request;
 use app\wechat\model\WechatOfficeUser;
 use app\wechat\service\OfficeService;
+use app\wechat\service\MiniService;
 use think\facade\Cache;
 use think\facade\View;
 
@@ -29,7 +30,7 @@ class Index extends BaseController
      * 用户信息授权
      *
      * @param $appid
-     * @param Request $request
+     * @param  Request  $request
      * @throws \Exception
      */
     function oauth($appid, Request $request)
@@ -39,9 +40,9 @@ class Index extends BaseController
         if (!$redirectUrl) {
             throw new BaseApiException('未设置回调URL');
         }
-        $token = md5(time() . rand(100000, 999999));
+        $token = md5(time().rand(100000, 999999));
         Cache::set($token, $redirectUrl);
-        $url = $request->domain() . urlx("wechat/index/callback", [], '') . "/appid/{$appid}/token/{$token}";
+        $url = $request->domain().urlx("wechat/index/callback", [], '')."/appid/{$appid}/token/{$token}";
         $response = $office->getApp()->oauth->scopes(['snsapi_userinfo'])
             ->redirect($url);
         $response->send();
@@ -51,8 +52,8 @@ class Index extends BaseController
      * 授权回调地址
      * @param $appid
      * @param $token
-     * @throws BaseApiException
      * @return \think\response\Json|\think\response\Redirect|void
+     * @throws BaseApiException
      */
     function callback($appid, $token)
     {
@@ -64,9 +65,9 @@ class Index extends BaseController
         if ($autoTokenModel->code) {
             //创建token成功，返回待code
             if (strpos($redirectUrl, '?')) {
-                $redirectUrl .= "&code=" . $autoTokenModel->code;
+                $redirectUrl .= "&code=".$autoTokenModel->code;
             } else {
-                $redirectUrl .= "?code=" . $autoTokenModel->code;
+                $redirectUrl .= "?code=".$autoTokenModel->code;
             }
             return redirect($redirectUrl);
         } else {
@@ -77,7 +78,7 @@ class Index extends BaseController
     /**
      * 用户静默授权
      * @param $appid
-     * @param Request $request
+     * @param  Request  $request
      * @throws \Exception
      */
     public function oauthBase($appid, Request $request)
@@ -87,7 +88,7 @@ class Index extends BaseController
         if ($redirectUrl) {
             session('redirect_url', $redirectUrl);
         }
-        $url = $request->domain() . urlx("Wechat/index/callback", [], '') . "/appid/{$appid}";
+        $url = $request->domain().urlx("Wechat/index/callback", [], '')."/appid/{$appid}";
         $response = $office->getApp()->oauth->scopes(['snsapi_base'])
             ->redirect($url);
         $response->send();
@@ -96,12 +97,12 @@ class Index extends BaseController
     /**
      *  获取前端网页调用配置
      * @param $appid
-     * @param Request $request
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
+     * @param  Request  $request
+     * @return array
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
      * @throws \EasyWeChat\Kernel\Exceptions\RuntimeException
      * @throws \Psr\SimpleCache\InvalidArgumentException
-     * @return array
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
      */
     function getJssdk($appid, Request $request)
     {
@@ -109,5 +110,47 @@ class Index extends BaseController
         $officeService = new OfficeService($appid);
         $res = $officeService->getJssdk(urldecode($url));
         return self::createReturn(true, $res);
+    }
+
+
+
+    /**
+     * 获取微信小程序授权信息
+     * @param $appid
+     * @return \think\response\Json
+     * @throws \EasyWeChat\Kernel\Exceptions\DecryptException
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    function miniAuthUserInfo($appid)
+    {
+        $code = input('post.code', '', 'trim');
+        $iv = input('post.iv','','trim');
+        $encryptedData = input('post.encrypted_data','','trim');
+        $MiniService = new MiniService($appid);
+        $res = $MiniService->getUserInfoByCode($code, $iv, $encryptedData);
+        return json($res);
+    }
+
+    /**
+     * 获取微信小程序手机号授权
+     * @param $appid
+     * @return \think\response\Json
+     * @throws \EasyWeChat\Kernel\Exceptions\DecryptException
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    function miniAuthPhone($appid)
+    {
+        $code = input('post.code', '', 'trim');
+        $iv = input('post.iv', '', 'trim');
+        $encryptedData = input('encryptedData', '', 'trim');
+        $MiniService = new MiniService($appid);
+        $res = $MiniService->getPhoneNumberByCode($code, $iv, $encryptedData);
+        return json($res);
     }
 }

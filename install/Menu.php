@@ -24,6 +24,22 @@ return [
                 "remark" => ""
             ],
             [
+                "route" => "wechat/mini/users",
+                "type" => 1,
+                "status" => 1,
+                "name" => "小程序",
+                "remark" => "",
+                "child" => [
+                    [
+                        "route" => "wechat/mini/users",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "授权用户",
+                        "remark" => "",
+                    ]
+                ]
+            ],
+            [
                 "route" => "wechat/office/users",
                 "type" => 1,
                 "status" => 1,
