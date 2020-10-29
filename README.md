@@ -17,7 +17,8 @@
 ```php
 │ 小程序后台页面
 │
-├─ 授权用户 {{domain}}/home/wechat/Mini/users               
+├─ 授权用户 {{domain}}/home/wechat/Mini/users     
+├─ 小程序码 {{domain}}/home/wechat/Mini/code             
 ```
 
 | 功能 | 接口 | 

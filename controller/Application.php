@@ -86,6 +86,8 @@ class Application extends AdminController
     public function getApplicationList()
     {
         $where = [];
+        $account_type = input('account_type','','trim');
+        if($account_type) $where[] = ['account_type','=',$account_type];
         $lists = WechatApplication::where($where)->order('id', 'DESC')->paginate(20);
         return self::createReturn(true, $lists, '');
     }

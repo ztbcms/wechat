@@ -36,7 +36,14 @@ return [
                         "status" => 1,
                         "name" => "授权用户",
                         "remark" => "",
-                    ]
+                    ],
+                    [
+                        "route" => "wechat/mini/code",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "小程序码",
+                        "remark" => "",
+                    ],
                 ]
             ],
             [
