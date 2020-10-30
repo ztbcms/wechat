@@ -195,3 +195,23 @@ CREATE TABLE `cms_tp6_wechat_mini_subscribe_message`  (
   `delete_time` int(11) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `cms_tp6_wechat_mini_live`  (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `live_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '直播间名称',
+  `roomid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '房间号',
+  `cover_img` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '直播间背景墙',
+  `live_status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '直播状态 101: 直播中, 102: 未开始, 103: 已结束, 104: 禁播, 105: 暂停中, 106: 异常, 107: 已过期（直播状态解释可参考【获取直播状态】接口）',
+  `start_time` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '直播计划开始时间，列表按照 start_time 降序排列',
+  `end_time` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '直播计划结束时间',
+  `anchor_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '主播名',
+  `anchor_img` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '主播图片',
+  `total` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '0' COMMENT '数量',
+  `share_img` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '分享图片',
+  `browse_num` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '浏览量',
+  `app_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'appid',
+  `create_time` int(11) NULL DEFAULT 0 COMMENT '创建时间',
+  `update_time` int(11) NULL DEFAULT 0 COMMENT '更新时间',
+  `delete_time` int(11) NULL DEFAULT 0 COMMENT '删除时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

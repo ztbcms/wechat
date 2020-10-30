@@ -8,12 +8,14 @@ namespace app\wechat\controller;
 
 use app\common\controller\AdminController;
 use app\wechat\model\mini\WechatMiniCode;
+use app\wechat\model\mini\WechatMiniLive;
 use app\wechat\model\mini\WechatMiniSendMessageRecord;
 use app\wechat\model\mini\WechatMiniSubscribeMessage;
 use app\wechat\model\mini\WechatMiniUser;
 use app\wechat\model\WechatApplication;
 use app\wechat\service\Mini\CodeService;
 use app\wechat\service\Mini\SubscribeMessageService;
+use app\wechat\service\Mini\LiveService;
 use think\facade\View;
 
 /**
@@ -132,20 +134,20 @@ class Mini extends AdminController
 
             $lists = $WechatMiniSubscribeMessage->where($where)->order('id', 'DESC')->paginate(20);
             return self::createReturn(true, $lists, 'ok');
-        } else if($action == 'doSync') {
+        } else if ($action == 'doSync') {
             //同步订阅消息模板
             $WechatApplication = new WechatApplication();
             $applicationList = $WechatApplication
-                ->where(['account_type'=>$WechatApplication::ACCOUNT_TYPE_MINI])
+                ->where(['account_type' => $WechatApplication::ACCOUNT_TYPE_MINI])
                 ->field('app_id')
                 ->select();
-            foreach ($applicationList as $k => $v){
+            foreach ($applicationList as $k => $v) {
                 $appId = $v['app_id'];
                 $service = new SubscribeMessageService($appId);
                 $service->syncSubscribeMessageList();
             }
             return self::createReturn(true, '', 'ok');
-        } else if($action == 'deleteTemplate') {
+        } else if ($action == 'deleteTemplate') {
             $id = input('id', '', 'trim');
             $WechatMiniSubscribeMessage = new WechatMiniSubscribeMessage();
             $SubscribeMessageModel = $WechatMiniSubscribeMessage::where('id', $id)->findOrEmpty();
@@ -165,9 +167,10 @@ class Mini extends AdminController
      * 模拟订阅消息
      * @return string|\think\response\Json
      */
-    public function testSend(){
+    public function testSend()
+    {
         $action = input('action', '', 'trim');
-        if($action == 'getDetail') {
+        if ($action == 'getDetail') {
             //获取模板详情
             $id = input('id', '', 'trim');
             $WechatMiniSubscribeMessage = new WechatMiniSubscribeMessage();
@@ -192,7 +195,7 @@ class Mini extends AdminController
             }
             $msg['data_param'] = $data_param;
             return json(self::createReturn(true, $msg));
-        } else if($action == 'doEdit') {
+        } else if ($action == 'doEdit') {
             //发送测试模板消息
             $app_id = input('app_id');
             $openid = input('open_id');
@@ -201,7 +204,7 @@ class Mini extends AdminController
             $page = input('page');
             $service = new SubscribeMessageService($app_id);
             $data = [];
-            foreach ($data_param as $param){
+            foreach ($data_param as $param) {
                 $data[$param['key']] = [
                     'value' => $param['value']
                 ];
@@ -216,15 +219,16 @@ class Mini extends AdminController
      * 消息发送记录
      * @return array|string
      */
-    public function messageRecord(){
+    public function messageRecord()
+    {
         $action = input('action', '', 'trim');
 
-        if($action == 'ajaxList'){
+        if ($action == 'ajaxList') {
             $appId = input('app_id', '');
             $open_id = input('open_id', '');
             $where = [];
-            if ($appId) $where[] = ['app_id','like', '%' . $appId . '%'];
-            if ($open_id) $where[] = ['open_id','like', '%' . $open_id . '%'];
+            if ($appId) $where[] = ['app_id', 'like', '%' . $appId . '%'];
+            if ($open_id) $where[] = ['open_id', 'like', '%' . $open_id . '%'];
 
             $WechatMiniSendMessageRecord = new WechatMiniSendMessageRecord();
             $lists = $WechatMiniSendMessageRecord->where($where)->order('id', 'DESC')->paginate(20);
@@ -234,5 +238,42 @@ class Mini extends AdminController
         return View::fetch('messageRecord');
     }
 
+    /**
+     * 直播管理
+     * @return array|string
+     */
+    public function live()
+    {
+        $action = input('action', '', 'trim');
+        if ($action == 'ajaxList') {
+            //直播间列表
+            $WechatMiniLive = new WechatMiniLive();
+            $where = [];
+            $appId = input('app_id', '');
+            $title = input('title', '');
+            if ($appId) $where[] = ['app_id', 'like', '%' . $appId . '%'];
+            if ($title) $where[] = ['live_name', 'like', '%' . $title . '%'];
+            $lists = $WechatMiniLive->where($where)->order('id', 'DESC')->paginate(20);
+            return self::createReturn(true, $lists, 'ok');
+        } else if ($action == 'doSync') {
+            //同步直播间列表
+            $WechatApplication = new WechatApplication();
+            $applicationList = $WechatApplication
+                ->where(['account_type' => $WechatApplication::ACCOUNT_TYPE_MINI])
+                ->field('app_id')
+                ->select();
+            foreach ($applicationList as $k => $v) {
+                $MiniLiveService = new LiveService($v['app_id']);
+                $MiniLiveService->sysMiniLive();
+            }
+            return self::createReturn(true, [], '同步完成');
+        } else if ($action == 'playbacks') {
+            $app_id = input('app_id','','trim');
+            $roomId = input('roomId','','trim');
+            $MiniLiveService = new LiveService($app_id);
+            return json($MiniLiveService->getPlaybacks($roomId));
+        }
+        return View::fetch('live');
+    }
 
 }

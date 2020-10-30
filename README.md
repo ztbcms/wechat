@@ -14,13 +14,15 @@
 
 
 #### 小程序 Mini
+
 ```php
 │ 小程序后台页面
 │
 ├─ 授权用户 {{domain}}/home/wechat/Mini/users     
 ├─ 小程序码 {{domain}}/home/wechat/Mini/code 
 ├─ 订阅消息 {{domain}}/home/wechat/Mini/subscribeMessag 
-├─ 消息发送记录 {{domain}}/home/wechat/Mini/messageRecord           
+├─ 消息发送记录 {{domain}}/home/wechat/Mini/messageRecord     
+├─ 直播管理 {{domain}}/home/wechat/Mini/live           
 ```
 
 | 功能 | 接口 | 
