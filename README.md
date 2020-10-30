@@ -18,7 +18,9 @@
 │ 小程序后台页面
 │
 ├─ 授权用户 {{domain}}/home/wechat/Mini/users     
-├─ 小程序码 {{domain}}/home/wechat/Mini/code             
+├─ 小程序码 {{domain}}/home/wechat/Mini/code 
+├─ 订阅消息 {{domain}}/home/wechat/Mini/subscribeMessag 
+├─ 消息发送记录 {{domain}}/home/wechat/Mini/messageRecord           
 ```
 
 | 功能 | 接口 | 

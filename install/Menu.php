@@ -44,6 +44,20 @@ return [
                         "name" => "小程序码",
                         "remark" => "",
                     ],
+                    [
+                        "route" => "wechat/mini/subscribeMessage",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "订阅消息",
+                        "remark" => "",
+                    ],
+                    [
+                        "route" => "wechat/mini/messageRecord",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "消息发送记录",
+                        "remark" => "",
+                    ]
                 ]
             ],
             [

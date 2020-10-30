@@ -8,5 +8,7 @@ DROP TABLE IF EXISTS `cms_tp6_wechat_wxpay_refund`;
 DROP TABLE IF EXISTS `cms_tp6_wechat_mini_users`;
 DROP TABLE IF EXISTS `cms_tp6_wechat_mini_phone_number`;
 DROP TABLE IF EXISTS `cms_tp6_wechat_mini_code`;
+DROP TABLE IF EXISTS `cms_tp6_wechat_mini_subscribe_message`;
+DROP TABLE IF EXISTS `cms_tp6_wechat_mini_send_message_record`;
 
 

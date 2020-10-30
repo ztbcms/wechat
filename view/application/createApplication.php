@@ -69,32 +69,32 @@
                         cert_path: "",
                         key_path: "",
                         token: "",
-                        aes_key: "",
+                        aes_key: ""
                     },
                 },
-                mounted() {
+                mounted:function() {
                     this.form.id = this.getUrlQuery('id');
                     this.getDetail()
                 },
                 methods: {
-                    cancelEvent() {
+                    cancelEvent:function() {
                         location.href = "{:urlx('wechat/application/index')}";
                     },
-                    uploadSuccessKey(res) {
+                    uploadSuccessKey:function(res) {
                         if (res.status) {
                             this.form.key_path = this.key_path
                         } else {
                             layer.msg(res.msg)
                         }
                     },
-                    uploadSuccessCert(res) {
+                    uploadSuccessCert:function(res) {
                         if (res.status) {
                             this.form.cert_path = this.cert_path
                         } else {
                             layer.msg(res.msg)
                         }
                     },
-                    getDetail() {
+                    getDetail:function() {
                         var _this = this;
                         if (!this.form.id) {
                             return
@@ -114,7 +114,7 @@
                             }
                         })
                     },
-                    submitEvent() {
+                    submitEvent:function() {
                         var _this = this;
                         $.ajax({
                             url: "{:urlx('wechat/application/createApplication')}",

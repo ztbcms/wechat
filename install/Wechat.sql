@@ -166,3 +166,32 @@ CREATE TABLE `cms_tp6_wechat_mini_code`  (
   `delete_time` int(11) NULL DEFAULT 0 COMMENT '删除时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `cms_tp6_wechat_mini_send_message_record`  (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `app_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
+  `open_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '接受用户open_id',
+  `template_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '发送模板id',
+  `page` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '跳转页面l',
+  `data` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '发送信息',
+  `result` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '调用结果',
+  `create_time` int(11) NULL DEFAULT NULL COMMENT '创建时间',
+  `update_time` int(11) NULL DEFAULT 0 COMMENT '更新时间',
+  `send_time` int(11) NULL DEFAULT NULL COMMENT '发送时间',
+  `delete_time` int(11) NULL DEFAULT 0 COMMENT '删除时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `cms_tp6_wechat_mini_subscribe_message`  (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `app_id` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '小程序appid',
+  `template_id` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '添加至帐号下的模板 id，发送小程序订阅消息时所需',
+  `title` varchar(512) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '模版标题',
+  `content` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '模版内容',
+  `example` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '模板内容示例',
+  `type` varchar(16) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '模版类型，2 为一次性订阅，3 为长期订阅',
+  `create_time` int(11) NULL DEFAULT NULL COMMENT '创建时间',
+  `update_time` int(11) NULL DEFAULT NULL,
+  `delete_time` int(11) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

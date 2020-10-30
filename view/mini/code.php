@@ -200,7 +200,7 @@
                         action : 'createCode'
                     };
                     const _this = this;
-                    this.httpPost("{:api_url('Wechat/Mini/code')}", postData, function (res) {
+                    this.httpPost("{:api_url('/Wechat/Mini/code')}", postData, function (res) {
                         if (res.status) {
                             _this.$message.success("创建成功");
                             _this.createDialogVisible = false;
@@ -235,7 +235,7 @@
                             if (e !== 'confirm') {
                                 return;
                             }
-                            _this.httpPost('{:api_url("Wechat/Mini/code")}', postData, function (res) {
+                            _this.httpPost('{:api_url("/Wechat/Mini/code")}', postData, function (res) {
                                 if (res.status) {
                                     _this.$message.success('删除成功');
                                     _this.getCodeList();
@@ -263,7 +263,7 @@
                         action : "ajaxList"
                     }, this.searchData);
                     $.ajax({
-                        url: "{:api_url('Wechat/Mini/code')}",
+                        url: "{:api_url('/Wechat/Mini/code')}",
                         dataType: 'json',
                         type: 'get',
                         data: where,
