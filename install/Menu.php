@@ -97,6 +97,13 @@ return [
                         "name" => "退款订单",
                         "remark" => ""
                     ],
+                    [
+                        "route" => "wechat/wxmchpay/mchpays",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "企业到付",
+                        "remark" => ""
+                    ],
                 ],
             ]
         ]

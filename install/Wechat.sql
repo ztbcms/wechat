@@ -215,3 +215,20 @@ CREATE TABLE `cms_tp6_wechat_mini_live`  (
   `delete_time` int(11) NULL DEFAULT 0 COMMENT '删除时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `cms_tp6_wechat_wxpay_mchpay`  (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `app_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
+  `partner_trade_no` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '商户订单号',
+  `open_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '0' COMMENT '用户openid',
+  `amount` int(11) NULL DEFAULT 0 COMMENT '付款金额',
+  `description` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '付款描述',
+  `refund_result` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '付款结果',
+  `status` tinyint(1) NULL DEFAULT 0 COMMENT '处理状态',
+  `next_process_time` int(11) NULL DEFAULT 0 COMMENT '下次处理时间',
+  `process_count` int(11) NULL DEFAULT 0 COMMENT '处理次数',
+  `create_time` int(11) NULL DEFAULT 0 COMMENT '创建时间',
+  `update_time` int(11) NULL DEFAULT 0 COMMENT '更新时间',
+  `delete_time` int(11) NULL DEFAULT 0 COMMENT '删除时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

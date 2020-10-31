@@ -5,24 +5,30 @@
 
 #### 应用管理
 
-#### 公众号
-##### 授权用户
-
-#### 微信支付
-##### 支付订单
-##### 退款订单
-
-
-#### 小程序 Mini
 
 ```php
-│ 小程序后台页面
+│ 公众号
+│
+├─ 授权用户 {{domain}}/wechat/application/index
+│
+│ 小程序
 │
 ├─ 授权用户 {{domain}}/home/wechat/Mini/users     
 ├─ 小程序码 {{domain}}/home/wechat/Mini/code 
 ├─ 订阅消息 {{domain}}/home/wechat/Mini/subscribeMessag 
 ├─ 消息发送记录 {{domain}}/home/wechat/Mini/messageRecord     
-├─ 直播管理 {{domain}}/home/wechat/Mini/live           
+├─ 直播管理 {{domain}}/home/wechat/Mini/live     
+│
+│ 公众号
+│  
+├─ 授权用户 {{domain}}/home/wechat/office/users
+│
+│ 微信支付
+│  
+├─ 支付订单 {{domain}}/home/wechat/wxpay/orders  
+├─ 退款订单 {{domain}}/home/wechat/wxpay/refunds 
+├─ 企业到付 {{domain}}/home/wechat/wxmchpay/mchpays
+    
 ```
 
 | 功能 | 接口 | 

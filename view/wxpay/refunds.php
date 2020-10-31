@@ -175,12 +175,12 @@
                 resultDetail: {},
                 detailDialogVisible: false
             },
-            mounted() {
+            mounted:function() {
                 this.getRefunds();
             },
             methods: {
-                handleEvent() {
-                    let _this = this;
+                handleEvent:function() {
+                    var _this = this;
                     this.httpPost('{:urlx("wechat/Wxpay/handleRefund")}', {}, function (res) {
                         if (res.status) {
                             _this.$message.success('处理成功');
@@ -190,7 +190,7 @@
                         }
                     })
                 },
-                deleteEvent(row) {
+                deleteEvent:function(row) {
                     var postData = {
                         id: row.id
                     };
@@ -213,18 +213,18 @@
                     });
 
                 },
-                detailEvent(refund_result) {
+                detailEvent:function(refund_result) {
                     console.log('refund_result', refund_result);
                     if (refund_result) {
                         this.resultDetail = JSON.parse(refund_result);
                     }
                     this.detailDialogVisible = true;
                 },
-                searchEvent() {
+                searchEvent:function() {
                     this.page = 1;
                     this.getRefunds();
                 },
-                currentChangeEvent(page) {
+                currentChangeEvent:function(page) {
                     this.page = page;
                     this.getRefunds();
                 },
