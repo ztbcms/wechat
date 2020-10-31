@@ -10,6 +10,8 @@ namespace app\wechat\controller;
 
 
 use app\common\controller\AdminController;
+use app\wechat\model\office\WechatOfficeEventMessage;
+use app\wechat\model\office\WechatOfficeMessage;
 use app\wechat\model\office\WechatOfficeQrcode;
 use app\wechat\model\WechatApplication;
 use app\wechat\model\WechatOfficeTemplate;
@@ -217,6 +219,77 @@ class Office extends AdminController
            return json($res);
         }
         return View::fetch('qrcode');
+    }
+
+    /**
+     * 事件消息
+     * @return array|string
+     */
+    function eventMessage(){
+        $action = input('action', '', 'trim');
+
+        if($action == 'ajaxList'){
+            //事件消息列表
+            $WechatOfficeEventMessage = new WechatOfficeEventMessage();
+            $appId = input('get.app_id', '');
+            $openId = input('get.open_id', '');
+            $event = input('get.event', '');
+            $where = [];
+            if ($appId)  $where[] = ['app_id','like', '%'.$appId.'%'];
+            if ($openId) $where[] = ['from_user_name','like', '%'.$openId.'%'];
+            if ($event) $where[] = ['event','=', $event];
+
+            $lists = $WechatOfficeEventMessage->where($where)->order('id', 'DESC')->paginate(20);
+            return self::createReturn(true, $lists, 'ok');
+        } else if($action == 'deleteEvent') {
+            //删除消息
+            $id = input('id', '', 'trim');
+            $WechatOfficeEventMessage = new WechatOfficeEventMessage();
+            $WechatOfficeEventModel = $WechatOfficeEventMessage::where('id', $id)->findOrEmpty();
+            if ($WechatOfficeEventModel->isEmpty()) {
+                return self::createReturn(false, [], '找不到删除信息');
+            }
+            if ($WechatOfficeEventModel->delete()) {
+                return self::createReturn(true, [], '删除成功');
+            } else {
+                return self::createReturn(false, [], '删除失败');
+            }
+        }
+        return View::fetch('eventMessage');
+    }
+
+    /**
+     * 内容消息
+     * @return array|string
+     */
+    function message(){
+        $action = input('action', '', 'trim');
+        if($action == 'ajaxList') {
+            $appId = input('get.app_id', '');
+            $openId = input('get.open_id', '');
+            $msgType = input('get.msg_type', '');
+            $where = [];
+            if ($appId)  $where[] = ['app_id','like', '%'.$appId.'%'];
+            if ($openId) $where[] = ['from_user_name','like', '%'.$openId.'%'];
+            if ($msgType) $where[] = ['msg_type','=', $msgType];
+
+            $WechatOfficeMessage = new WechatOfficeMessage();
+            $lists = $WechatOfficeMessage->where($where)->order('id', 'DESC')->paginate(20);
+            return self::createReturn(true, $lists, 'ok');
+        } else if($action == 'deleteMessage') {
+            $id = input('id', '', 'trim');
+            $WechatOfficeMessage = new WechatOfficeMessage();
+            $WechatOfficMessageModel = $WechatOfficeMessage::where('id', $id)->findOrEmpty();
+            if ($WechatOfficMessageModel->isEmpty()) {
+                return self::createReturn(false, [], '找不到删除信息');
+            }
+            if ($WechatOfficMessageModel->delete()) {
+                return self::createReturn(true, [], '删除成功');
+            } else {
+                return self::createReturn(false, [], '删除失败');
+            }
+        }
+        return View::fetch('message');
     }
 
 }

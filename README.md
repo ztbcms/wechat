@@ -23,6 +23,8 @@
 ├─ 授权用户 {{domain}}/home/wechat/office/users
 ├─ 消息模板 {{domain}}/home/wechat/office/templateList 
 ├─ 小程序码 {{domain}}/home/wechat/office/qrcode 
+├─ 事件消息 {{domain}}/home/wechat/office/eventMessage 
+├─ 内容消息 {{domain}}/home/wechat/office/message 
 │
 │ 微信支付
 │  
@@ -38,5 +40,6 @@
 | ----- | ----- | 
 | 获取微信授权小程序 | {{domain}}/home/wechat/Index/miniAuthUserInfo/appid/{{appid}}
 | 获取小程序手机号授权 | {{domain}}/home/wechat/Index/miniAuthPhone/appid/{{appid}}
+| 接收事件消息 | {{domain}}/home/wechat/Index/serverPush/appid/{{appid}}
 
 

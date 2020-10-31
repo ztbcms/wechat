@@ -87,7 +87,21 @@ return [
                         "status" => 1,
                         "name" => "参数二维码",
                         "remark" => "",
-                    ]
+                    ],
+                    [
+                        "route" => "wechat/office/eventMessage",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "事件消息",
+                        "remark" => "",
+                    ],
+                    [
+                        "route" => "wechat/office/message",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "内容消息",
+                        "remark" => "",
+                    ],
                 ]
             ],
             [

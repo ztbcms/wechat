@@ -153,4 +153,28 @@ class Index extends BaseController
         $res = $MiniService->getPhoneNumberByCode($code, $iv, $encryptedData);
         return json($res);
     }
+
+    /**
+     * 接收消息
+     * @param $appid
+     */
+    function serverPush($appid){
+        try {
+            $officeService = new OfficeService($appid);
+            $officeService->app->server->push(function ($message) use ($officeService) {
+                switch ($message['MsgType']) {
+                    case 'event':
+                        $officeService->handleEventMessage($message);
+                        break;
+                    default:
+                        //其他消息形式都归到消息处理
+                        $officeService->handleMessage($message);
+                        break;
+                }
+            });
+            $officeService->app->server->serve()->send();
+        } catch (\Exception $exception) {
+            echo $exception->getMessage();
+        }
+    }
 }

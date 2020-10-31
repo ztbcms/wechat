@@ -10,6 +10,8 @@ namespace app\wechat\service;
 
 
 use app\common\service\BaseService;
+use app\wechat\model\office\WechatOfficeEventMessage;
+use app\wechat\model\office\WechatOfficeMessage;
 use app\wechat\model\WechatApplication;
 use app\wechat\model\WechatAuthToken;
 use app\wechat\model\WechatOfficeTemplate;
@@ -19,8 +21,8 @@ use EasyWeChat\Factory;
 
 class OfficeService extends BaseService
 {
-    protected $appId = '';
-    protected $app;
+    public $appId = '';
+    public $app;
 
     /**
      * @return \EasyWeChat\OfficialAccount\Application
@@ -181,5 +183,67 @@ class OfficeService extends BaseService
             $this->setError("获取配置错误");
             return false;
         }
+    }
+
+
+    /**
+     * 处理事件消息
+     * @param $message
+     * @return bool
+     */
+    function handleEventMessage($message)
+    {
+        $postData = [
+            'app_id'         => $this->appId,
+            'to_user_name'   => $message['ToUserName'],
+            'from_user_name' => $message['FromUserName'],
+            'create_time'    => $message['CreateTime'],
+            'msg_type'       => $message['MsgType'],
+            'event'          => $message['Event'],
+            'event_key'      => empty($message['EventKey']) ? '' : $message['EventKey'],
+            'ticket'         => empty($message['Ticket']) ? '' : $message['Ticket'],
+            'latitude'       => empty($message['Latitude']) ? '' : $message['Latitude'],
+            'longitude'      => empty($message['Longitude']) ? '' : $message['Longitude'],
+            'precision'      => empty($message['Precision']) ? '' : $message['Precision'],
+        ];
+
+        $WechatOfficeEventMessage = new WechatOfficeEventMessage();
+        $res = $WechatOfficeEventMessage->insert($postData);
+        return !!$res;
+    }
+
+
+    /**
+     * 处理普通消息
+     * @param $message
+     * @return bool
+     */
+    function handleMessage($message)
+    {
+        $postData = [
+            'app_id'         => $this->appId,
+            'to_user_name'   => $message['ToUserName'],
+            'from_user_name' => $message['FromUserName'],
+            'create_time'    => $message['CreateTime'],
+            'msg_type'       => $message['MsgType'],
+            'msg_id'         => $message['MsgId'],
+            'content'        => empty($message['Content']) ? '' : $message['Content'],
+            'pic_url'        => empty($message['PicUrl']) ? '' : $message['PicUrl'],
+            'media_id'       => empty($message['MediaId']) ? '' : $message['MediaId'],
+            'format'         => empty($message['Format']) ? '' : $message['Format'],
+            'recognition'    => empty($message['Recognition']) ? '' : $message['Recognition'],
+            'thumb_media_id' => empty($message['ThumbMediaId']) ? '' : $message['ThumbMediaId'],
+            'location_x'     => empty($message['Location_X']) ? '' : $message['Location_X'],
+            'location_y'     => empty($message['Location_Y']) ? '' : $message['Location_Y'],
+            'scale'          => empty($message['Scale']) ? '' : $message['Scale'],
+            'label'          => empty($message['Label']) ? '' : $message['Label'],
+            'title'          => empty($message['Title']) ? '' : $message['Title'],
+            'description'    => empty($message['Description']) ? '' : $message['Description'],
+            'url'            => empty($message['Url']) ? '' : $message['Url'],
+        ];
+
+        $WechatOfficeMessage = new WechatOfficeMessage();
+        $res = $WechatOfficeMessage->insert($postData);
+        return !!$res;
     }
 }
