@@ -142,11 +142,11 @@
                 totalPages: 0,
                 totalItems: 0
             },
-            mounted() {
+            mounted:function() {
                 this.getRefunds();
             },
             methods: {
-                deleteEvent(row) {
+                deleteEvent:function(row) {
                     var postData = {
                         id: row.id
                     };
@@ -168,11 +168,11 @@
                         }
                     });
                 },
-                searchEvent() {
+                searchEvent:function() {
                     this.page = 1;
                     this.getRefunds();
                 },
-                currentChangeEvent(page) {
+                currentChangeEvent:function(page) {
                     this.page = page;
                     this.getRefunds();
                 },
@@ -188,7 +188,6 @@
                         type: 'get',
                         data: where,
                         success: function (res) {
-                            console.log("res", res);
                             if (res.status) {
                                 _this.users = res.data.data;
                                 _this.page = res.data.current_page;

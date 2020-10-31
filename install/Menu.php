@@ -73,6 +73,20 @@ return [
                         "status" => 1,
                         "name" => "授权用户",
                         "remark" => "",
+                    ],
+                    [
+                        "route" => "wechat/office/templateList",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "消息模板",
+                        "remark" => "",
+                    ],
+                    [
+                        "route" => "wechat/office/qrcode",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "参数二维码",
+                        "remark" => "",
                     ]
                 ]
             ],

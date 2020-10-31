@@ -10,9 +10,11 @@ namespace app\wechat\controller;
 
 
 use app\common\controller\AdminController;
+use app\wechat\model\office\WechatOfficeQrcode;
 use app\wechat\model\WechatApplication;
 use app\wechat\model\WechatOfficeTemplate;
 use app\wechat\model\WechatOfficeUser;
+use app\wechat\service\Office\QrcodeService;
 use app\wechat\service\OfficeService;
 use think\facade\View;
 use think\Request;
@@ -167,4 +169,54 @@ class Office extends AdminController
 
         return View::fetch('users');
     }
+
+    /**
+     * 参数二维码
+     * @return array|string
+     */
+    public function qrcode(){
+        $action = input('action', '', 'trim');
+
+        if($action == 'ajaxList') {
+            //二维码列表
+            $appId = input('get.app_id', '');
+            $where = [];
+            if ($appId) $where[] = ['app_id','like', '%'.$appId.'%'];
+
+            $WechatOfficeQrcode = new WechatOfficeQrcode();
+            $lists = $WechatOfficeQrcode->where($where)->order('id', 'DESC')->paginate(20);
+            return self::createReturn(true, $lists, 'ok');
+        } else if($action == 'delQrcode'){
+            //删除二维码
+            $id = input('id', '', 'trim');
+            $WechatOfficeQrcode = new WechatOfficeQrcode();
+            $OfficeQrcodeModel = $WechatOfficeQrcode::where('id', $id)->findOrEmpty();
+            if ($OfficeQrcodeModel->isEmpty()) {
+                return self::createReturn(false, [], '找不到删除信息');
+            }
+            if ($OfficeQrcodeModel->delete()) {
+                return self::createReturn(true, [], '删除成功');
+            } else {
+                return self::createReturn(false, [], '删除失败');
+            }
+        } else if($action == 'createCode'){
+            //创建二维码
+            $appId = input('post.app_id');
+            $type = input('post.type');
+            $expireTime = input('post.expire_time');
+            $param = input('post.param');
+
+            $QrcodeService = new QrcodeService($appId);
+            if ($type == WechatOfficeQrcode::QRCODE_TYPE_TEMPORARY) {
+                //将过期时间转化成秒
+                $expireTime = $expireTime * 86400;
+                $res = $QrcodeService->temporary($param, $expireTime);
+            } else {
+                $res = $QrcodeService->forever($param);
+            }
+           return json($res);
+        }
+        return View::fetch('qrcode');
+    }
+
 }

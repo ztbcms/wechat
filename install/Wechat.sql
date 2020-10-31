@@ -232,3 +232,16 @@ CREATE TABLE `cms_tp6_wechat_wxpay_mchpay`  (
   `delete_time` int(11) NULL DEFAULT 0 COMMENT '删除时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `cms_tp6_wechat_office_qrcode`  (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `app_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
+  `param` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '二维码参数',
+  `expire_time` int(11) NULL DEFAULT 0 COMMENT '过期时间',
+  `type` tinyint(1) NULL DEFAULT 0 COMMENT '二维码类型，0是临时，1是永久',
+  `file_path` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '文件路径',
+  `qrcode_url` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '访问地址',
+  `create_time` int(11) NULL DEFAULT NULL COMMENT '创建时间',
+  `delete_time` int(11) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
+  PRIMARY KEY (`id`) USING BTREE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

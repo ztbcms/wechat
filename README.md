@@ -3,8 +3,7 @@
 #### 依赖
 **安装composer** `composer require overtrue/wechat `
 
-#### 应用管理
-
+#### 后台管理
 
 ```php
 │ 公众号
@@ -22,6 +21,8 @@
 │ 公众号
 │  
 ├─ 授权用户 {{domain}}/home/wechat/office/users
+├─ 消息模板 {{domain}}/home/wechat/office/templateList 
+├─ 小程序码 {{domain}}/home/wechat/office/qrcode 
 │
 │ 微信支付
 │  
@@ -30,6 +31,8 @@
 ├─ 企业到付 {{domain}}/home/wechat/wxmchpay/mchpays
     
 ```
+
+#### 对外接口
 
 | 功能 | 接口 | 
 | ----- | ----- | 
