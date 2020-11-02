@@ -30,8 +30,7 @@
 │  
 ├─ 支付订单 {{domain}}/home/wechat/wxpay/orders  
 ├─ 退款订单 {{domain}}/home/wechat/wxpay/refunds 
-├─ 企业到付 {{domain}}/home/wechat/wxmchpay/mchpays
-    
+├─ 企业到付 {{domain}}/home/wechat/wxmchpay/mchpays    
 ```
 
 #### 对外接口
@@ -42,5 +41,14 @@
 | 获取小程序手机号授权 | {{domain}}/home/wechat/Index/miniAuthPhone/appid/{{appid}}
 | 接收事件消息 | {{domain}}/home/wechat/Index/serverPush/appid/{{appid}}
 | 接收第三方平台事件消息 | {{domain}}/home/wechat/Open/msg
+
+#### 常用功能
+
+| 功能 | 接口 | 
+| ----- | ----- | 
+| 小程序支付 | (new WxpayService($appid))->getMiniPayConfig();
+| 公众号微信支付 | (new WxpayService($appid))->getJssdkPayConfig();
+| 微信退款 | (new WxpayService($appid))->createRefund();
+| 企业到付 | (new WxmchpayService($appid))->createMchpay();
 
 

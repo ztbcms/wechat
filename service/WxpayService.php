@@ -173,6 +173,7 @@ class WxpayService extends BaseService
     }
 
     /**
+     * 微信退款
      * @param $outTradeNo
      * @param $totalFee
      * @param $refundFee
@@ -254,5 +255,35 @@ class WxpayService extends BaseService
             }
         }
         return true;
+    }
+
+    /**
+     * 小程序获取支付配置
+     * @param $openId
+     * @param $outTradeNo
+     * @param $totalFee
+     * @param $notifyUrl
+     * @param string $body
+     * @return array
+     */
+    function getMiniPayConfig($openId, $outTradeNo, $totalFee, $notifyUrl, $body = "微信支付")
+    {
+        $prepayId = $this->createUnity($openId, $outTradeNo, $totalFee, $notifyUrl, $body, "JSAPI");
+        if (!$prepayId) {
+            return self::createReturn(false, [], '微信支付下单失败：' . $this->getError());
+        }
+        $postData = [
+            'app_id' => $this->appId,
+            'open_id' => $openId,
+            'out_trade_no' => $outTradeNo,
+            'total_fee' => $totalFee,
+            'create_time' => time(),
+            'notify_url' => $notifyUrl
+        ];
+        //添加支付订单入库
+        $wxpayOrderModel = new WechatWxpayOrder();
+        $wxpayOrderModel->insert($postData);
+        $res = $this->payment->jssdk->bridgeConfig($prepayId, false);
+        return createReturn(true, $res, '获取成功');
     }
 }
