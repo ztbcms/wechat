@@ -41,5 +41,6 @@
 | 获取微信授权小程序 | {{domain}}/home/wechat/Index/miniAuthUserInfo/appid/{{appid}}
 | 获取小程序手机号授权 | {{domain}}/home/wechat/Index/miniAuthPhone/appid/{{appid}}
 | 接收事件消息 | {{domain}}/home/wechat/Index/serverPush/appid/{{appid}}
+| 接收第三方平台事件消息 | {{domain}}/home/wechat/Open/msg
 
 
