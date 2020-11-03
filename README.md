@@ -50,5 +50,10 @@
 | 公众号微信支付 | (new WxpayService($appid))->getJssdkPayConfig();
 | 微信退款 | (new WxpayService($appid))->createRefund();
 | 企业到付 | (new WxmchpayService($appid))->createMchpay();
+| 公众号 | (new WxmchpayService($appid))->createMchpay();
+
+
+###文件说明 
+`文件存储在` **/tp6/wechat/** `文件夹下`
 
 

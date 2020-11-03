@@ -150,11 +150,11 @@
                 totalPages: 0,
                 totalItems: 0
             },
-            mounted() {
+            mounted:function() {
                 this.getOrders();
             },
             methods: {
-                deleteEvent(row) {
+                deleteEvent:function(row) {
                     var postData = {
                         id: row.id
                     };
@@ -177,11 +177,11 @@
                     });
 
                 },
-                searchEvent() {
+                searchEvent:function() {
                     this.page = 1;
                     this.getOrders();
                 },
-                currentChangeEvent(page) {
+                currentChangeEvent:function(page) {
                     this.page = page;
                     this.getOrders();
                 },

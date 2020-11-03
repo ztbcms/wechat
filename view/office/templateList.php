@@ -156,11 +156,11 @@
                     templateMiniAppid: ''
 
                 },
-                mounted() {
+                mounted:function() {
                     this.getTemplateList();
                 },
                 methods: {
-                    submitTestTemplateEvent() {
+                    submitTestTemplateEvent:function() {
                         if (!this.touserOpenid) {
                             this.$message.error('请输入接收用户的openid');
                             return;
@@ -187,7 +187,7 @@
                             }
                         })
                     },
-                    testSendEvent(row) {
+                    testSendEvent:function(row) {
                         this.showDialogVisible = true;
                         this.sendTestTemplate = row;
                         const example = row.example;
@@ -226,7 +226,7 @@
                         this.keywords = keywords;
                         console.log('keywords', keywords)
                     },
-                    syncEvent() {
+                    syncEvent:function() {
                         var _this = this;
                         this.httpGet("{:urlx('wechat/office/syncTemplateList')}", {}, function (res) {
                             if (res.status) {
@@ -237,7 +237,7 @@
                             }
                         })
                     },
-                    deleteEvent(row) {
+                    deleteEvent:function(row) {
                         var postData = {
                             id: row.id
                         };
@@ -260,11 +260,11 @@
                         });
 
                     },
-                    searchEvent() {
+                    searchEvent:function() {
                         this.page = 1;
                         this.getTemplateList();
                     },
-                    currentChangeEvent(page) {
+                    currentChangeEvent:function(page) {
                         this.page = page;
                         this.getTemplateList();
                     },
