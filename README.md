@@ -47,13 +47,20 @@
 | 功能 | 接口 | 
 | ----- | ----- | 
 | 小程序支付 | (new WxpayService($appid))->getMiniPayConfig();
+| 生成限制类小程序码 | (new CodeService($appId))->getMiniCode();
+| 生成无限类小程序码 | (new CodeService($appId))->getUnlimitMiniCode();
+| 发送小程序订阅消息 | (new SubscribeMessageService($appId))->sendSubscribeMessage();
 | 公众号微信支付 | (new WxpayService($appid))->getJssdkPayConfig();
+| 公众号模板消息 | (new OfficeService($appId))->sendTemplateMsg();
+| 公众号临时二维码 | (new QrcodeService($appId))->temporary();
+| 公众号永久参数二维码 | (new QrcodeService($appId))->forever();
 | 微信退款 | (new WxpayService($appid))->createRefund();
 | 企业到付 | (new WxmchpayService($appid))->createMchpay();
-| 公众号 | (new WxmchpayService($appid))->createMchpay();
-
 
 ###文件说明 
 `文件存储在` **/tp6/wechat/** `文件夹下`
+
+###定时任务
+**/tp6/app/wechat/cronscript/** `文件夹下`
 
 
