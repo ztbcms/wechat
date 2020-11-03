@@ -108,15 +108,20 @@
                     },
                     total: 0
                 },
-                mounted() {
+                mounted:function() {
                     this.getList()
                 },
                 methods: {
                     deleteEvent: function (item) {
                         var _this = this;
-                        this.$confirm('是否确认删除"' + item.application_name + '" ？').then(() => {
-                            _this.doDeleteItem(item)
-                        }).catch()
+                        this.$confirm('是否确认删除'+item.application_name+ '？', '提示', {
+                            callback: function (e) {
+                                if (e !== 'confirm') {
+                                    return;
+                                }
+                                _this.doDeleteItem(item)
+                            }
+                        });
                     },
                     doDeleteItem: function (item) {
                         var _this = this;
