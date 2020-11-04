@@ -15,8 +15,10 @@ use app\Request;
 use app\wechat\model\WechatOfficeUser;
 use app\wechat\service\OfficeService;
 use app\wechat\service\MiniService;
+use app\wechat\service\WxpayService;
 use think\facade\Cache;
 use think\facade\View;
+use EasyWeChat\Kernel\Exceptions\Exception;
 
 class Index extends BaseController
 {
@@ -174,6 +176,24 @@ class Index extends BaseController
             });
             $officeService->app->server->serve()->send();
         } catch (\Exception $exception) {
+            echo $exception->getMessage();
+        }
+    }
+
+    /**
+     *  微信支付回调
+     * @param $appid
+     */
+    function wxpayNotify($appid)
+    {
+        $wxpay = new WxpayService($appid);
+        try {
+            $response = $wxpay->handlePaidNotify(function ($message, $fail) {
+                //TODO 微信支付业务调用成功
+
+            });
+            echo $response->send();
+        } catch (Exception $exception) {
             echo $exception->getMessage();
         }
     }
