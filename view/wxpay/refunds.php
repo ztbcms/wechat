@@ -181,7 +181,7 @@
             methods: {
                 handleEvent:function() {
                     var _this = this;
-                    this.httpPost('{:urlx("wechat/Wxpay/handleRefund")}', {}, function (res) {
+                    this.httpPost('{:api_url("/wechat/Wxpay/handleRefund")}', {}, function (res) {
                         if (res.status) {
                             _this.$message.success('处理成功');
                             _this.getRefunds();
@@ -201,7 +201,7 @@
                             if (e !== 'confirm') {
                                 return;
                             }
-                            _this.httpPost('{:urlx("wechat/wxpay/deleteRefund")}', postData, function (res) {
+                            _this.httpPost('{:api_url("/wechat/wxpay/deleteRefund")}', postData, function (res) {
                                 if (res.status) {
                                     _this.$message.success('删除成功');
                                     _this.getRefunds();
@@ -235,7 +235,7 @@
                         limit: this.limit
                     }, this.searchData);
                     $.ajax({
-                        url: "{:urlx('wechat/wxpay/refunds')}",
+                        url: "{:api_url('/wechat/wxpay/refunds')}",
                         dataType: 'json',
                         type: 'get',
                         data: where,

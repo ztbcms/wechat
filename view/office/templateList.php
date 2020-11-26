@@ -179,7 +179,7 @@
                             mini_appid: this.templateMiniAppid
                         };
                         const _this = this;
-                        this.httpPost("{:urlx('wechat/office/sendTemplateMsg')}", postData, function (res) {
+                        this.httpPost("{:api_url('/wechat/office/sendTemplateMsg')}", postData, function (res) {
                             if (res.status) {
                                 _this.$message.success('发送成功');
                             } else {
@@ -192,7 +192,6 @@
                         this.sendTestTemplate = row;
                         const example = row.example;
                         const exampleArray = example.split("\n");
-                        console.log('exampleArray', exampleArray);
                         const keywords = [];
                         for (const index in exampleArray) {
                             console.log('index', index)
@@ -228,7 +227,7 @@
                     },
                     syncEvent:function() {
                         var _this = this;
-                        this.httpGet("{:urlx('wechat/office/syncTemplateList')}", {}, function (res) {
+                        this.httpGet("{:api_url('/wechat/office/syncTemplateList')}", {}, function (res) {
                             if (res.status) {
                                 _this.$message.success("同步成功");
                                 _this.getTemplateList();
@@ -248,7 +247,7 @@
                                 if (e !== 'confirm') {
                                     return;
                                 }
-                                _this.httpPost('{:urlx("wechat/office/deleteTemplate")}', postData, function (res) {
+                                _this.httpPost('{:api_url("/wechat/office/deleteTemplate")}', postData, function (res) {
                                     if (res.status) {
                                         _this.$message.success('删除成功');
                                         _this.getTemplateList();
@@ -275,7 +274,7 @@
                             limit: this.limit
                         }, this.searchData);
                         $.ajax({
-                            url: "{:urlx('wechat/office/templateList')}",
+                            url: "{:api_url('/wechat/office/templateList')}",
                             dataType: 'json',
                             type: 'get',
                             data: where,

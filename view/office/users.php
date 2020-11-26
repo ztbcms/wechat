@@ -157,7 +157,7 @@
                             if (e !== 'confirm') {
                                 return;
                             }
-                            _this.httpPost('{:urlx("wechat/office/deleteUser")}', postData, function (res) {
+                            _this.httpPost('{:api_url("/wechat/office/deleteUser")}', postData, function (res) {
                                 if (res.status) {
                                     _this.$message.success('删除成功');
                                     _this.getRefunds();
@@ -183,7 +183,7 @@
                         limit: this.limit
                     }, this.searchData);
                     $.ajax({
-                        url: "{:urlx('wechat/office/users')}",
+                        url: "{:api_url('/wechat/office/users')}",
                         dataType: 'json',
                         type: 'get',
                         data: where,

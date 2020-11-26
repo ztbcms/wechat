@@ -44,7 +44,7 @@ class Index extends BaseController
         }
         $token = md5(time().rand(100000, 999999));
         Cache::set($token, $redirectUrl);
-        $url = $request->domain().urlx("wechat/index/callback", [], '')."/appid/{$appid}/token/{$token}";
+        $url = $request->domain().api_url("/wechat/index/callback", [], '')."/appid/{$appid}/token/{$token}";
         $response = $office->getApp()->oauth->scopes(['snsapi_userinfo'])
             ->redirect($url);
         $response->send();
@@ -90,7 +90,7 @@ class Index extends BaseController
         if ($redirectUrl) {
             session('redirect_url', $redirectUrl);
         }
-        $url = $request->domain().urlx("Wechat/index/callback", [], '')."/appid/{$appid}";
+        $url = $request->domain().api_url("/Wechat/index/callback", [], '')."/appid/{$appid}";
         $response = $office->getApp()->oauth->scopes(['snsapi_base'])
             ->redirect($url);
         $response->send();

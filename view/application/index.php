@@ -127,7 +127,7 @@
                         var _this = this;
                         //确认删除
                         $.ajax({
-                            url: "{:urlx('wechat/application/deleteApplication')}",
+                            url: "{:api_url('/wechat/application/deleteApplication')}",
                             data: {id: item.id},
                             dataType: 'json',
                             type: 'post',
@@ -142,12 +142,12 @@
                         })
                     },
                     editEvent: function (editItem) {
-                        location.href = "{:urlx('wechat/application/createApplication')}?id=" + editItem.id;
+                        location.href = "{:api_url('/wechat/application/createApplication')}?id=" + editItem.id;
                     },
                     getList: function () {
                         var _this = this;
                         $.ajax({
-                            url: "{:urlx('wechat/application/getApplicationList')}",
+                            url: "{:api_url('/wechat/application/getApplicationList')}",
                             data: this.form,
                             dataType: 'json',
                             type: 'get',
@@ -163,17 +163,17 @@
                     },
 
                     addEvent: function () {
-                        location.href = "{:urlx('wechat/application/createApplication')}"
+                        location.href = "{:api_url('/wechat/application/createApplication')}"
                     },
                     showOauthUrl: function (app_id) {
                         var urlObj = window.Ztbcms.parserUrl(window.location.href);
                         console.log(urlObj);
-                        layer.alert(urlObj.protocol + '//' + urlObj.host + "{:urlx('wechat/index/oauth',[],false)}/appid/" + app_id)
+                        layer.alert(urlObj.protocol + '//' + urlObj.host + "{:api_url('/wechat/index/oauth',[],false)}/appid/" + app_id)
                     },
                     showOauthBase: function (app_id) {
                         var urlObj = window.Ztbcms.parserUrl(window.location.href);
                         console.log(urlObj);
-                        layer.alert(urlObj.protocol + '//' + urlObj.host + "{:urlx('wechat/index/oauthBase',[],false)}/appid/" + app_id)
+                        layer.alert(urlObj.protocol + '//' + urlObj.host + "{:api_url('/wechat/index/oauthBase',[],false)}/appid/" + app_id)
                     }
                 }
             })
