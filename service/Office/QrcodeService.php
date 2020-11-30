@@ -36,21 +36,21 @@ class QrcodeService extends OfficeService
         if (!empty($result['ticket'])) {
             $qrcodeUrl = $this->app->qrcode->url($result['ticket']);
             $content = file_get_contents($qrcodeUrl);
-            $directory = App::getRootPath(). 'wechat/qrcode/';
+            $directory = App::getRootPath().'public/d/wechat/qrcode/';
 
             $directory = rtrim($directory, '/');
             if (!is_dir($directory)) {
                 mkdir($directory, 0755, true);
             }
             $fileName = "t".time().rand(1000, 9999).'.png';
-            $filePath = App::getRootPath(). 'wechat/qrcode/'.$fileName;
+            $filePath = App::getRootPath(). 'public/d/wechat/qrcode/'.$fileName;
 
             $saveRes = file_put_contents($filePath, $content); // 写入文件
             if ($saveRes) {
 
                 $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' :'http://';
 
-                $url = $http_type.$_SERVER['HTTP_HOST'].'/tp6/wechat/qrcode/'.$fileName;
+                $url = $http_type.$_SERVER['HTTP_HOST'].'/d/wechat/qrcode/'.$fileName;
                 //生成数据入库
                 $postData = [
                     'app_id'      => $this->appId,
@@ -87,18 +87,18 @@ class QrcodeService extends OfficeService
         if (!empty($result['ticket'])) {
             $qrcodeUrl = $this->app->qrcode->url($result['ticket']);
             $content = file_get_contents($qrcodeUrl);
-            $directory = App::getRootPath(). 'wechat/qrcode/';
+            $directory = App::getRootPath(). 'public/d/wechat/qrcode/';
             $directory = rtrim($directory, '/');
             if (!is_dir($directory)) {
                 mkdir($directory, 0755, true);
             }
             $fileName = "f".time().rand(1000, 9999).'.png';
-            $filePath = App::getRootPath(). 'wechat/qrcode/'.$fileName;
+            $filePath = App::getRootPath(). 'public/d/wechat/qrcode/'.$fileName;
             $saveRes = file_put_contents($filePath, $content); // 写入文件
             if ($saveRes) {
 
                 $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' :'http://';
-                $url = $http_type.$_SERVER['HTTP_HOST'].'/tp6/wechat/qrcode/'.$fileName;
+                $url = $http_type.$_SERVER['HTTP_HOST'].'/d//wechat/qrcode/'.$fileName;
                 //生成数据入库
                 $postData = [
                     'app_id'      => $this->appId,

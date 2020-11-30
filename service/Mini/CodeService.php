@@ -30,7 +30,7 @@ class CodeService extends MiniService
     {
         $response = $this->app->app_code->get($path, $optional);
         if ($response instanceof \EasyWeChat\Kernel\Http\StreamResponse) {
-            $uploadPath = App::getRootPath(). 'wechat/code/';
+            $uploadPath = App::getRootPath(). 'public/d/wechat/code/';
             $directory = rtrim($uploadPath, '/');
             if (!is_dir($directory)) {
                 mkdir($directory, 0755, true);
@@ -44,7 +44,7 @@ class CodeService extends MiniService
                     "type" => WechatMiniCode::CODE_TYPE_LIMIT,
                     "path" => $path,
                     "file_name" => $fileName,
-                    "file_url" => $http_type.$_SERVER['HTTP_HOST']. '/tp6/wechat/code/' . $fileName,
+                    "file_url" => $http_type.$_SERVER['HTTP_HOST']. '/d/wechat/code/' . $fileName,
                     "create_time" => time()
                 ];
                 $WechatMiniCode = new WechatMiniCode();
@@ -71,7 +71,7 @@ class CodeService extends MiniService
         $response = $this->app->app_code->getUnlimit($scene, $optional);
         $path = empty($optional['page']) ? "" : $optional['page'];
         if ($response instanceof \EasyWeChat\Kernel\Http\StreamResponse) {
-            $uploadPath = App::getRootPath(). 'wechat/code/';
+            $uploadPath = App::getRootPath(). 'public/d/wechat/code/';
             $directory = rtrim($uploadPath, '/');
             if (!is_dir($directory)) {
                 mkdir($directory, 0755, true);
@@ -86,7 +86,7 @@ class CodeService extends MiniService
                     "path"        => $path,
                     "scene"       => $scene,
                     "file_name"   => $fileName,
-                    "file_url"    => $http_type.$_SERVER['HTTP_HOST']. '/tp6/wechat/code/'.$fileName,
+                    "file_url"    => $http_type.$_SERVER['HTTP_HOST']. '/d/wechat/code/'.$fileName,
                     "create_time" => time()
                 ];
                 $WechatMiniCode = new WechatMiniCode();
@@ -102,6 +102,5 @@ class CodeService extends MiniService
         }
         return self::createReturn(false, [], '获取小程序码失败');
     }
-
 
 }

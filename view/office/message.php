@@ -24,22 +24,22 @@
         <div>
             <el-tabs @tab-click="handleClick" v-model="searchData.msg_type" type="border-card">
                 <el-tab-pane name="text" label="文本消息">
-                    {include file="./tp6/app/wechat/view/office/message/content.php"}
+                    {include file="../app/wechat/view/office/message/content.php"}
                 </el-tab-pane>
                 <el-tab-pane name="image" label="图片消息">
-                    {include file="./tp6/app/wechat/view/office/message/image.php"}
+                    {include file="../app/wechat/view/office/message/image.php"}
                 </el-tab-pane>
                 <el-tab-pane name="video" label="视频消息">
-                    {include file="./tp6/app/wechat/view/office/message/video.php"}
+                    {include file="../app/wechat/view/office/message/video.php"}
                 </el-tab-pane>
                 <el-tab-pane name="voice" label="音频消息">
-                    {include file="./tp6/app/wechat/view/office/message/voice.php"}
+                    {include file="../app/wechat/view/office/message/voice.php"}
                 </el-tab-pane>
                 <el-tab-pane name="location" label="位置消息">
-                    {include file="./tp6/app/wechat/view/office/message/location.php"}
+                    {include file="../app/wechat/view/office/message/location.php"}
                 </el-tab-pane>
                 <el-tab-pane name="link" label="链接消息">
-                    {include file="./tp6/app/wechat/view/office/message/link.php"}
+                    {include file="../app/wechat/view/office/message/link.php"}
                 </el-tab-pane>
             </el-tabs>
 

@@ -78,7 +78,7 @@
                 },
                 methods: {
                     cancelEvent:function() {
-                        location.href = "{:urlx('wechat/application/index')}";
+                        location.href = "{:api_url('/wechat/application/index')}";
                     },
                     uploadSuccessKey:function(res) {
                         if (res.status) {
@@ -100,7 +100,7 @@
                             return
                         }
                         $.ajax({
-                            url: "{:urlx('wechat/application/getApplicationDetail')}",
+                            url: "{:api_url('/wechat/application/getApplicationDetail')}",
                             data: {
                                 id: _this.form.id
                             },
@@ -117,7 +117,7 @@
                     submitEvent:function() {
                         var _this = this;
                         $.ajax({
-                            url: "{:urlx('wechat/application/createApplication')}",
+                            url: "{:api_url('/wechat/application/createApplication')}",
                             data: _this.form,
                             dataType: 'json',
                             type: 'post',
@@ -126,7 +126,7 @@
                                     layer.msg('操作成功');
                                     setTimeout(function () {
                                         window.parent.layer.closeAll();
-                                        location.href = "{:urlx('wechat/application/index')}";
+                                        location.href = "{:api_url('/wechat/application/index')}";
                                     }, 2000);
                                 } else {
                                     layer.msg(res.msg)

@@ -138,12 +138,12 @@ class MiniService extends BaseService
 
                 //生成登录token
                 $authTokenModel = new WechatAuthToken();
-                $authToken = $authTokenModel->createAuthToken($this->appId, $openid, $authTokenModel::ACCOUNT_TYPE_MINI);
-                if ($authToken) {
+                $authTokenModel->createAuthToken($this->appId, $openid, $authTokenModel::ACCOUNT_TYPE_MINI);
+                if ($authTokenModel->token) {
                     $result = array_merge($data, [
-                        'token'         => $authToken['token'],
-                        'expire_time'   => $authToken['expire_time'],
-                        'refresh_token' => $authToken['refresh_token'],
+                        'token'         => $authTokenModel->token,
+                        'expire_time'   => $authTokenModel->expire_time,
+                        'refresh_token' => $authTokenModel->refresh_token,
                     ]);
                     return self::createReturn(true, $result, '获取成功');
                 } else {
@@ -197,6 +197,7 @@ class MiniService extends BaseService
                 } else {
                     $res = $miniPhoneNumber->insert($postData);
                 }
+                $info['open_id'] = $openid;
                 if ($res) {
                     return self::createReturn(true, $info, '获取成功');
                 } else {

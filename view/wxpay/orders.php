@@ -165,7 +165,7 @@
                             if (e !== 'confirm') {
                                 return;
                             }
-                            _this.httpPost('{:urlx("wechat/wxpay/deleteOrder")}', postData, function (res) {
+                            _this.httpPost('{:api_url("/wechat/wxpay/deleteOrder")}', postData, function (res) {
                                 if (res.status) {
                                     _this.$message.success('删除成功');
                                     _this.getOrders();
@@ -192,7 +192,7 @@
                         limit: this.limit
                     }, this.searchData);
                     $.ajax({
-                        url: "{:urlx('wechat/wxpay/orders')}",
+                        url: "{:api_url('/wechat/wxpay/orders')}",
                         dataType: 'json',
                         type: 'get',
                         data: where,
