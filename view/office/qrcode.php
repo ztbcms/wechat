@@ -197,14 +197,14 @@
             },
             methods: {
                 submitCreateCode: function () {
-                    const postData = {
+                    var postData = {
                         app_id: this.createAppId,
                         type: this.createCodeType,
                         expire_time: this.createExpireTime,
                         param: this.createCodeParam,
                         action : 'createCode'
                     };
-                    const _this = this;
+                    var _this = this;
                     this.httpPost("{:api_url('wechat/office/qrcode')}", postData, function (res) {
                         if (res.status) {
                             _this.$message.success("创建成功");
@@ -217,7 +217,7 @@
                     })
                 },
                 getOffices: function () {
-                    const _this = this;
+                    var _this = this;
                     //获取公众号
                     this.httpGet('{:api_url("/wechat/Application/getApplicationList")}', {account_type: "office"}, function (res) {
                         _this.offices = res.data.data;

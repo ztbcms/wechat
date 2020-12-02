@@ -192,14 +192,14 @@
             },
             methods: {
                 submitCreateCode: function () {
-                    const postData = {
+                    var postData = {
                         app_id: this.createAppId,
                         type: this.createCodeType,
                         path: this.createCodePath,
                         scene: this.createCodeScene,
                         action : 'createCode'
                     };
-                    const _this = this;
+                    var _this = this;
                     this.httpPost("{:api_url('/Wechat/Mini/code')}", postData, function (res) {
                         if (res.status) {
                             _this.$message.success("创建成功");
@@ -212,7 +212,7 @@
                     })
                 },
                 getMiniOffice: function () {
-                    const _this = this;
+                    var _this = this;
                     //获取小程序
                     this.httpGet('{:api_url("/wechat/Application/getApplicationList")}', {account_type: "mini"}, function (res) {
                         _this.miniOffices = res.data.data;

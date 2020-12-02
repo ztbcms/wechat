@@ -169,7 +169,7 @@
                             this.$message.error('请输入跳转链接');
                             return;
                         }
-                        const postData = {
+                        var postData = {
                             keywords: this.keywords,
                             touser_openid: this.touserOpenid,
                             app_id: this.sendTestTemplate.app_id,
@@ -178,7 +178,7 @@
                             page_type: this.templatePageType,
                             mini_appid: this.templateMiniAppid
                         };
-                        const _this = this;
+                        var _this = this;
                         this.httpPost("{:api_url('/wechat/office/sendTemplateMsg')}", postData, function (res) {
                             if (res.status) {
                                 _this.$message.success('发送成功');
@@ -190,10 +190,10 @@
                     testSendEvent:function(row) {
                         this.showDialogVisible = true;
                         this.sendTestTemplate = row;
-                        const example = row.example;
-                        const exampleArray = example.split("\n");
-                        const keywords = [];
-                        for (const index in exampleArray) {
+                        var example = row.example;
+                        var exampleArray = example.split("\n");
+                        var keywords = [];
+                        for (var index in exampleArray) {
                             console.log('index', index)
                             if (exampleArray[index]) {
                                 if (index === '0') {
@@ -211,7 +211,7 @@
                                         value: exampleArray[index]
                                     })
                                 } else {
-                                    const splitStr = exampleArray[index].split("：");
+                                    var splitStr = exampleArray[index].split("：");
                                     keywords.push({
                                         title: splitStr[0],
                                         key: 'keyword' + (parseInt(index)),
