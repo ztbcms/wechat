@@ -132,6 +132,13 @@ return [
                         "name" => "企业到付",
                         "remark" => ""
                     ],
+                    [
+                        "route" => "wechat/wxpay/redpacks",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "微信红包",
+                        "remark" => ""
+                    ],
                 ],
             ]
         ]

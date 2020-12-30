@@ -31,6 +31,7 @@
 ├─ 支付订单 {{domain}}/home/wechat/wxpay/orders  
 ├─ 退款订单 {{domain}}/home/wechat/wxpay/refunds 
 ├─ 企业到付 {{domain}}/home/wechat/wxmchpay/mchpays    
+├─ 微信红包 {{domain}}/home/wechat/wxpay/redpacks    
 ```
 
 #### 对外接口
@@ -57,8 +58,9 @@
 | 公众号永久参数二维码 | (new QrcodeService($appId))->forever();
 | 微信退款 | (new WxpayService($appid))->createRefund();
 | 企业到付 | (new WxmchpayService($appid))->createMchpay();
+| 微信红包 | (new WxpayService($appid))->createRedpack();
 
-###文件说明 
+###文件说明
 `文件存储在` **/tp6/wechat/** `文件夹下`
 
 ###定时任务

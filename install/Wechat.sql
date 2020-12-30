@@ -315,3 +315,23 @@ CREATE TABLE `cms_tp6_wechat_open_event`  (
   `pre_auth_code` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '预授权码',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `cms_tp6_wechat_wxpay_redpack`  (
+ `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+ `app_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
+ `mch_billno` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '商户订单号',
+ `open_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '0' COMMENT '用户openid',
+ `total_amount` int(11) NULL DEFAULT 0 COMMENT '发送金额',
+ `send_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '发送者名称',
+ `wishing` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '祝福语',
+ `act_name` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '活动名称',
+ `remark` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '备注',
+ `send_result` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '发送结果',
+ `status` tinyint(1) NULL DEFAULT 0 COMMENT '处理状态',
+ `next_process_time` int(11) NULL DEFAULT 0 COMMENT '下次处理时间',
+ `process_count` int(11) NULL DEFAULT 0 COMMENT '处理次数',
+ `create_time` int(11) NULL DEFAULT 0 COMMENT '创建时间',
+ `update_time` int(11) NULL DEFAULT 0 COMMENT '更新时间',
+ `delete_time` int(11) NULL DEFAULT 0 COMMENT '删除时间',
+ PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;

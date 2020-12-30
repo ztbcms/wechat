@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS `cms_tp6_wechat_office_message`;
 DROP TABLE IF EXISTS `cms_tp6_wechat_office_event_message`;
 DROP TABLE IF EXISTS `cms_tp6_wechat_open_app`;
 DROP TABLE IF EXISTS `cms_tp6_wechat_open_event`;
+DROP TABLE IF EXISTS `cms_tp6_wechat_wxpay_redpack`;
 
 
 

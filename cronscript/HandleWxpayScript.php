@@ -27,6 +27,10 @@ class HandleWxpayScript extends CronScript
                 $WxmchpayService = new WxmchpayService($v['app_id']);
                 $WxmchpayService->doMchpayOrder();
 
+                //执行微信红包发放
+                $WxmchpayService = new WxpayService($v['app_id']);
+                $WxmchpayService->doRedpackOrder();
+
             } catch (\Exception $exception) {
                 Log::info('我执行了计划任务事例 HandleWxpayScript.php，发生错误：'.$exception->getMessage());
                 continue;
