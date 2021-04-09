@@ -327,7 +327,7 @@ CREATE TABLE `cms_tp6_wechat_wxpay_redpack`  (
  `act_name` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '活动名称',
  `remark` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '备注',
  `send_result` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '发送结果',
- `status` tinyint(1) NULL DEFAULT 0 COMMENT '处理状态',
+ `status` tinyint(1) NULL DEFAULT 0 COMMENT '处理状态 0待处理 1已处理',
  `next_process_time` int(11) NULL DEFAULT 0 COMMENT '下次处理时间',
  `process_count` int(11) NULL DEFAULT 0 COMMENT '处理次数',
  `create_time` int(11) NULL DEFAULT 0 COMMENT '创建时间',

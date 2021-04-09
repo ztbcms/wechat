@@ -145,6 +145,7 @@ class Wxpay extends AdminController
             $appId = $request->get('app_id');
             $openId = $request->get('open_id');
             $mchBillno = $request->get('mch_billno');
+            $status = $request->get('status', '');
             $where = [];
             if ($appId) {
                 $where[] = ['app_id', 'like', '%' . $appId . '%'];
@@ -154,6 +155,9 @@ class Wxpay extends AdminController
             }
             if ($mchBillno) {
                 $where[] = ['mch_billno', 'like', '%' . $mchBillno . '%'];
+            }
+            if ($status !== '') {
+                $where[] = ['status', '=', $status];
             }
             $wxpayOrderModel = new WechatWxpayRedpack();
             $lists = $wxpayOrderModel->where($where)->order('id', 'DESC')->paginate(20);
@@ -182,7 +186,7 @@ class Wxpay extends AdminController
     }
 
     /**
-     * 处理红包发放
+     * 主动触发红包发放
      * @return array
      */
     function handleRedpack()

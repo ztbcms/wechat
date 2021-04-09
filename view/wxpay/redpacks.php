@@ -4,7 +4,13 @@
             <div slot="header" class="clearfix">
                 <span>红包申请列表</span>
             </div>
-            <div>
+            <el-alert type="success">
+                <slot name="title">
+                    <p>1. 红包若发放失败，将会间隔一定时间再次发送，最多7次。</p>
+                    <p>2. 发放了7次仍然失败，请检查错误异常信息</p>
+                </slot>
+            </el-alert>
+            <div style="margin-top: 8px">
                 <el-form :inline="true" :model="searchData" class="demo-form-inline">
                     <el-form-item label="appid">
                         <el-input v-model="searchData.app_id" placeholder="请输入小程序appid"></el-input>
@@ -15,18 +21,24 @@
                     <el-form-item label="订单号">
                         <el-input v-model="searchData.mch_billno" placeholder="请输入商户订单号"></el-input>
                     </el-form-item>
+                    <el-form-item label="处理状态">
+                        <el-select v-model="searchData.status" placeholder="请选择">
+                            <el-option value="" label="全部"></el-option>
+                            <el-option value="0" label="待处理"></el-option>
+                            <el-option value="1" label="已处理"></el-option>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="searchEvent">查询</el-button>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="handleEvent">调用处理</el-button>
+                        <el-button type="primary" @click="handleEvent">触发红包发放处理</el-button>
                     </el-form-item>
                 </el-form>
             </div>
             <div>
                 <el-table
                         :data="users"
-                        border
                         style="width: 100%">
                     <el-table-column
                             prop="app_id"
@@ -75,8 +87,8 @@
                             align="center"
                             min-width="100">
                         <template slot-scope="scope">
-                            <div v-if="scope.row.status==1">已完成</div>
-                            <div v-else>未完成</div>
+                            <div v-if="scope.row.status==1">已处理</div>
+                            <div v-else>待处理</div>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -160,7 +172,8 @@
                 searchData: {
                     open_id: "",
                     app_id: "",
-                    out_trade_no: ""
+                    out_trade_no: "",
+                    status: ""
                 },
                 users: [],
                 page: 1,
