@@ -13,7 +13,6 @@ class HandleWxpayScript extends CronScript
     public function run($cronId)
     {
 
-        Log::info('我执行了计划任务事例 HandleWxpayScript.php！');
         $WechatApplication = new WechatApplication();
         $application = $WechatApplication->select();
         foreach ($application as $k => $v) {
@@ -32,7 +31,7 @@ class HandleWxpayScript extends CronScript
                 $WxmchpayService->doRedpackOrder();
 
             } catch (\Exception $exception) {
-                Log::info('我执行了计划任务事例 HandleWxpayScript.php，发生错误：'.$exception->getMessage());
+                Log::error('执行计划任务 HandleWxpayScript.php，发生错误：'.$exception->getMessage());
                 continue;
             }
         }

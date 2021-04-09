@@ -334,4 +334,4 @@ CREATE TABLE `cms_tp6_wechat_wxpay_redpack`  (
  `update_time` int(11) NULL DEFAULT 0 COMMENT '更新时间',
  `delete_time` int(11) NULL DEFAULT 0 COMMENT '删除时间',
  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;

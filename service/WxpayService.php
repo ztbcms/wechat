@@ -289,7 +289,7 @@ class WxpayService extends BaseService
     }
 
     /**
-     *  执行企业付款操作（小程序不支持发红包）
+     *  执行发放红包操作（目前只支持现金红包，通过公众号红包）
      * @return array
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
