@@ -6,7 +6,7 @@
             <el-alert type="success">
                 <slot name="title">
                     <p>1. 红包若发放失败，将会间隔一定时间再次发送，最多7次。</p>
-                    <p>2. 发放了7次仍然失败，请检查错误异常信息</p>
+                    <p>2. 发放了7次仍然失败，请检查返回结果的提示</p>
                 </slot>
             </el-alert>
             <div style="margin-top: 8px">
