@@ -1,11 +1,14 @@
 ### 微信管理
 
 #### 依赖
-**安装composer** `composer require overtrue/wechat `
+
+```shell script
+$ composer require overtrue/wechat 
+```
 
 #### 后台管理
 
-```php
+```
 │ 公众号
 │
 ├─ 授权用户 {{domain}}/wechat/application/index
@@ -67,7 +70,10 @@
 
 均在`/tp6/app/wechat/cronscript/`文件夹下，请全部添加到计划任务列表
 
-### 发送微信红包
+### 发送红包
+
+- 红包有现金红包(配合公众号使用)和小程序红包，目前只支持现金红包，需要支持小程序红包请自行二次开发
+- 参考文档：https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=13_1
 
 ```php
 $data = [
