@@ -1,5 +1,4 @@
-<div>
-    <div id="app" v-cloak>
+<div id="app" v-cloak>
         <el-card>
             <div slot="header" class="clearfix">
                 <span>红包申请列表</span>
@@ -151,7 +150,6 @@
             </el-form>
         </el-dialog>
     </div>
-</div>
 <style>
     .avatar {
         width: 60px;

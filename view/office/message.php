@@ -1,14 +1,16 @@
-<div id="app">
+<div id="app" v-cloak="">
     <el-card>
         <div slot="header" class="clearfix">
             <span>消息列表</span>
         </div>
-        <div>
-            <div class="alert-msg">
+        <el-alert type="success">
+            <slot name="title">
                 <p>1.消息接受需要开启"服务配置"：微信公众平台>开发>基本配置>服务配置（启用）</p>
                 <p>2.填写 服务器地址(URL)：http://{xxx}/Wechat/Server/push/appid/{appid}</p>
                 <p>3.填写token，aes_key，注意token验证，需要在服务器先配置</p>
-            </div>
+            </slot>
+        </el-alert>
+        <div style="margin-top: 8px">
             <el-form :inline="true" :model="searchData" class="demo-form-inline">
                 <el-form-item label="appid">
                     <el-input v-model="searchData.app_id" placeholder="请输入小程序appid"></el-input>
