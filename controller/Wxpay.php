@@ -12,6 +12,7 @@ namespace app\wechat\controller;
 use app\common\controller\AdminController;
 use app\wechat\model\WechatApplication;
 use app\wechat\model\WechatWxpayOrder;
+use app\wechat\model\WechatWxpayRedpack;
 use app\wechat\model\WechatWxpayRefund;
 use app\wechat\service\WxpayService;
 use think\facade\View;
@@ -130,5 +131,76 @@ class Wxpay extends AdminController
             return self::createReturn(true, $lists, 'ok');
         }
         return View::fetch('orders');
+    }
+
+    /**
+     * 红包申请记录
+     * @param Request $request
+     * @return array|string
+     * @throws \think\db\exception\DbException
+     */
+    function redpacks(Request $request)
+    {
+        if ($request->isAjax()) {
+            $appId = $request->get('app_id');
+            $openId = $request->get('open_id');
+            $mchBillno = $request->get('mch_billno');
+            $status = $request->get('status', '');
+            $where = [];
+            if ($appId) {
+                $where[] = ['app_id', 'like', '%' . $appId . '%'];
+            }
+            if ($openId) {
+                $where[] = ['open_id', 'like', '%' . $openId . '%'];
+            }
+            if ($mchBillno) {
+                $where[] = ['mch_billno', 'like', '%' . $mchBillno . '%'];
+            }
+            if ($status !== '') {
+                $where[] = ['status', '=', $status];
+            }
+            $wxpayOrderModel = new WechatWxpayRedpack();
+            $lists = $wxpayOrderModel->where($where)->order('id', 'DESC')->paginate(20);
+            return self::createReturn(true, $lists, 'ok');
+        }
+        return View::fetch('redpacks');
+    }
+
+    /**
+     * 删除红包申请
+     * @param Request $request
+     * @return array
+     */
+    function deleteRedpack(Request $request)
+    {
+        $id = $request->post('id', 0);
+        $wechatWxpayRedpack = WechatWxpayRedpack::where('id', $id)->findOrEmpty();
+        if ($wechatWxpayRedpack->isEmpty()) {
+            return self::createReturn(false, [], '找不到该记录');
+        }
+        if ($wechatWxpayRedpack->delete()) {
+            return self::createReturn(true, [], '');
+        } else {
+            return self::createReturn(false, [], "删除失败");
+        }
+    }
+
+    /**
+     * 主动触发红包发放
+     * @return array
+     */
+    function handleRedpack()
+    {
+        //获取所有的公众号
+        $applicationModel = new WechatApplication();
+        $appIds = $applicationModel->column('app_id');
+        foreach ($appIds as $appId) {
+            try {
+                $wxpayService = new WxpayService($appId);
+                $wxpayService->doRedpackOrder();
+            } catch (\Exception $exception) {
+            }
+        }
+        return self::createReturn(true, [], '处理成功');
     }
 }

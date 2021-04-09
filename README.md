@@ -1,11 +1,14 @@
 ### 微信管理
 
 #### 依赖
-**安装composer** `composer require overtrue/wechat `
+
+```shell script
+$ composer require overtrue/wechat 
+```
 
 #### 后台管理
 
-```php
+```
 │ 公众号
 │
 ├─ 授权用户 {{domain}}/wechat/application/index
@@ -31,6 +34,7 @@
 ├─ 支付订单 {{domain}}/home/wechat/wxpay/orders  
 ├─ 退款订单 {{domain}}/home/wechat/wxpay/refunds 
 ├─ 企业到付 {{domain}}/home/wechat/wxmchpay/mchpays    
+├─ 微信红包 {{domain}}/home/wechat/wxpay/redpacks    
 ```
 
 #### 对外接口
@@ -57,11 +61,39 @@
 | 公众号永久参数二维码 | (new QrcodeService($appId))->forever();
 | 微信退款 | (new WxpayService($appid))->createRefund();
 | 企业到付 | (new WxmchpayService($appid))->createMchpay();
+| 微信红包(公众号，现金红包) | (new WxpayService($appid))->createRedpack();
 
-###文件说明 
+###文件说明
 `文件存储在` **/tp6/wechat/** `文件夹下`
 
 ###定时任务
-**/tp6/app/wechat/cronscript/** `文件夹下`
+
+均在`/tp6/app/wechat/cronscript/`文件夹下，请全部添加到计划任务列表
+
+### 发送红包
+
+- 红包有现金红包(配合公众号使用)和小程序红包，目前只支持现金红包，需要支持小程序红包请自行二次开发
+- 参考文档：https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=13_1
+
+```php
+$data = [
+    'app_id'            => $appId,//公众号ID
+    'mch_billno'        => $mchBillno,//发放红包订单号
+    'open_id'           => $openId,//用户openId
+    'total_amount'      => $lotteryCodeModel->redpack_money * 100,//红包金额，单位为分
+    'send_name'         => WechatApplication::where('app_id',$appId)->value('application_name'),//发送者名称
+    'wishing'           => $lotteryCodeModel->redpack_wishing??'恭喜发财',//红包祝福语
+    'act_name'          => '抽奖活动',
+    'remark'            => '获得红包'.$lotteryCodeModel->redpack_money.'元',
+    'status'            => WechatWxpayRedpack::STATUS_NO,
+    'next_process_time' => time(),
+    'process_count'     => 0,
+    'create_time'       => time()
+];
+$wxpayRedpackModel = new WechatWxpayRedpack();
+$wxpayRedpackModel->save($data);
+// 等待计划任务执行即可发红包
+```
+
 
 
