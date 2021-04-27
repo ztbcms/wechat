@@ -289,6 +289,39 @@ class WxpayService extends BaseService
     }
 
     /**
+     * 获取APP支付配置
+     * @param $outTradeNo
+     * @param $totalFee
+     * @param $notifyUrl
+     * @param string $body
+     * @return array
+     */
+    function getAppPayConfig($outTradeNo, $totalFee, $notifyUrl, $body = "微信支付"){
+        $result = $this->payment->order->unify([
+            'body'         => $body,
+            'out_trade_no' => $outTradeNo,
+            'total_fee'    => $totalFee,
+            'notify_url'   => $notifyUrl, // 支付结果通知网址，如果不设置则会使用配置里的默认地址
+            'trade_type'   => 'APP', // 请对应换成你的支付方式对应的值类型
+        ]);
+        $postData = [
+            'app_id'       => $this->appId,
+            'open_id'      => '',
+            'out_trade_no' => $outTradeNo,
+            'total_fee'    => $totalFee,
+            'create_time'  => time(),
+            'notify_url'   => $notifyUrl
+        ];
+        //添加支付订单入库
+        $wxpayOrderModel = new WechatWxpayOrder();
+        $wxpayOrderModel->insert($postData);
+
+        //app支付:二次签名
+        $result = $this->payment->jssdk->appConfig($result['prepay_id']);
+        return createReturn(true, $result, '获取成功');
+    }
+
+    /**
      *  执行发放红包操作（目前只支持现金红包，通过公众号红包）
      * @return array
      * @throws \GuzzleHttp\Exception\GuzzleException
