@@ -17,7 +17,7 @@ class WechatApplication extends Model
     use SoftDelete;
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
-    protected $name = 'tp6_wechat_application';
+    protected $name = 'wechat_application';
 
     const ACCOUNT_TYPE_OFFICE = "office";
     const ACCOUNT_TYPE_MINI = "mini";

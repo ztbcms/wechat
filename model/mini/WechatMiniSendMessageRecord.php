@@ -21,6 +21,6 @@ class WechatMiniSendMessageRecord extends Model
     use SoftDelete;
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
-    protected $name = 'tp6_wechat_mini_send_message_record';
+    protected $name = 'wechat_mini_send_message_record';
 
 }

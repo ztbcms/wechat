@@ -16,7 +16,7 @@ class WechatOfficeQrcode extends Model
     use SoftDelete;
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
-    protected $name = 'tp6_wechat_office_qrcode';
+    protected $name = 'wechat_office_qrcode';
 
     const QRCODE_TYPE_TEMPORARY = 0;
     const QRCODE_TYPE_FOREVER = 1;

@@ -16,7 +16,7 @@ class WechatWxpayMchpay extends Model
     use SoftDelete;
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
-    protected $name = 'tp6_wechat_wxpay_mchpay';
+    protected $name = 'wechat_wxpay_mchpay';
 
     const STATUS_YES = 1;
     const STATUS_NO = 0;

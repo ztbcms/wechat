@@ -44,7 +44,7 @@ class Index extends BaseController
         }
         $token = md5(time().rand(100000, 999999));
         Cache::set($token, $redirectUrl);
-        $url = $request->domain().api_url("/wechat/index/callback", [], '')."/appid/{$appid}/token/{$token}";
+        $url = api_url("/wechat/index/callback", [], '')."/appid/{$appid}/token/{$token}";
         $response = $office->getApp()->oauth->scopes(['snsapi_userinfo'])
             ->redirect($url);
         $response->send();
@@ -87,10 +87,15 @@ class Index extends BaseController
     {
         $redirectUrl = urldecode($request->param('redirect_url', ''));
         $office = new OfficeService($appid);
-        if ($redirectUrl) {
+
+        if (!$redirectUrl) {
+            throw new BaseApiException('未设置回调URL');
+        } else {
             session('redirect_url', $redirectUrl);
         }
-        $url = $request->domain().api_url("/Wechat/index/callback", [], '')."/appid/{$appid}";
+        $token = md5(time().rand(100000, 999999));
+        Cache::set($token, $redirectUrl);
+        $url = api_url("/Wechat/index/callback", [], '')."/appid/{$appid}/token/{$token}";
         $response = $office->getApp()->oauth->scopes(['snsapi_base'])
             ->redirect($url);
         $response->send();
@@ -115,7 +120,6 @@ class Index extends BaseController
     }
 
 
-
     /**
      * 获取微信小程序授权信息
      * @param $appid
@@ -129,8 +133,8 @@ class Index extends BaseController
     function miniAuthUserInfo($appid)
     {
         $code = input('post.code', '', 'trim');
-        $iv = input('post.iv','','trim');
-        $encryptedData = input('post.encrypted_data','','trim');
+        $iv = input('post.iv', '', 'trim');
+        $encryptedData = input('post.encrypted_data', '', 'trim');
         $MiniService = new MiniService($appid);
         $res = $MiniService->getUserInfoByCode($code, $iv, $encryptedData);
         return json($res);
@@ -160,10 +164,12 @@ class Index extends BaseController
      * 接收消息
      * @param $appid
      */
-    function serverPush($appid){
+    function serverPush($appid)
+    {
         try {
             $officeService = new OfficeService($appid);
-            $officeService->app->server->push(function ($message) use ($officeService) {
+            $officeService->app->server->push(function ($message) use ($officeService)
+            {
                 switch ($message['MsgType']) {
                     case 'event':
                         $officeService->handleEventMessage($message);
@@ -188,7 +194,8 @@ class Index extends BaseController
     {
         $wxpay = new WxpayService($appid);
         try {
-            $response = $wxpay->handlePaidNotify(function ($message, $fail) {
+            $response = $wxpay->handlePaidNotify(function ($message, $fail)
+            {
                 //TODO 微信支付业务调用成功
 
             });

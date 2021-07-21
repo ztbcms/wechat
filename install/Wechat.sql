@@ -1,4 +1,4 @@
-CREATE TABLE `cms_tp6_wechat_application` (
+CREATE TABLE `cms_wechat_application` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `application_name` varchar(32) DEFAULT '' COMMENT '应用名称',
   `account_type` varchar(16) DEFAULT '' COMMENT '应用类型',
@@ -17,7 +17,7 @@ CREATE TABLE `cms_tp6_wechat_application` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
-CREATE TABLE `cms_tp6_wechat_auth_token` (
+CREATE TABLE `cms_wechat_auth_token` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `app_id` varchar(64) DEFAULT '',
   `app_account_type` varchar(32) DEFAULT '' COMMENT '公众号类型',
@@ -32,7 +32,7 @@ CREATE TABLE `cms_tp6_wechat_auth_token` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
-CREATE TABLE `cms_tp6_wechat_office_user` (
+CREATE TABLE `cms_wechat_office_user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `app_id` varchar(64) DEFAULT '',
   `open_id` varchar(128) DEFAULT '' COMMENT '用户openid',
@@ -50,7 +50,7 @@ CREATE TABLE `cms_tp6_wechat_office_user` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `cms_tp6_wechat_office_template` (
+CREATE TABLE `cms_wechat_office_template` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `app_id` varchar(64) NOT NULL DEFAULT '',
   `template_id` varchar(128) DEFAULT NULL COMMENT '模板id',
@@ -65,7 +65,7 @@ CREATE TABLE `cms_tp6_wechat_office_template` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `cms_tp6_wechat_office_template_send_record` (
+CREATE TABLE `cms_wechat_office_template_send_record` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `app_id` varchar(64) DEFAULT '',
   `open_id` varchar(128) DEFAULT '' COMMENT '接受用户open_id',
@@ -78,7 +78,7 @@ CREATE TABLE `cms_tp6_wechat_office_template_send_record` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `cms_tp6_wechat_wxpay_order` (
+CREATE TABLE `cms_wechat_wxpay_order` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `app_id` varchar(64) DEFAULT '',
   `mch_id` varchar(64) DEFAULT NULL COMMENT '微信支付商户号',
@@ -103,7 +103,7 @@ CREATE TABLE `cms_tp6_wechat_wxpay_order` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `cms_tp6_wechat_wxpay_refund` (
+CREATE TABLE `cms_wechat_wxpay_refund` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `app_id` varchar(64) DEFAULT '',
   `out_trade_no` varchar(128) DEFAULT '' COMMENT '支付订单号',
@@ -121,7 +121,7 @@ CREATE TABLE `cms_tp6_wechat_wxpay_refund` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `cms_tp6_wechat_mini_users`  (
+CREATE TABLE `cms_wechat_mini_users`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `app_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '公众号app_id',
   `open_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户openid',
@@ -140,7 +140,7 @@ CREATE TABLE `cms_tp6_wechat_mini_users`  (
   PRIMARY KEY (`id`) USING BTREE
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `cms_tp6_wechat_mini_phone_number`  (
+CREATE TABLE `cms_wechat_mini_phone_number`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `app_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
   `open_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
@@ -153,7 +153,7 @@ CREATE TABLE `cms_tp6_wechat_mini_phone_number`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `cms_tp6_wechat_mini_code`  (
+CREATE TABLE `cms_wechat_mini_code`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `app_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT 'appid',
   `type` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '小程序码类型',
@@ -167,7 +167,7 @@ CREATE TABLE `cms_tp6_wechat_mini_code`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `cms_tp6_wechat_mini_send_message_record`  (
+CREATE TABLE `cms_wechat_mini_send_message_record`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `app_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
   `open_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '接受用户open_id',
@@ -182,7 +182,7 @@ CREATE TABLE `cms_tp6_wechat_mini_send_message_record`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `cms_tp6_wechat_mini_subscribe_message`  (
+CREATE TABLE `cms_wechat_mini_subscribe_message`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `app_id` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '小程序appid',
   `template_id` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '添加至帐号下的模板 id，发送小程序订阅消息时所需',
@@ -196,7 +196,7 @@ CREATE TABLE `cms_tp6_wechat_mini_subscribe_message`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `cms_tp6_wechat_mini_live`  (
+CREATE TABLE `cms_wechat_mini_live`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `live_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '直播间名称',
   `roomid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '房间号',
@@ -216,7 +216,7 @@ CREATE TABLE `cms_tp6_wechat_mini_live`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `cms_tp6_wechat_wxpay_mchpay`  (
+CREATE TABLE `cms_wechat_wxpay_mchpay`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `app_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
   `partner_trade_no` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '商户订单号',
@@ -233,7 +233,7 @@ CREATE TABLE `cms_tp6_wechat_wxpay_mchpay`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `cms_tp6_wechat_office_qrcode`  (
+CREATE TABLE `cms_wechat_office_qrcode`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `app_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
   `param` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '二维码参数',
@@ -246,7 +246,7 @@ CREATE TABLE `cms_tp6_wechat_office_qrcode`  (
   PRIMARY KEY (`id`) USING BTREE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `cms_tp6_wechat_office_event_message`  (
+CREATE TABLE `cms_wechat_office_event_message`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `app_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
   `to_user_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '接收用户openId',
@@ -263,7 +263,7 @@ CREATE TABLE `cms_tp6_wechat_office_event_message`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `cms_tp6_wechat_office_message`  (
+CREATE TABLE `cms_wechat_office_message`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `app_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
   `to_user_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '接收用户openId',
@@ -288,7 +288,7 @@ CREATE TABLE `cms_tp6_wechat_office_message`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `cms_tp6_wechat_open_app`  (
+CREATE TABLE `cms_wechat_open_app`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `authorizer_appid` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '授权的appid',
   `nick_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '名称',
@@ -304,7 +304,7 @@ CREATE TABLE `cms_tp6_wechat_open_app`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `cms_tp6_wechat_open_event`  (
+CREATE TABLE `cms_wechat_open_event`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `app_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '开放平台appid',
   `create_time` int(11) NULL DEFAULT NULL COMMENT '创建时间',
@@ -316,7 +316,7 @@ CREATE TABLE `cms_tp6_wechat_open_event`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `cms_tp6_wechat_wxpay_redpack`  (
+CREATE TABLE `cms_wechat_wxpay_redpack`  (
  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
  `app_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
  `mch_billno` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '商户订单号',

@@ -18,7 +18,7 @@ class WechatOfficeUser extends Model
     use SoftDelete;
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
-    protected $name = 'tp6_wechat_office_user';
+    protected $name = 'wechat_office_user';
 
     /**
      * 获取授权用户信息，并生成授权凭证code

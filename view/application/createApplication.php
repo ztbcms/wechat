@@ -2,7 +2,10 @@
     <div id="app" v-cloak>
         <el-card>
             <div slot="header" class="clearfix">
-                <span>添加应用</span>
+                <el-breadcrumb separator="/">
+                    <el-breadcrumb-item><a href="{:url('wechat/application/index')}">应用列表</a></el-breadcrumb-item>
+                    <el-breadcrumb-item>{{form.id>0?'编辑应用':'添加应用'}}</el-breadcrumb-item>
+                </el-breadcrumb>
             </div>
             <el-form style="width: 800px" :model="form" label-width="130px">
                 <el-form-item label="名称">
@@ -72,29 +75,29 @@
                         aes_key: ""
                     },
                 },
-                mounted:function() {
+                mounted: function () {
                     this.form.id = this.getUrlQuery('id');
                     this.getDetail()
                 },
                 methods: {
-                    cancelEvent:function() {
+                    cancelEvent: function () {
                         location.href = "{:api_url('/wechat/application/index')}";
                     },
-                    uploadSuccessKey:function(res) {
+                    uploadSuccessKey: function (res) {
                         if (res.status) {
                             this.form.key_path = this.key_path
                         } else {
                             layer.msg(res.msg)
                         }
                     },
-                    uploadSuccessCert:function(res) {
+                    uploadSuccessCert: function (res) {
                         if (res.status) {
                             this.form.cert_path = this.cert_path
                         } else {
                             layer.msg(res.msg)
                         }
                     },
-                    getDetail:function() {
+                    getDetail: function () {
                         var _this = this;
                         if (!this.form.id) {
                             return
@@ -114,7 +117,7 @@
                             }
                         })
                     },
-                    submitEvent:function() {
+                    submitEvent: function () {
                         var _this = this;
                         $.ajax({
                             url: "{:api_url('/wechat/application/createApplication')}",
