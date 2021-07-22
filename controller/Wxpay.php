@@ -22,40 +22,42 @@ use think\response\Json;
 class Wxpay extends AdminController
 {
     /**
-     * @return array
+     * 处理退款操作
+     * @return Json
+     * @throws \Throwable
      */
-    function handleRefund()
+    function handleRefund(): Json
     {
         //获取所有的公众号
         $applicationModel = new WechatApplication();
         $appIds = $applicationModel->column('app_id');
         foreach ($appIds as $appId) {
             try {
-                $wxpayService = new WxpayService($appId);
-                $wxpayService->doRefundOrder();
+                $wxpayService = new \app\wechat\servicev2\WxpayService($appId);
+                $wxpayService->refund()->doRefundOrder();
             } catch (\Exception $exception) {
-
+                return self::makeJsonReturn(false, [], $exception->getMessage());
             }
         }
-        return self::createReturn(true, [], '处理成功');
+        return self::makeJsonReturn(true, [], '处理成功');
     }
 
     /**
      * 删除退款申请
      * @param  Request  $request
-     * @return array
+     * @return Json
      */
-    function deleteRefund(Request $request)
+    function deleteRefund(Request $request): Json
     {
         $id = $request->post('id', 0);
         $wxpayRefundModel = WechatWxpayRefund::where('id', $id)->findOrEmpty();
         if ($wxpayRefundModel->isEmpty()) {
-            return self::createReturn(false, [], '找不到该记录');
+            return self::makeJsonReturn(false, [], '找不到该记录');
         }
         if ($wxpayRefundModel->delete()) {
-            return self::createReturn(true, [], '');
+            return self::makeJsonReturn(true, [], '');
         } else {
-            return self::createReturn(false, [], "删除失败");
+            return self::makeJsonReturn(false, [], "删除失败");
         }
     }
 
@@ -68,20 +70,15 @@ class Wxpay extends AdminController
     {
         if ($request->isAjax()) {
             $appId = $request->get('app_id');
-            $openId = $request->get('open_id');
             $outTradeNo = $request->get('out_trade_no');
             $where = [];
             if ($appId) {
                 $where[] = ['app_id', 'like', '%'.$appId.'%'];
             }
-            if ($openId) {
-                $where[] = ['open_id', 'like', '%'.$openId.'%'];
-            }
             if ($outTradeNo) {
                 $where[] = ['out_trade_no', 'like', '%'.$outTradeNo.'%'];
             }
-            $wxpayRefundModel = new WechatWxpayRefund();
-            $lists = $wxpayRefundModel->where($where)->order('id', 'DESC')->paginate(20);
+            $lists = WechatWxpayRefund::where($where)->order('id', 'DESC')->paginate(20);
             return self::createReturn(true, $lists, 'ok');
         }
         return View::fetch('refunds');

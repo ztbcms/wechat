@@ -24,7 +24,9 @@ class Index extends BaseController
 
     function index($appid): string
     {
-        return View::fetch('index', ['appid' => $appid]);
+        $wxpay = new WxpayService($appid);
+        return $wxpay->refund()->createRefund('1626936010', 1, 1, 'xx') ? "ok" : "err";
+//        return View::fetch('index', ['appid' => $appid]);
     }
 
     /**

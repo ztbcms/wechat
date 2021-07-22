@@ -18,9 +18,9 @@ class HandleWxpayScript extends CronScript
         foreach ($application as $k => $v) {
             try {
 
+                $wxpayService = new \app\wechat\servicev2\WxpayService($v['app_id']);
                 //执行退款操作
-                $wxpayService = new WxpayService($v['app_id']);
-                $wxpayService->doRefundOrder();
+                $wxpayService->refund()->doRefundOrder();
 
                 //执行企业付款
                 $WxmchpayService = new WxmchpayService($v['app_id']);

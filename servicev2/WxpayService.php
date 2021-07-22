@@ -13,6 +13,7 @@ namespace app\wechat\servicev2;
 
 use app\common\service\BaseService;
 use app\wechat\model\WechatApplication;
+use app\wechat\servicev2\wxpay\Refund;
 use app\wechat\servicev2\wxpay\Unity;
 use EasyWeChat\Factory;
 use Exception;
@@ -22,6 +23,7 @@ use Throwable;
  * Class Factory.
  *
  * @method Unity            unity()
+ * @method Refund           refund()
  */
 class WxpayService extends BaseService
 {

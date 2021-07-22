@@ -9,9 +9,6 @@
                     <el-form-item label="appid">
                         <el-input v-model="searchData.app_id" placeholder="请输入小程序appid"></el-input>
                     </el-form-item>
-                    <el-form-item label="open_id">
-                        <el-input v-model="searchData.open_id" placeholder="请输入用户openid"></el-input>
-                    </el-form-item>
                     <el-form-item label="订单号">
                         <el-input v-model="searchData.out_trade_no" placeholder="请输入支付订单号"></el-input>
                     </el-form-item>
@@ -25,7 +22,7 @@
             </div>
             <div>
                 <el-table
-                        :data="users"
+                        :data="lists"
                         border
                         style="width: 100%">
                     <el-table-column
@@ -45,6 +42,15 @@
                             label="退款单号"
                             align="center"
                             min-width="180">
+                    </el-table-column>
+                    <el-table-column
+                            label="处理状态"
+                            align="center"
+                            min-width="100">
+                        <template slot-scope="scope">
+                            <el-tag v-if="scope.row.status==1" type="success">已完成</el-tag>
+                            <el-tag v-else type="danger">未完成</el-tag>
+                        </template>
                     </el-table-column>
                     <el-table-column
                             label="总支付金额"
@@ -68,15 +74,7 @@
                             align="center"
                             min-width="250">
                     </el-table-column>
-                    <el-table-column
-                            label="处理状态"
-                            align="center"
-                            min-width="100">
-                        <template slot-scope="scope">
-                            <div v-if="scope.row.status==1">已完成</div>
-                            <div v-else>未完成</div>
-                        </template>
-                    </el-table-column>
+
                     <el-table-column
                             prop="process_count"
                             label="处理次数"
@@ -96,7 +94,7 @@
                             label="创建时间"
                             min-width="180">
                         <template slot-scope="scope">
-                            {{scope.row.create_time|getFormatDatetime}}
+                            {{scope.row.create_time}}
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -104,7 +102,7 @@
                             label="更新时间"
                             min-width="180">
                         <template slot-scope="scope">
-                            {{scope.row.update_time|getFormatDatetime}}
+                            {{scope.row.update_time}}
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -167,7 +165,7 @@
                     app_id: "",
                     out_trade_no: ""
                 },
-                users: [],
+                lists: [],
                 page: 1,
                 limit: 20,
                 totalPages: 0,
@@ -175,11 +173,11 @@
                 resultDetail: {},
                 detailDialogVisible: false
             },
-            mounted:function() {
+            mounted: function () {
                 this.getRefunds();
             },
             methods: {
-                handleEvent:function() {
+                handleEvent: function () {
                     var _this = this;
                     this.httpPost('{:api_url("/wechat/Wxpay/handleRefund")}', {}, function (res) {
                         if (res.status) {
@@ -190,7 +188,7 @@
                         }
                     })
                 },
-                deleteEvent:function(row) {
+                deleteEvent: function (row) {
                     var postData = {
                         id: row.id
                     };
@@ -213,18 +211,18 @@
                     });
 
                 },
-                detailEvent:function(refund_result) {
+                detailEvent: function (refund_result) {
                     console.log('refund_result', refund_result);
                     if (refund_result) {
                         this.resultDetail = JSON.parse(refund_result);
                     }
                     this.detailDialogVisible = true;
                 },
-                searchEvent:function() {
+                searchEvent: function () {
                     this.page = 1;
                     this.getRefunds();
                 },
-                currentChangeEvent:function(page) {
+                currentChangeEvent: function (page) {
                     this.page = page;
                     this.getRefunds();
                 },
@@ -242,7 +240,7 @@
                         success: function (res) {
                             console.log("res", res);
                             if (res.status) {
-                                _this.users = res.data.items;
+                                _this.lists = res.data.data;
                                 _this.page = res.data.page;
                                 _this.limit = res.data.limit;
                                 _this.totalPages = res.data.total_pages;
