@@ -11,6 +11,7 @@ namespace app\wechat\servicev2;
 
 use app\common\service\BaseService;
 use app\wechat\model\WechatApplication;
+use app\wechat\servicev2\mini\Qrcode;
 use app\wechat\servicev2\mini\User;
 use EasyWeChat\Factory;
 use Exception;
@@ -20,6 +21,7 @@ use Throwable;
  * Class Factory.
  *
  * @method User            user()
+ * @method Qrcode          qrcode()
  */
 class MiniService extends BaseService
 {
