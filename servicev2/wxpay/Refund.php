@@ -85,7 +85,7 @@ class Refund
                     $postData = [
                         'status'            => WechatWxpayRefund::STATUS_NO,
                         'refund_result'     => json_encode($refundRes),
-                        'next_process_time' => time() + (empty($nextProcessTimeArray[$refundOrder['process_count']]) ? 86400 : $nextProcessTimeArray[$refundOrder->process_count]),
+                        'next_process_time' => time() + (empty($nextProcessTimeArray[$refundOrder->process_count]) ? 86400 : $nextProcessTimeArray[$refundOrder->process_count]),
                         'process_count'     => $refundOrder->process_count + 1,
                         'update_time'       => time()
                     ];

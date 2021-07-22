@@ -4,7 +4,6 @@ namespace app\wechat\cronscript;
 
 use app\common\cronscript\CronScript;
 use app\wechat\model\WechatApplication;
-use app\wechat\service\Pay\WxmchpayService;
 use app\wechat\service\WxpayService;
 use think\facade\Log;
 
@@ -23,8 +22,7 @@ class HandleWxpayScript extends CronScript
                 $wxpayService->refund()->doRefundOrder();
 
                 //执行企业付款
-                $WxmchpayService = new WxmchpayService($v['app_id']);
-                $WxmchpayService->doMchpayOrder();
+                $wxpayService->mchpay()->doMchpayOrder();
 
                 //执行微信红包发放
                 $WxmchpayService = new WxpayService($v['app_id']);
