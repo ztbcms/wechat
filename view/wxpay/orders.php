@@ -38,13 +38,17 @@
                             min-width="100">
                     </el-table-column>
                     <el-table-column
-                            label="result_code"
+                            label="支付状态"
                             align="center"
                             min-width="180">
                         <template slot-scope="scope">
-                            <div>{{ scope.row.result_code }}</div>
-                            <div>{{ scope.row.err_code }}</div>
-                            <div>{{ scope.row.err_code_des }}</div>
+                            <el-tag v-if="scope.row.trade_state=='SUCCESS'" type="success">{{
+                                scope.row.trade_state_desc
+                                }}
+                            </el-tag>
+                            <el-tag v-else type="danger">{{
+                                scope.row.trade_state_desc?scope.row.trade_state_desc:'订单未支付' }}
+                            </el-tag>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -101,8 +105,9 @@
                             fixed="right"
                             label="操作"
                             align="center"
-                            min-width="100">
+                            width="180">
                         <template slot-scope="scope">
+                            <el-button @click="queryEvent(scope.row)" type="primary">查询</el-button>
                             <el-button @click="deleteEvent(scope.row)" type="danger">删除</el-button>
                         </template>
                     </el-table-column>
@@ -150,15 +155,28 @@
                 totalPages: 0,
                 totalItems: 0
             },
-            mounted:function() {
+            mounted: function () {
                 this.getOrders();
             },
             methods: {
-                deleteEvent:function(row) {
+                queryEvent: function (row) {
                     var postData = {
                         id: row.id
                     };
-                    console.log('callback', postData);
+                    var _this = this;
+                    _this.httpPost('{:api_url("/wechat/wxpay/queryOrder")}', postData, function (res) {
+                        if (res.status) {
+                            _this.$message.success('操作成功');
+                            _this.getOrders();
+                        } else {
+                            _this.$message.error(res.msg);
+                        }
+                    })
+                },
+                deleteEvent: function (row) {
+                    var postData = {
+                        id: row.id
+                    };
                     var _this = this;
                     this.$confirm('是否确认删除该记录', '提示', {
                         callback: function (e) {
@@ -177,11 +195,11 @@
                     });
 
                 },
-                searchEvent:function() {
+                searchEvent: function () {
                     this.page = 1;
                     this.getOrders();
                 },
-                currentChangeEvent:function(page) {
+                currentChangeEvent: function (page) {
                     this.page = page;
                     this.getOrders();
                 },

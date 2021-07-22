@@ -17,6 +17,7 @@ use app\wechat\model\WechatWxpayRefund;
 use app\wechat\service\WxpayService;
 use think\facade\View;
 use think\Request;
+use think\response\Json;
 
 class Wxpay extends AdminController
 {
@@ -41,7 +42,7 @@ class Wxpay extends AdminController
 
     /**
      * 删除退款申请
-     * @param Request $request
+     * @param  Request  $request
      * @return array
      */
     function deleteRefund(Request $request)
@@ -59,9 +60,9 @@ class Wxpay extends AdminController
     }
 
     /**
-     * @param Request $request
-     * @throws \think\db\exception\DbException
+     * @param  Request  $request
      * @return array|string
+     * @throws \think\db\exception\DbException
      */
     function refunds(Request $request)
     {
@@ -71,13 +72,13 @@ class Wxpay extends AdminController
             $outTradeNo = $request->get('out_trade_no');
             $where = [];
             if ($appId) {
-                $where[] = ['app_id', 'like', '%' . $appId . '%'];
+                $where[] = ['app_id', 'like', '%'.$appId.'%'];
             }
             if ($openId) {
-                $where[] = ['open_id', 'like', '%' . $openId . '%'];
+                $where[] = ['open_id', 'like', '%'.$openId.'%'];
             }
             if ($outTradeNo) {
-                $where[] = ['out_trade_no', 'like', '%' . $outTradeNo . '%'];
+                $where[] = ['out_trade_no', 'like', '%'.$outTradeNo.'%'];
             }
             $wxpayRefundModel = new WechatWxpayRefund();
             $lists = $wxpayRefundModel->where($where)->order('id', 'DESC')->paginate(20);
@@ -88,7 +89,7 @@ class Wxpay extends AdminController
 
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return array
      */
     public function deleteOrder(Request $request)
@@ -105,10 +106,25 @@ class Wxpay extends AdminController
         }
     }
 
+    public function queryOrder(): Json
+    {
+        $id = request()->post('id');
+        $wxpayOrder = WechatWxpayOrder::where('id', $id)->findOrEmpty();
+        if ($wxpayOrder->isEmpty()) {
+            return self::makeJsonReturn(false, [], '找不到该订单');
+        }
+        $wxpay = new \app\wechat\servicev2\WxpayService($wxpayOrder->app_id);
+        if ($wxpay->unity()->queryByOutTrade((string) $wxpayOrder->out_trade_no)) {
+            return self::makeJsonReturn(true, [], '操作成功');
+        } else {
+            return self::makeJsonReturn(false, [], '操作失败');
+        }
+    }
+
     /**
-     * @param Request $request
-     * @throws \think\db\exception\DbException
+     * @param  Request  $request
      * @return array|string
+     * @throws \think\db\exception\DbException
      */
     public function orders(Request $request)
     {
@@ -118,13 +134,13 @@ class Wxpay extends AdminController
             $outTradeNo = $request->get('out_trade_no');
             $where = [];
             if ($appId) {
-                $where = ['app_id', 'like', '%' . $appId . '%'];
+                $where = ['app_id', 'like', '%'.$appId.'%'];
             }
             if ($openId) {
-                $where[] = ['open_id', 'like', '%' . $openId . '%'];
+                $where[] = ['open_id', 'like', '%'.$openId.'%'];
             }
             if ($outTradeNo) {
-                $where[] = ['out_trade_no', 'like', '%' . $outTradeNo . '%'];
+                $where[] = ['out_trade_no', 'like', '%'.$outTradeNo.'%'];
             }
             $wxpayOrderModel = new WechatWxpayOrder();
             $lists = $wxpayOrderModel->where($where)->order('id', 'DESC')->paginate(20);
@@ -135,7 +151,7 @@ class Wxpay extends AdminController
 
     /**
      * 红包申请记录
-     * @param Request $request
+     * @param  Request  $request
      * @return array|string
      * @throws \think\db\exception\DbException
      */
@@ -148,13 +164,13 @@ class Wxpay extends AdminController
             $status = $request->get('status', '');
             $where = [];
             if ($appId) {
-                $where[] = ['app_id', 'like', '%' . $appId . '%'];
+                $where[] = ['app_id', 'like', '%'.$appId.'%'];
             }
             if ($openId) {
-                $where[] = ['open_id', 'like', '%' . $openId . '%'];
+                $where[] = ['open_id', 'like', '%'.$openId.'%'];
             }
             if ($mchBillno) {
-                $where[] = ['mch_billno', 'like', '%' . $mchBillno . '%'];
+                $where[] = ['mch_billno', 'like', '%'.$mchBillno.'%'];
             }
             if ($status !== '') {
                 $where[] = ['status', '=', $status];
@@ -168,7 +184,7 @@ class Wxpay extends AdminController
 
     /**
      * 删除红包申请
-     * @param Request $request
+     * @param  Request  $request
      * @return array
      */
     function deleteRedpack(Request $request)
