@@ -85,6 +85,7 @@ class Unity
     }
 
     /**
+     * 获取网页jssdk调用支付
      * @param  string  $openId
      * @param  string  $outTradeNo
      * @param  int  $totalFee
@@ -101,6 +102,28 @@ class Unity
         string $body = "微信支付"
     ): array {
         $prepayId = $this->createUnity($openId, $outTradeNo, $totalFee, $notifyUrl, $body, "JSAPI");
+        throw_if(!$prepayId, new \Exception('创建支付订单错误'));
+        return $this->wxpay->getPayment()->jssdk->appConfig($prepayId);
+    }
+
+    /**
+     * 获取app支付
+     * @param  string  $openId
+     * @param  string  $outTradeNo
+     * @param  int  $totalFee
+     * @param  string  $notifyUrl
+     * @param  string  $body
+     * @return array
+     * @throws Throwable
+     */
+    function getAppPayConfig(
+        string $openId,
+        string $outTradeNo,
+        int $totalFee,
+        string $notifyUrl,
+        string $body = "微信支付"
+    ): array {
+        $prepayId = $this->createUnity($openId, $outTradeNo, $totalFee, $notifyUrl, $body, "APP");
         throw_if(!$prepayId, new \Exception('创建支付订单错误'));
         return $this->wxpay->getPayment()->jssdk->sdkConfig($prepayId);
     }

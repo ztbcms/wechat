@@ -6,6 +6,8 @@
  * Time: 16:10.
  */
 
+declare(strict_types=1);
+
 namespace app\wechat\servicev2\wxpay;
 
 
@@ -25,7 +27,7 @@ class Mchpay
     /**
      * @throws \Throwable
      */
-    public function createMchpay($open_id, $amount, $description = "企业付款"): Model
+    public function createMchpay(string $open_id, int $amount, string $description = "企业付款"): Model
     {
         $partnerTradeNo = date("YmdHis").rand(100000, 999990);
 

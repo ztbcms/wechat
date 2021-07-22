@@ -10,11 +10,8 @@ namespace app\wechat\controller;
 
 
 use app\common\controller\AdminController;
-use app\wechat\model\WechatApplication;
-use app\wechat\model\WechatWxpayOrder;
-use app\wechat\model\WechatWxpayRedpack;
-use app\wechat\model\WechatWxpayRefund;
-use app\wechat\service\WxpayService;
+use app\wechat\model\{WechatApplication, WechatWxpayOrder, WechatWxpayRedpack, WechatWxpayRefund};
+use app\wechat\servicev2\WxpayService;
 use think\facade\View;
 use think\Request;
 use think\response\Json;
@@ -33,7 +30,7 @@ class Wxpay extends AdminController
         $appIds = $applicationModel->column('app_id');
         foreach ($appIds as $appId) {
             try {
-                $wxpayService = new \app\wechat\servicev2\WxpayService($appId);
+                $wxpayService = new WxpayService($appId);
                 $wxpayService->refund()->doRefundOrder();
             } catch (\Exception $exception) {
                 return self::makeJsonReturn(false, [], $exception->getMessage());
@@ -87,19 +84,19 @@ class Wxpay extends AdminController
 
     /**
      * @param  Request  $request
-     * @return array
+     * @return Json
      */
-    public function deleteOrder(Request $request)
+    public function deleteOrder(Request $request): Json
     {
         $id = $request->post('id');
         $wxpayOrder = WechatWxpayOrder::where('id', $id)->findOrEmpty();
         if ($wxpayOrder->isEmpty()) {
-            return self::createReturn(false, [], '找不到删除信息');
+            return self::makeJsonReturn(false, [], '找不到删除信息');
         }
         if ($wxpayOrder->delete()) {
-            return self::createReturn(true, [], '删除成功');
+            return self::makeJsonReturn(true, [], '删除成功');
         } else {
-            return self::createReturn(false, [], '删除失败');
+            return self::makeJsonReturn(false, [], '删除失败');
         }
     }
 
@@ -110,7 +107,7 @@ class Wxpay extends AdminController
         if ($wxpayOrder->isEmpty()) {
             return self::makeJsonReturn(false, [], '找不到该订单');
         }
-        $wxpay = new \app\wechat\servicev2\WxpayService($wxpayOrder->app_id);
+        $wxpay = new WxpayService($wxpayOrder->app_id);
         if ($wxpay->unity()->queryByOutTrade((string) $wxpayOrder->out_trade_no)) {
             return self::makeJsonReturn(true, [], '操作成功');
         } else {
@@ -182,27 +179,29 @@ class Wxpay extends AdminController
     /**
      * 删除红包申请
      * @param  Request  $request
-     * @return array
+     * @return Json
      */
-    function deleteRedpack(Request $request)
+    function deleteRedpack(Request $request): Json
     {
         $id = $request->post('id', 0);
         $wechatWxpayRedpack = WechatWxpayRedpack::where('id', $id)->findOrEmpty();
         if ($wechatWxpayRedpack->isEmpty()) {
-            return self::createReturn(false, [], '找不到该记录');
+            return self::makeJsonReturn(false, [], '找不到该记录');
         }
         if ($wechatWxpayRedpack->delete()) {
-            return self::createReturn(true, [], '');
+            return self::makeJsonReturn(true, [], '');
         } else {
-            return self::createReturn(false, [], "删除失败");
+            return self::makeJsonReturn(false, [], "删除失败");
         }
     }
 
     /**
      * 主动触发红包发放
-     * @return array
+     * @return Json
+     * @throws \Throwable
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    function handleRedpack()
+    function handleRedpack(): Json
     {
         //获取所有的公众号
         $applicationModel = new WechatApplication();
@@ -210,10 +209,11 @@ class Wxpay extends AdminController
         foreach ($appIds as $appId) {
             try {
                 $wxpayService = new WxpayService($appId);
-                $wxpayService->doRedpackOrder();
+                $wxpayService->redpack()->doRedpackOrder();
             } catch (\Exception $exception) {
+                return self::makeJsonReturn(true, [], $exception->getMessage());
             }
         }
-        return self::createReturn(true, [], '处理成功');
+        return self::makeJsonReturn(true, [], '处理成功');
     }
 }

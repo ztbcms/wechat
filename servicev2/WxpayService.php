@@ -14,6 +14,7 @@ namespace app\wechat\servicev2;
 use app\common\service\BaseService;
 use app\wechat\model\WechatApplication;
 use app\wechat\servicev2\wxpay\Mchpay;
+use app\wechat\servicev2\wxpay\Redpack;
 use app\wechat\servicev2\wxpay\Refund;
 use app\wechat\servicev2\wxpay\Unity;
 use EasyWeChat\Factory;
@@ -26,6 +27,7 @@ use Throwable;
  * @method Unity            unity()
  * @method Refund           refund()
  * @method Mchpay           mchpay()
+ * @method Redpack           redpack()
  */
 class WxpayService extends BaseService
 {
