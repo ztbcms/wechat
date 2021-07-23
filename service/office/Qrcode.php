@@ -6,11 +6,11 @@
  * Time: 14:26.
  */
 
-namespace app\wechat\servicev2\office;
+namespace app\wechat\service\office;
 
 
 use app\wechat\model\office\WechatOfficeQrcode;
-use app\wechat\servicev2\OfficeService;
+use app\wechat\service\OfficeService;
 use Throwable;
 
 class Qrcode

@@ -13,7 +13,7 @@ use app\BaseController;
 use app\common\exception\BaseApiException;
 use app\Request;
 use app\wechat\model\mini\WechatMiniSubscribeMessage;
-use app\wechat\servicev2\{WxpayService, OfficeService, MiniService};
+use app\wechat\service\{WxpayService, OfficeService, MiniService};
 use Psr\SimpleCache\InvalidArgumentException;
 use think\facade\{Cache, View};
 use EasyWeChat\Kernel\Exceptions\Exception;

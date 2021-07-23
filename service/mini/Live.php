@@ -8,12 +8,12 @@
 
 declare(strict_types=1);
 
-namespace app\wechat\servicev2\mini;
+namespace app\wechat\service\mini;
 
 
 use app\wechat\model\mini\WechatMiniLive;
 use app\wechat\model\mini\WechatMiniLivePlayback;
-use app\wechat\servicev2\MiniService;
+use app\wechat\service\MiniService;
 use think\Collection;
 use Throwable;
 

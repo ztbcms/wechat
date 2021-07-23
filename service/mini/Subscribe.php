@@ -8,12 +8,12 @@
 
 declare(strict_types=1);
 
-namespace app\wechat\servicev2\mini;
+namespace app\wechat\service\mini;
 
 
 use app\wechat\model\mini\WechatMiniSendMessageRecord;
 use app\wechat\model\mini\WechatMiniSubscribeMessage;
-use app\wechat\servicev2\MiniService;
+use app\wechat\service\MiniService;
 use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
 use EasyWeChat\Kernel\Exceptions\InvalidConfigException;
 use GuzzleHttp\Exception\GuzzleException;

@@ -6,11 +6,11 @@
  * Time: 18:37.
  */
 
-namespace app\wechat\servicev2\mini;
+namespace app\wechat\service\mini;
 
 
 use app\wechat\model\mini\WechatMiniCode;
-use app\wechat\servicev2\MiniService;
+use app\wechat\service\MiniService;
 use EasyWeChat\Kernel\Http\StreamResponse;
 use think\facade\App;
 use think\Model;

@@ -11,7 +11,7 @@ namespace app\wechat\controller;
 
 use app\common\controller\AdminController;
 use app\wechat\model\{WechatApplication, WechatWxpayOrder, WechatWxpayRedpack, WechatWxpayRefund};
-use app\wechat\servicev2\WxpayService;
+use app\wechat\service\WxpayService;
 use think\facade\View;
 use think\Request;
 use think\response\Json;

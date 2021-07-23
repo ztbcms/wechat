@@ -17,7 +17,7 @@ use app\wechat\model\WechatApplication;
 use app\wechat\model\WechatOfficeTemplate;
 use app\wechat\model\WechatOfficeTemplateSendRecord;
 use app\wechat\model\WechatOfficeUser;
-use app\wechat\servicev2\OfficeService;
+use app\wechat\service\OfficeService;
 use think\facade\View;
 use think\Request;
 use think\response\Json;

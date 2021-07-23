@@ -8,11 +8,11 @@
 
 declare(strict_types=1);
 
-namespace app\wechat\servicev2\wxpay;
+namespace app\wechat\service\wxpay;
 
 
 use app\wechat\model\WechatWxpayOrder;
-use app\wechat\servicev2\WxpayService;
+use app\wechat\service\WxpayService;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 

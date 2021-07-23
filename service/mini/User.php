@@ -8,14 +8,14 @@
 
 declare(strict_types=1);
 
-namespace app\wechat\servicev2\mini;
+namespace app\wechat\service\mini;
 
 
 use app\wechat\model\mini\WechatMiniPhoneNumber;
 use app\wechat\model\mini\WechatMiniUser;
 use app\wechat\model\WechatAuthToken;
-use app\wechat\servicev2\MiniService;
-use app\wechat\servicev2\OfficeService;
+use app\wechat\service\MiniService;
+use app\wechat\service\OfficeService;
 use think\Model;
 use Throwable;
 

@@ -13,7 +13,7 @@ use app\BaseController;
 use app\wechat\model\open\WechatOpenApp;
 use app\wechat\model\open\WechatOpenEvent;
 use app\wechat\service\OpenService;
-use app\wechat\servicev2\OfficeService;
+use app\wechat\service\OfficeService;
 use EasyWeChat\OpenPlatform\Server\Guard;
 
 /**

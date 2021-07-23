@@ -4,7 +4,7 @@ namespace app\wechat\cronscript;
 
 use app\common\cronscript\CronScript;
 use app\wechat\model\WechatApplication;
-use app\wechat\servicev2\WxpayService;
+use app\wechat\service\WxpayService;
 use think\facade\Log;
 
 class HandleWxpayScript extends CronScript

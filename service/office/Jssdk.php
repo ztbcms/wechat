@@ -8,10 +8,10 @@
 
 declare(strict_types=1);
 
-namespace app\wechat\servicev2\office;
+namespace app\wechat\service\office;
 
 
-use app\wechat\servicev2\OfficeService;
+use app\wechat\service\OfficeService;
 
 class Jssdk
 {

@@ -8,15 +8,15 @@
 
 declare(strict_types=1);
 
-namespace app\wechat\servicev2;
+namespace app\wechat\service;
 
 
 use app\common\service\BaseService;
 use app\wechat\model\WechatApplication;
-use app\wechat\servicev2\wxpay\Mchpay;
-use app\wechat\servicev2\wxpay\Redpack;
-use app\wechat\servicev2\wxpay\Refund;
-use app\wechat\servicev2\wxpay\Unity;
+use app\wechat\service\wxpay\Mchpay;
+use app\wechat\service\wxpay\Redpack;
+use app\wechat\service\wxpay\Refund;
+use app\wechat\service\wxpay\Unity;
 use EasyWeChat\Factory;
 use Exception;
 use Throwable;
@@ -83,7 +83,7 @@ class WxpayService extends BaseService
     public function __call($name, $arguments)
     {
         $name = ucfirst($name);
-        $class_name = "\\app\wechat\\servicev2\\wxpay\\{$name}";
+        $class_name = "\\app\wechat\\service\\wxpay\\{$name}";
         throw_if(!class_exists($class_name), new Exception('对象不存在'.$class_name));
         return new  $class_name($this);
     }

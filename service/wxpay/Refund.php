@@ -6,11 +6,11 @@
  * Time: 15:32.
  */
 
-namespace app\wechat\servicev2\wxpay;
+namespace app\wechat\service\wxpay;
 
 
 use app\wechat\model\WechatWxpayRefund;
-use app\wechat\servicev2\WxpayService;
+use app\wechat\service\WxpayService;
 use think\Model;
 
 class Refund

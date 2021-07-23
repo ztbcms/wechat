@@ -11,7 +11,7 @@ namespace app\wechat\controller;
 use app\common\controller\AdminController;
 use app\wechat\model\pay\WechatWxpayMchpay;
 use app\wechat\model\WechatApplication;
-use app\wechat\servicev2\WxpayService;
+use app\wechat\service\WxpayService;
 use think\facade\View;
 
 /**

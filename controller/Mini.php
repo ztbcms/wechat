@@ -13,7 +13,7 @@ use app\wechat\model\mini\WechatMiniSendMessageRecord;
 use app\wechat\model\mini\WechatMiniSubscribeMessage;
 use app\wechat\model\mini\WechatMiniUser;
 use app\wechat\model\WechatApplication;
-use app\wechat\servicev2\MiniService;
+use app\wechat\service\MiniService;
 use think\facade\View;
 
 /**

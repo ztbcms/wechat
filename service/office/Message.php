@@ -6,12 +6,12 @@
  * Time: 09:29.
  */
 
-namespace app\wechat\servicev2\office;
+namespace app\wechat\service\office;
 
 
 use app\wechat\model\office\WechatOfficeEventMessage;
 use app\wechat\model\office\WechatOfficeMessage;
-use app\wechat\servicev2\OfficeService;
+use app\wechat\service\OfficeService;
 
 class Message
 {
