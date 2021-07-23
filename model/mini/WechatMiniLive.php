@@ -14,8 +14,13 @@ use think\model\concern\SoftDelete;
 class WechatMiniLive extends Model
 {
     use SoftDelete;
+
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
-    protected $name = 'tp6_wechat_mini_live';
+    protected $name = 'wechat_mini_live';
+    protected $type = [
+        'start_time' => 'timestamp',
+        'end_time'   => 'timestamp',
+    ];
 
 }

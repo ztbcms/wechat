@@ -2,7 +2,7 @@
 
 return [
     //模块名称
-    'modulename'  => '微信【tp6】',
+    'modulename'  => '微信',
     //图标
     'icon'        => 'https://dn-coding-net-production-pp.qbox.me/e57af720-f26c-4f3b-90b9-88241b680b7b.png',
     //模块简介
@@ -16,7 +16,7 @@ return [
     //作者邮箱
     'authoremail' => '364626853@qq.com',
     //版本号，请不要带除数字外的其他字符
-    'version'     => '1.1.0',
+    'version'     => '2.0.0',
     //适配最低CMS版本，
     'adaptation'  => '4.0.0',
     //签名

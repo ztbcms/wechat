@@ -19,7 +19,7 @@ class WechatAuthToken extends Model
     use SoftDelete;
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
-    protected $name = 'tp6_wechat_auth_token';
+    protected $name = 'wechat_auth_token';
     protected $updateTime = false;
 
     const TOKEN_EXPIRE_TIME = 604800;//默认一个星期过期

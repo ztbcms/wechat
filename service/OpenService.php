@@ -31,5 +31,4 @@ class OpenService extends BaseService
         ];
         $this->app = Factory::openPlatform($config);
     }
-
 }

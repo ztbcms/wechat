@@ -16,7 +16,7 @@ class WechatMiniCode extends Model
     use SoftDelete;
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
-    protected $name = 'tp6_wechat_mini_code';
+    protected $name = 'wechat_mini_code';
 
     const CODE_TYPE_LIMIT = "limit";
     const CODE_TYPE_UNLIMIT = "unlimit";

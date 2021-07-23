@@ -58,7 +58,7 @@
                 doEdit: function () {
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/wechat/Mini/testSend')}&action=doEdit",
+                        url: "{:api_url('/wechat/Mini/testSend',['action'=>'doEdit'])}",
                         type: "post",
                         data: this.form,
                         dataType: "json",

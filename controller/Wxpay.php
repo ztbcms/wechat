@@ -10,20 +10,20 @@ namespace app\wechat\controller;
 
 
 use app\common\controller\AdminController;
-use app\wechat\model\WechatApplication;
-use app\wechat\model\WechatWxpayOrder;
-use app\wechat\model\WechatWxpayRedpack;
-use app\wechat\model\WechatWxpayRefund;
+use app\wechat\model\{WechatApplication, WechatWxpayOrder, WechatWxpayRedpack, WechatWxpayRefund};
 use app\wechat\service\WxpayService;
 use think\facade\View;
 use think\Request;
+use think\response\Json;
 
 class Wxpay extends AdminController
 {
     /**
-     * @return array
+     * 处理退款操作
+     * @return Json
+     * @throws \Throwable
      */
-    function handleRefund()
+    function handleRefund(): Json
     {
         //获取所有的公众号
         $applicationModel = new WechatApplication();
@@ -31,56 +31,51 @@ class Wxpay extends AdminController
         foreach ($appIds as $appId) {
             try {
                 $wxpayService = new WxpayService($appId);
-                $wxpayService->doRefundOrder();
+                $wxpayService->refund()->doRefundOrder();
             } catch (\Exception $exception) {
-
+                return self::makeJsonReturn(false, [], $exception->getMessage());
             }
         }
-        return self::createReturn(true, [], '处理成功');
+        return self::makeJsonReturn(true, [], '处理成功');
     }
 
     /**
      * 删除退款申请
-     * @param Request $request
-     * @return array
+     * @param  Request  $request
+     * @return Json
      */
-    function deleteRefund(Request $request)
+    function deleteRefund(Request $request): Json
     {
         $id = $request->post('id', 0);
         $wxpayRefundModel = WechatWxpayRefund::where('id', $id)->findOrEmpty();
         if ($wxpayRefundModel->isEmpty()) {
-            return self::createReturn(false, [], '找不到该记录');
+            return self::makeJsonReturn(false, [], '找不到该记录');
         }
         if ($wxpayRefundModel->delete()) {
-            return self::createReturn(true, [], '');
+            return self::makeJsonReturn(true, [], '');
         } else {
-            return self::createReturn(false, [], "删除失败");
+            return self::makeJsonReturn(false, [], "删除失败");
         }
     }
 
     /**
-     * @param Request $request
-     * @throws \think\db\exception\DbException
+     * @param  Request  $request
      * @return array|string
+     * @throws \think\db\exception\DbException
      */
     function refunds(Request $request)
     {
         if ($request->isAjax()) {
             $appId = $request->get('app_id');
-            $openId = $request->get('open_id');
             $outTradeNo = $request->get('out_trade_no');
             $where = [];
             if ($appId) {
-                $where[] = ['app_id', 'like', '%' . $appId . '%'];
-            }
-            if ($openId) {
-                $where[] = ['open_id', 'like', '%' . $openId . '%'];
+                $where[] = ['app_id', 'like', '%'.$appId.'%'];
             }
             if ($outTradeNo) {
-                $where[] = ['out_trade_no', 'like', '%' . $outTradeNo . '%'];
+                $where[] = ['out_trade_no', 'like', '%'.$outTradeNo.'%'];
             }
-            $wxpayRefundModel = new WechatWxpayRefund();
-            $lists = $wxpayRefundModel->where($where)->order('id', 'DESC')->paginate(20);
+            $lists = WechatWxpayRefund::where($where)->order('id', 'DESC')->paginate(20);
             return self::createReturn(true, $lists, 'ok');
         }
         return View::fetch('refunds');
@@ -88,27 +83,42 @@ class Wxpay extends AdminController
 
 
     /**
-     * @param Request $request
-     * @return array
+     * @param  Request  $request
+     * @return Json
      */
-    public function deleteOrder(Request $request)
+    public function deleteOrder(Request $request): Json
     {
         $id = $request->post('id');
         $wxpayOrder = WechatWxpayOrder::where('id', $id)->findOrEmpty();
         if ($wxpayOrder->isEmpty()) {
-            return self::createReturn(false, [], '找不到删除信息');
+            return self::makeJsonReturn(false, [], '找不到删除信息');
         }
         if ($wxpayOrder->delete()) {
-            return self::createReturn(true, [], '删除成功');
+            return self::makeJsonReturn(true, [], '删除成功');
         } else {
-            return self::createReturn(false, [], '删除失败');
+            return self::makeJsonReturn(false, [], '删除失败');
+        }
+    }
+
+    public function queryOrder(): Json
+    {
+        $id = request()->post('id');
+        $wxpayOrder = WechatWxpayOrder::where('id', $id)->findOrEmpty();
+        if ($wxpayOrder->isEmpty()) {
+            return self::makeJsonReturn(false, [], '找不到该订单');
+        }
+        $wxpay = new WxpayService($wxpayOrder->app_id);
+        if ($wxpay->unity()->queryByOutTrade((string) $wxpayOrder->out_trade_no)) {
+            return self::makeJsonReturn(true, [], '操作成功');
+        } else {
+            return self::makeJsonReturn(false, [], '操作失败');
         }
     }
 
     /**
-     * @param Request $request
-     * @throws \think\db\exception\DbException
+     * @param  Request  $request
      * @return array|string
+     * @throws \think\db\exception\DbException
      */
     public function orders(Request $request)
     {
@@ -118,13 +128,13 @@ class Wxpay extends AdminController
             $outTradeNo = $request->get('out_trade_no');
             $where = [];
             if ($appId) {
-                $where = ['app_id', 'like', '%' . $appId . '%'];
+                $where = ['app_id', 'like', '%'.$appId.'%'];
             }
             if ($openId) {
-                $where[] = ['open_id', 'like', '%' . $openId . '%'];
+                $where[] = ['open_id', 'like', '%'.$openId.'%'];
             }
             if ($outTradeNo) {
-                $where[] = ['out_trade_no', 'like', '%' . $outTradeNo . '%'];
+                $where[] = ['out_trade_no', 'like', '%'.$outTradeNo.'%'];
             }
             $wxpayOrderModel = new WechatWxpayOrder();
             $lists = $wxpayOrderModel->where($where)->order('id', 'DESC')->paginate(20);
@@ -135,7 +145,7 @@ class Wxpay extends AdminController
 
     /**
      * 红包申请记录
-     * @param Request $request
+     * @param  Request  $request
      * @return array|string
      * @throws \think\db\exception\DbException
      */
@@ -148,13 +158,13 @@ class Wxpay extends AdminController
             $status = $request->get('status', '');
             $where = [];
             if ($appId) {
-                $where[] = ['app_id', 'like', '%' . $appId . '%'];
+                $where[] = ['app_id', 'like', '%'.$appId.'%'];
             }
             if ($openId) {
-                $where[] = ['open_id', 'like', '%' . $openId . '%'];
+                $where[] = ['open_id', 'like', '%'.$openId.'%'];
             }
             if ($mchBillno) {
-                $where[] = ['mch_billno', 'like', '%' . $mchBillno . '%'];
+                $where[] = ['mch_billno', 'like', '%'.$mchBillno.'%'];
             }
             if ($status !== '') {
                 $where[] = ['status', '=', $status];
@@ -168,28 +178,30 @@ class Wxpay extends AdminController
 
     /**
      * 删除红包申请
-     * @param Request $request
-     * @return array
+     * @param  Request  $request
+     * @return Json
      */
-    function deleteRedpack(Request $request)
+    function deleteRedpack(Request $request): Json
     {
         $id = $request->post('id', 0);
         $wechatWxpayRedpack = WechatWxpayRedpack::where('id', $id)->findOrEmpty();
         if ($wechatWxpayRedpack->isEmpty()) {
-            return self::createReturn(false, [], '找不到该记录');
+            return self::makeJsonReturn(false, [], '找不到该记录');
         }
         if ($wechatWxpayRedpack->delete()) {
-            return self::createReturn(true, [], '');
+            return self::makeJsonReturn(true, [], '');
         } else {
-            return self::createReturn(false, [], "删除失败");
+            return self::makeJsonReturn(false, [], "删除失败");
         }
     }
 
     /**
      * 主动触发红包发放
-     * @return array
+     * @return Json
+     * @throws \Throwable
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    function handleRedpack()
+    function handleRedpack(): Json
     {
         //获取所有的公众号
         $applicationModel = new WechatApplication();
@@ -197,10 +209,11 @@ class Wxpay extends AdminController
         foreach ($appIds as $appId) {
             try {
                 $wxpayService = new WxpayService($appId);
-                $wxpayService->doRedpackOrder();
+                $wxpayService->redpack()->doRedpackOrder();
             } catch (\Exception $exception) {
+                return self::makeJsonReturn(true, [], $exception->getMessage());
             }
         }
-        return self::createReturn(true, [], '处理成功');
+        return self::makeJsonReturn(true, [], '处理成功');
     }
 }

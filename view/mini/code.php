@@ -41,6 +41,12 @@
                         label="类型"
                         align="center"
                         min-width="100">
+                    <template slot-scope="scope">
+                        <el-tag v-if="scope.row.type=='unlimit'" type="success">
+                            {{scope.row.type}}
+                        </el-tag>
+                        <el-tag v-else type="primary">{{scope.row.type}}</el-tag>
+                    </template>
                 </el-table-column>
                 <el-table-column
                         label="页面路径"
@@ -197,7 +203,7 @@
                         type: this.createCodeType,
                         path: this.createCodePath,
                         scene: this.createCodeScene,
-                        action : 'createCode'
+                        action: 'createCode'
                     };
                     var _this = this;
                     this.httpPost("{:api_url('/Wechat/Mini/code')}", postData, function (res) {
@@ -227,7 +233,7 @@
                 deleteEvent: function (row) {
                     var postData = {
                         id: row.id,
-                        action : "delCode"
+                        action: "delCode"
                     };
                     var _this = this;
                     this.$confirm('是否确认删除该记录', '提示', {
@@ -260,7 +266,7 @@
                     var where = Object.assign({
                         page: this.page,
                         limit: this.limit,
-                        action : "ajaxList"
+                        action: "ajaxList"
                     }, this.searchData);
                     $.ajax({
                         url: "{:api_url('/Wechat/Mini/code')}",

@@ -12,8 +12,8 @@ namespace app\wechat\controller;
 use app\BaseController;
 use app\wechat\model\open\WechatOpenApp;
 use app\wechat\model\open\WechatOpenEvent;
-use app\wechat\service\OfficeService;
 use app\wechat\service\OpenService;
+use app\wechat\service\OfficeService;
 use EasyWeChat\OpenPlatform\Server\Guard;
 
 /**
@@ -37,7 +37,8 @@ class Open extends BaseController
     /**
      * 获取用户授权回调
      */
-    function callback(){
+    function callback()
+    {
         $authCode = input('get.auth_code');
         $openService = new OpenService();
         $res = $openService->app->handleAuthorize($authCode);
@@ -90,7 +91,8 @@ class Open extends BaseController
         $server = $openService->app->server;
 
         // 处理授权成功事件
-        $server->push(function ($message) {
+        $server->push(function ($message)
+        {
 
             $WechatOpenEvent = new WechatOpenEvent();
             $data = [
@@ -107,7 +109,8 @@ class Open extends BaseController
         }, Guard::EVENT_AUTHORIZED);
 
         // 处理授权更新事件
-        $server->push(function ($message) {
+        $server->push(function ($message)
+        {
             $WechatOpenEvent = new WechatOpenEvent();
             $data = [
                 'app_id'                          => $message['AppId'],
@@ -122,7 +125,8 @@ class Open extends BaseController
         }, Guard::EVENT_UPDATE_AUTHORIZED);
 
         // 处理授权取消事件
-        $server->push(function ($message) {
+        $server->push(function ($message)
+        {
             $WechatOpenEvent = new WechatOpenEvent();
             $data = [
                 'app_id'           => $message['AppId'],
@@ -144,15 +148,16 @@ class Open extends BaseController
     {
         $openService = new OpenService();
         $server = $openService->app->officialAccount($appid)->server;
-        $server->push(function ($message) use ($appid, $server) {
+        $server->push(function ($message) use ($appid, $server)
+        {
             $officeService = new OfficeService($appid);
             switch ($message['MsgType']) {
                 case 'event':
-                    $officeService->handleEventMessage($message);
+                    $officeService->message()->handleEventMessage($message);
                     break;
                 default:
                     //其他消息形式都归到消息处理
-                    $officeService->handleMessage($message);
+                    $officeService->message()->handleMessage($message);
                     break;
             }
         });

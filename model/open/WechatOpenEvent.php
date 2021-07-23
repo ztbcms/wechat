@@ -16,6 +16,6 @@ class WechatOpenEvent extends Model
     use SoftDelete;
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
-    protected $name = 'tp6_wechat_open_event';
+    protected $name = 'wechat_open_event';
 
 }

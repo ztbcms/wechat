@@ -21,7 +21,7 @@ class WechatMiniUser extends Model
     use SoftDelete;
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
-    protected $name = 'tp6_wechat_mini_users';
+    protected $name = 'wechat_mini_users';
 
 
 }

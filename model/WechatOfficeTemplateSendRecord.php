@@ -13,5 +13,8 @@ use think\Model;
 
 class WechatOfficeTemplateSendRecord extends Model
 {
-    protected $name = 'tp6_wechat_office_template_send_record';
+    protected $name = 'wechat_office_template_send_record';
+    protected $updateTime = false;
+    const STATUS_SUCCESS = 1;
+    const STATUS_FAIL = 0;
 }

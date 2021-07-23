@@ -16,6 +16,6 @@ class WechatOfficeMessage extends Model
     use SoftDelete;
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
-    protected $name = 'tp6_wechat_office_message';
+    protected $name = 'wechat_office_message';
 
 }

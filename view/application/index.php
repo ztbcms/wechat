@@ -2,7 +2,9 @@
     <div id="app" v-cloak>
         <el-card>
             <div slot="header" class="clearfix">
-                <span>应用列表</span>
+                <el-breadcrumb separator="/">
+                    <el-breadcrumb-item>应用列表</el-breadcrumb-item>
+                </el-breadcrumb>
             </div>
             <div>
                 <el-button @click="addEvent" type="primary">添加应用</el-button>
@@ -108,13 +110,13 @@
                     },
                     total: 0
                 },
-                mounted:function() {
+                mounted: function () {
                     this.getList()
                 },
                 methods: {
                     deleteEvent: function (item) {
                         var _this = this;
-                        this.$confirm('是否确认删除'+item.application_name+ '？', '提示', {
+                        this.$confirm('是否确认删除' + item.application_name + '？', '提示', {
                             callback: function (e) {
                                 if (e !== 'confirm') {
                                     return;
@@ -166,14 +168,10 @@
                         location.href = "{:api_url('/wechat/application/createApplication')}"
                     },
                     showOauthUrl: function (app_id) {
-                        var urlObj = window.Ztbcms.parserUrl(window.location.href);
-                        console.log(urlObj);
-                        layer.alert(urlObj.protocol + '//' + urlObj.host + "{:api_url('/wechat/index/oauth',[],false)}/appid/" + app_id)
+                        layer.alert("{:api_url('/wechat/index/oauth',[],false)}/appid/" + app_id + '?redirect_url=https://baidu.com')
                     },
                     showOauthBase: function (app_id) {
-                        var urlObj = window.Ztbcms.parserUrl(window.location.href);
-                        console.log(urlObj);
-                        layer.alert(urlObj.protocol + '//' + urlObj.host + "{:api_url('/wechat/index/oauthBase',[],false)}/appid/" + app_id)
+                        layer.alert("{:api_url('/wechat/index/oauthBase',[],false)}/appid/" + app_id + '?redirect_url=https://baidu.com')
                     }
                 }
             })
