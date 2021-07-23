@@ -13,7 +13,6 @@ use app\wechat\model\mini\WechatMiniSendMessageRecord;
 use app\wechat\model\mini\WechatMiniSubscribeMessage;
 use app\wechat\model\mini\WechatMiniUser;
 use app\wechat\model\WechatApplication;
-use app\wechat\service\Mini\SubscribeMessageService;
 use app\wechat\service\Mini\LiveService;
 use app\wechat\servicev2\MiniService;
 use think\facade\View;
@@ -155,22 +154,17 @@ class Mini extends AdminController
         } else {
             if ($action == 'doSync') {
                 //同步订阅消息模板
-                $WechatApplication = new WechatApplication();
-                $applicationList = $WechatApplication
-                    ->where(['account_type' => $WechatApplication::ACCOUNT_TYPE_MINI])
-                    ->field('app_id')
-                    ->select();
-                foreach ($applicationList as $k => $v) {
-                    $appId = $v['app_id'];
-                    $service = new SubscribeMessageService($appId);
-                    $service->syncSubscribeMessageList();
+                $app_ids = WechatApplication::where('account_type', WechatApplication::ACCOUNT_TYPE_MINI)
+                    ->column('app_id');
+                foreach ($app_ids as $app_id) {
+                    $service = new MiniService($app_id);
+                    $service->subscribe()->syncSubscribeMessageList();
                 }
-                return self::createReturn(true, '', 'ok');
+                return self::createReturn(true, [], 'ok');
             } else {
                 if ($action == 'deleteTemplate') {
                     $id = input('id', '', 'trim');
-                    $WechatMiniSubscribeMessage = new WechatMiniSubscribeMessage();
-                    $SubscribeMessageModel = $WechatMiniSubscribeMessage::where('id', $id)->findOrEmpty();
+                    $SubscribeMessageModel = WechatMiniSubscribeMessage::where('id', $id)->findOrEmpty();
                     if ($SubscribeMessageModel->isEmpty()) {
                         return self::createReturn(false, [], '找不到删除信息');
                     }
@@ -188,6 +182,7 @@ class Mini extends AdminController
     /**
      * 模拟订阅消息
      * @return string|\think\response\Json
+     * @throws \Throwable
      */
     public function testSend()
     {
@@ -195,9 +190,8 @@ class Mini extends AdminController
         if ($action == 'getDetail') {
             //获取模板详情
             $id = input('id', '', 'trim');
-            $WechatMiniSubscribeMessage = new WechatMiniSubscribeMessage();
-            $msg = $WechatMiniSubscribeMessage->where(['id' => $id])->find();
-            if (empty($msg)) {
+            $msg = WechatMiniSubscribeMessage::where(['id' => $id])->findOrEmpty();
+            if ($msg->isEmpty()) {
                 return json(self::createReturn(false, '', '找不到信息'));
             }
             $content = $msg['content'];
@@ -224,16 +218,18 @@ class Mini extends AdminController
                 $openid = input('open_id');
                 $template_id = input('template_id');
                 $data_param = input('data_param');
-                $page = input('page');
-                $service = new SubscribeMessageService($app_id);
+                $page = input('page', '');
+                $service = new MiniService($app_id);
                 $data = [];
                 foreach ($data_param as $param) {
                     $data[$param['key']] = [
                         'value' => $param['value']
                     ];
                 }
-                $res = $service->sendSubscribeMessage($openid, $template_id, $data, $page);
-                return json($res);
+                $record = $service->subscribe()->sendSubscribeMessage((string) $openid, (string) $template_id, $data,
+                    (string) $page
+                );
+                return self::makeJsonReturn(true, $record);
             }
         }
         return View::fetch('testSend');

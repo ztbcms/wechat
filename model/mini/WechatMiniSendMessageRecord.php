@@ -19,8 +19,11 @@ use think\model\concern\SoftDelete;
 class WechatMiniSendMessageRecord extends Model
 {
     use SoftDelete;
+
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
     protected $name = 'wechat_mini_send_message_record';
 
+    const STATUS_SUCCESS = 1;
+    const STATUS_FAIL = 0;
 }

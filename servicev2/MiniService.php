@@ -6,12 +6,15 @@
  * Time: 10:20.
  */
 
+declare(strict_types=1);
+
 namespace app\wechat\servicev2;
 
 
 use app\common\service\BaseService;
 use app\wechat\model\WechatApplication;
 use app\wechat\servicev2\mini\Qrcode;
+use app\wechat\servicev2\mini\Subscribe;
 use app\wechat\servicev2\mini\User;
 use EasyWeChat\Factory;
 use Exception;
@@ -22,6 +25,7 @@ use Throwable;
  *
  * @method User            user()
  * @method Qrcode          qrcode()
+ * @method Subscribe       subscribe()
  */
 class MiniService extends BaseService
 {

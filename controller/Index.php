@@ -12,6 +12,7 @@ namespace app\wechat\controller;
 use app\BaseController;
 use app\common\exception\BaseApiException;
 use app\Request;
+use app\wechat\model\mini\WechatMiniSubscribeMessage;
 use app\wechat\servicev2\{WxpayService, OfficeService, MiniService};
 use Psr\SimpleCache\InvalidArgumentException;
 use think\facade\{Cache, View};
@@ -183,6 +184,24 @@ class Index extends BaseController
         } catch (\Exception $exception) {
             echo $exception->getMessage();
         }
+    }
+
+    /**
+     * 返回订阅消息
+     * @param  string  $appid
+     * @return Json
+     */
+    function subscribe(string $appid): Json
+    {
+        $template_ids = WechatMiniSubscribeMessage::where('app_id', $appid)
+            ->limit(0, 3)
+            ->column('template_id');
+        if (count($template_ids) == 0) {
+            return self::makeJsonReturn(false, [], '未添加订阅消息模板');
+        }
+        
+        return self::makeJsonReturn(true,
+            ['template_ids' => $template_ids, 'need_subscribe' => true, 'show_tip' => false], 'ok');
     }
 
     /**
