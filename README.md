@@ -2,7 +2,7 @@
 
 #### 依赖
 
-```shell script
+```shell
 $ composer require overtrue/wechat 
 ```
 
