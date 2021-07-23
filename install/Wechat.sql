@@ -183,17 +183,18 @@ CREATE TABLE `cms_wechat_mini_code`
 
 CREATE TABLE `cms_wechat_mini_send_message_record`
 (
-    `id`          int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `app_id`      varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
-    `open_id`     varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '接受用户open_id',
-    `template_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '发送模板id',
-    `page`        varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '跳转页面l',
-    `data`        varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '发送信息',
-    `result`      varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '调用结果',
-    `create_time` int(11) NULL DEFAULT NULL COMMENT '创建时间',
-    `update_time` int(11) NULL DEFAULT 0 COMMENT '更新时间',
-    `send_time`   int(11) NULL DEFAULT NULL COMMENT '发送时间',
-    `delete_time` int(11) NULL DEFAULT 0 COMMENT '删除时间',
+    `id`          int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `app_id`      varchar(64)   DEFAULT '',
+    `open_id`     varchar(128)  DEFAULT '' COMMENT '接受用户open_id',
+    `template_id` varchar(128)  DEFAULT '' COMMENT '发送模板id',
+    `page`        varchar(512)  DEFAULT '' COMMENT '跳转页面l',
+    `data`        varchar(1024) DEFAULT '' COMMENT '发送信息',
+    `result`      varchar(128)  DEFAULT '' COMMENT '调用结果',
+    `status`      tinyint(4) DEFAULT '0' COMMENT '发送状态',
+    `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
+    `update_time` int(11) DEFAULT '0' COMMENT '更新时间',
+    `send_time`   int(11) DEFAULT NULL COMMENT '发送时间',
+    `delete_time` int(11) DEFAULT '0' COMMENT '删除时间',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -214,22 +215,44 @@ CREATE TABLE `cms_wechat_mini_subscribe_message`
 
 CREATE TABLE `cms_wechat_mini_live`
 (
-    `id`          int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `live_name`   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '直播间名称',
-    `roomid`      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '房间号',
-    `cover_img`   mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '直播间背景墙',
-    `live_status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '直播状态 101: 直播中, 102: 未开始, 103: 已结束, 104: 禁播, 105: 暂停中, 106: 异常, 107: 已过期（直播状态解释可参考【获取直播状态】接口）',
-    `start_time`  int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '直播计划开始时间，列表按照 start_time 降序排列',
-    `end_time`    int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '直播计划结束时间',
-    `anchor_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '主播名',
-    `anchor_img`  varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '主播图片',
-    `total`       varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '0' COMMENT '数量',
-    `share_img`   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '分享图片',
-    `browse_num`  int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '浏览量',
-    `app_id`      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'appid',
-    `create_time` int(11) NULL DEFAULT 0 COMMENT '创建时间',
-    `update_time` int(11) NULL DEFAULT 0 COMMENT '更新时间',
-    `delete_time` int(11) NULL DEFAULT 0 COMMENT '删除时间',
+    `id`              int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `live_name`       varchar(255) NOT NULL COMMENT '直播间名称',
+    `roomid`          varchar(255) NOT NULL COMMENT '房间号',
+    `cover_img`       varchar(512)          DEFAULT '' COMMENT '直播间背景墙',
+    `share_img`       varchar(512) NOT NULL DEFAULT '' COMMENT '分享图片',
+    `live_status`     varchar(255) NOT NULL COMMENT '直播状态 101: 直播中, 102: 未开始, 103: 已结束, 104: 禁播, 105: 暂停中, 106: 异常, 107: 已过期（直播状态解释可参考【获取直播状态】接口）',
+    `start_time`      int(10) unsigned NOT NULL DEFAULT '0' COMMENT '直播计划开始时间，列表按照 start_time 降序排列',
+    `end_time`        int(10) unsigned NOT NULL DEFAULT '0' COMMENT '直播计划结束时间',
+    `anchor_name`     varchar(255) NOT NULL COMMENT '主播名',
+    `anchor_img`      varchar(255)          DEFAULT NULL COMMENT '主播图片',
+    `live_type`       tinyint(11) DEFAULT '0' COMMENT '直播类型，1 推流 0 手机直播',
+    `close_like`      tinyint(1) DEFAULT '0' COMMENT '是否关闭点赞 【0：开启，1：关闭】（若关闭，观众端将隐藏点赞按钮，直播开始后不允许开启）',
+    `close_goods`     tinyint(1) DEFAULT '0' COMMENT '是否关闭货架 【0：开启，1：关闭】（若关闭，观众端将隐藏商品货架，直播开始后不允许开启）',
+    `close_comment`   tinyint(1) DEFAULT '0' COMMENT '是否关闭评论 【0：开启，1：关闭】（若关闭，观众端将隐藏评论入口，直播开始后不允许开启）',
+    `close_kf`        tinyint(1) DEFAULT '0' COMMENT '是否关闭客服 【0：开启，1：关闭】 默认关闭客服（直播开始后允许开启）',
+    `close_replay`    tinyint(1) DEFAULT '0' COMMENT '是否关闭回放 【0：开启，1：关闭】默认关闭回放（直播开始后允许开启）',
+    `is_feeds_public` tinyint(1) DEFAULT '0' COMMENT '是否开启官方收录，1 开启，0 关闭',
+    `feeds_img`       varchar(512)          DEFAULT '' COMMENT '官方收录封面',
+    `creater_openid`  varchar(256)          DEFAULT '' COMMENT '创建者openid',
+    `total`           varchar(255)          DEFAULT '0' COMMENT '数量',
+    `browse_num`      int(10) unsigned NOT NULL DEFAULT '0' COMMENT '浏览量',
+    `app_id`          varchar(255)          DEFAULT NULL COMMENT 'appid',
+    `create_time`     int(11) DEFAULT '0' COMMENT '创建时间',
+    `update_time`     int(11) DEFAULT '0' COMMENT '更新时间',
+    `delete_time`     int(11) DEFAULT '0' COMMENT '删除时间',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `cms_wechat_mini_live_playback`
+(
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `app_id` varchar(255) NOT NULL DEFAULT '',
+    `roomid` int(11) NOT NULL,
+    `media_url` varchar(512) NOT NULL DEFAULT '',
+    `expire_time` bigint(11) DEFAULT '0',
+    `create_time` bigint(11) DEFAULT '0',
+    `update_time` int(11) DEFAULT '0',
+    `delete_time` int(11) DEFAULT '0',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

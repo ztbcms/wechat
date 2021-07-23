@@ -199,7 +199,7 @@ class Index extends BaseController
         if (count($template_ids) == 0) {
             return self::makeJsonReturn(false, [], '未添加订阅消息模板');
         }
-        
+
         return self::makeJsonReturn(true,
             ['template_ids' => $template_ids, 'need_subscribe' => true, 'show_tip' => false], 'ok');
     }

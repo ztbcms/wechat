@@ -36,23 +36,7 @@
                         <h4 class="modal-title" id="myModalLabel"> 查看回放json </h4>
                     </div>
                     <div class="modal-body">
-                        <code>{</code><br>
-                        </tba>
-                        <div v-for="(item,key) in param" :key="key">
-                            &nbsp;&nbsp;<code>"{{ key }}" : </code>
-                            <template v-if="'object' !== typeof(param[key])">
-                                <code>"{{ param[key] }}",</code>
-                            </template>
-                            <template v-else>
-                                <br>&emsp;&nbsp;&nbsp;&nbsp;<code>{</code>
-                                <template v-for="(i,k) in param[key]" :k="k">
-                                    <br>&emsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>"{{ k }}" : "{{ param[key][k]
-                                        }}",</code>
-                                </template>
-                                <br>&emsp;&nbsp;&nbsp;&nbsp;<code>}</code>
-                            </template>
-                        </div>
-                        <code>}</code><br>
+                        <code>{{param}}</code>
                     </div>
                 </div>
             </div>
@@ -89,33 +73,33 @@
                         label="直播状态"
                         align="center">
                     <template slot-scope="scope">
-                        <template v-if="scope.row.live_status == 101">
+                        <el-tag type="primary" v-if="scope.row.live_status == 101">
                             直播中
-                        </template>
+                        </el-tag>
 
-                        <template v-if="scope.row.live_status == 102">
+                        <el-tag type="default" v-if="scope.row.live_status == 102">
                             未开始
-                        </template>
+                        </el-tag>
 
-                        <template v-if="scope.row.live_status == 103">
+                        <el-tag type="danger" v-if="scope.row.live_status == 103">
                             已结束
-                        </template>
+                        </el-tag>
 
-                        <template v-if="scope.row.live_status == 104">
+                        <el-tag type="danger" v-if="scope.row.live_status == 104">
                             禁播
-                        </template>
+                        </el-tag>
 
-                        <template v-if="scope.row.live_status == 105">
+                        <el-tag type="danger" v-if="scope.row.live_status == 105">
                             暂停中
-                        </template>
+                        </el-tag>
 
-                        <template v-if="scope.row.live_status == 106">
+                        <el-tag type="warning" v-if="scope.row.live_status == 106">
                             异常
-                        </template>
+                        </el-tag>
 
-                        <template v-if="scope.row.live_status == 107">
+                        <el-tag type="danger" v-if="scope.row.live_status == 107">
                             已过期
-                        </template>
+                        </el-tag>
                     </template>
                 </el-table-column>
 
@@ -123,14 +107,14 @@
                         prop="start_time"
                         label="计划开始时间"
                         align="center"
-                        min-width="120">
+                        min-width="180">
                 </el-table-column>
 
                 <el-table-column
                         prop="end_time"
                         label="计划结束时间"
                         align="center"
-                        min-width="120">
+                        min-width="180">
                 </el-table-column>
 
                 <el-table-column
@@ -191,7 +175,7 @@
                 limit: 10,
                 totalPages: 0,
                 totalItems: 0,
-                param: []
+                param: {}
             },
             mounted: function () {
                 this.getList();
@@ -203,7 +187,7 @@
                     var where = Object.assign({
                         page: this.page,
                         limit: this.limit,
-                        action : "ajaxList"
+                        action: "ajaxList"
                     }, this.searchData);
                     $.ajax({
                         url: "{:api_url('/wechat/Mini/live')}",
@@ -224,7 +208,7 @@
                 doSync: function () {
                     var that = this;
                     this.httpGet("{:api_url('/wechat/Mini/live')}", {
-                        action : 'doSync'
+                        action: 'doSync'
                     }, function (res) {
                         if (res.status) {
                             that.$message.success("同步成功");
@@ -239,7 +223,7 @@
                     this.httpGet("{:api_url('/wechat/Mini/live')}", {
                         app_id: row.app_id,
                         roomId: row.roomid,
-                        action : 'playbacks'
+                        action: 'playbacks'
                     }, function (res) {
                         if (res.status) {
                             that.param = res.data;

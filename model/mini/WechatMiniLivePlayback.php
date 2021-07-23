@@ -11,16 +11,14 @@ namespace app\wechat\model\mini;
 use think\Model;
 use think\model\concern\SoftDelete;
 
-class WechatMiniLive extends Model
+class WechatMiniLivePlayback extends Model
 {
     use SoftDelete;
 
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
-    protected $name = 'wechat_mini_live';
+    protected $name = 'wechat_mini_live_playback';
     protected $type = [
-        'start_time' => 'timestamp',
-        'end_time'   => 'timestamp',
+        'expire_time' => 'timestamp',
     ];
-
 }

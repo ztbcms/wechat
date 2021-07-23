@@ -13,7 +13,6 @@ use app\wechat\model\mini\WechatMiniSendMessageRecord;
 use app\wechat\model\mini\WechatMiniSubscribeMessage;
 use app\wechat\model\mini\WechatMiniUser;
 use app\wechat\model\WechatApplication;
-use app\wechat\service\Mini\LiveService;
 use app\wechat\servicev2\MiniService;
 use think\facade\View;
 
@@ -190,9 +189,9 @@ class Mini extends AdminController
         if ($action == 'getDetail') {
             //获取模板详情
             $id = input('id', '', 'trim');
-            $msg = WechatMiniSubscribeMessage::where(['id' => $id])->findOrEmpty();
+            $msg = WechatMiniSubscribeMessage::where('id', $id)->findOrEmpty();
             if ($msg->isEmpty()) {
-                return json(self::createReturn(false, '', '找不到信息'));
+                return self::makeJsonReturn(false, '', '找不到信息');
             }
             $content = $msg['content'];
             $list = explode("\n", $content);
@@ -210,7 +209,7 @@ class Mini extends AdminController
                 }
             }
             $msg['data_param'] = $data_param;
-            return json(self::createReturn(true, $msg));
+            return self::makeJsonReturn(true, $msg);
         } else {
             if ($action == 'doEdit') {
                 //发送测试模板消息
@@ -229,7 +228,7 @@ class Mini extends AdminController
                 $record = $service->subscribe()->sendSubscribeMessage((string) $openid, (string) $template_id, $data,
                     (string) $page
                 );
-                return self::makeJsonReturn(true, $record);
+                return self::makeJsonReturn(true, $record, $record->result);
             }
         }
         return View::fetch('testSend');
@@ -238,6 +237,7 @@ class Mini extends AdminController
     /**
      * 消息发送记录
      * @return array|string
+     * @throws \think\db\exception\DbException
      */
     public function messageRecord()
     {
@@ -264,7 +264,9 @@ class Mini extends AdminController
 
     /**
      * 直播管理
-     * @return array|string
+     * @return array|string|\think\response\Json
+     * @throws \think\db\exception\DbException
+     * @throws \Throwable
      */
     public function live()
     {
@@ -281,27 +283,25 @@ class Mini extends AdminController
             if ($title) {
                 $where[] = ['live_name', 'like', '%'.$title.'%'];
             }
-            $lists = $WechatMiniLive->where($where)->order('id', 'DESC')->paginate(20);
+            $lists = $WechatMiniLive->where($where)->order('roomid', 'DESC')->paginate(20);
             return self::createReturn(true, $lists, 'ok');
         } else {
             if ($action == 'doSync') {
                 //同步直播间列表
-                $WechatApplication = new WechatApplication();
-                $applicationList = $WechatApplication
-                    ->where(['account_type' => $WechatApplication::ACCOUNT_TYPE_MINI])
-                    ->field('app_id')
-                    ->select();
-                foreach ($applicationList as $k => $v) {
-                    $MiniLiveService = new LiveService($v['app_id']);
-                    $MiniLiveService->sysMiniLive();
+                $app_ids = WechatApplication::where('account_type', WechatApplication::ACCOUNT_TYPE_MINI)
+                    ->column('app_id');
+                foreach ($app_ids as $app_id) {
+                    $MiniLiveService = new MiniService($app_id);
+                    $MiniLiveService->live()->sysMiniLive();
                 }
-                return self::createReturn(true, [], '同步完成');
+                return self::makeJsonReturn(true, [], '同步完成');
             } else {
                 if ($action == 'playbacks') {
                     $app_id = input('app_id', '', 'trim');
                     $roomId = input('roomId', '', 'trim');
-                    $MiniLiveService = new LiveService($app_id);
-                    return json($MiniLiveService->getPlaybacks($roomId));
+                    $MiniLiveService = new MiniService($app_id);
+                    $playbacks = $MiniLiveService->live()->getPlaybacks((int) $roomId);
+                    return self::makeJsonReturn(true, ['playbacks' => $playbacks]);
                 }
             }
         }

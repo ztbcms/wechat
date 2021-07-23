@@ -13,6 +13,7 @@ namespace app\wechat\servicev2;
 
 use app\common\service\BaseService;
 use app\wechat\model\WechatApplication;
+use app\wechat\servicev2\mini\Live;
 use app\wechat\servicev2\mini\Qrcode;
 use app\wechat\servicev2\mini\Subscribe;
 use app\wechat\servicev2\mini\User;
@@ -26,6 +27,7 @@ use Throwable;
  * @method User            user()
  * @method Qrcode          qrcode()
  * @method Subscribe       subscribe()
+ * @method Live            live()
  */
 class MiniService extends BaseService
 {
