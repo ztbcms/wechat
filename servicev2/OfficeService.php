@@ -15,6 +15,7 @@ use app\common\service\BaseService;
 use app\wechat\model\WechatApplication;
 use app\wechat\servicev2\office\Jssdk;
 use app\wechat\servicev2\office\Message;
+use app\wechat\servicev2\office\Qrcode;
 use app\wechat\servicev2\office\Template;
 use app\wechat\servicev2\office\User;
 use EasyWeChat\Factory;
@@ -28,6 +29,7 @@ use Throwable;
  * @method Jssdk           jssdk()
  * @method Message         message()
  * @method Template        template()
+ * @method Qrcode          qrcode()
  */
 class OfficeService extends BaseService
 {

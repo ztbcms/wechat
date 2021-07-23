@@ -79,6 +79,7 @@ CREATE TABLE `cms_wechat_office_template_send_record`
     `miniprogram` varchar(1024) DEFAULT '' COMMENT '小程序跳转信息',
     `post_data`   varchar(1024) DEFAULT '' COMMENT '发送信息',
     `result`      varchar(128)  DEFAULT '' COMMENT '调用结果',
+    `status`      tinyint(11) DEFAULT '0' COMMENT '发送状态',
     `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
@@ -245,10 +246,10 @@ CREATE TABLE `cms_wechat_mini_live`
 
 CREATE TABLE `cms_wechat_mini_live_playback`
 (
-    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-    `app_id` varchar(255) NOT NULL DEFAULT '',
-    `roomid` int(11) NOT NULL,
-    `media_url` varchar(512) NOT NULL DEFAULT '',
+    `id`          int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `app_id`      varchar(255) NOT NULL DEFAULT '',
+    `roomid`      int(11) NOT NULL,
+    `media_url`   varchar(512) NOT NULL DEFAULT '',
     `expire_time` bigint(11) DEFAULT '0',
     `create_time` bigint(11) DEFAULT '0',
     `update_time` int(11) DEFAULT '0',

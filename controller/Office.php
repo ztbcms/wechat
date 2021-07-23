@@ -17,7 +17,7 @@ use app\wechat\model\WechatApplication;
 use app\wechat\model\WechatOfficeTemplate;
 use app\wechat\model\WechatOfficeTemplateSendRecord;
 use app\wechat\model\WechatOfficeUser;
-use app\wechat\service\Office\QrcodeService;
+use app\wechat\servicev2\OfficeService;
 use think\facade\View;
 use think\Request;
 use think\response\Json;
@@ -27,11 +27,10 @@ class Office extends AdminController
 {
     /**
      * @param  Request  $request
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return Json
+     * @throws Throwable
      */
-    function sendTemplateMsg(Request $request)
+    function sendTemplateMsg(Request $request): Json
     {
         $appId = $request->post('app_id');
         $touserOpenid = $request->post('touser_openid');
@@ -51,7 +50,7 @@ class Office extends AdminController
                 'pagepath' => $page
             ];
         }
-        $officeService = new \app\wechat\servicev2\OfficeService($appId);
+        $officeService = new OfficeService($appId);
         $record = $officeService->template()->sendTemplateMsg($touserOpenid, $templateId, $sendData, $page,
             $miniProgram);
         if ($record->status == WechatOfficeTemplateSendRecord::STATUS_SUCCESS) {
@@ -64,17 +63,17 @@ class Office extends AdminController
     /**
      * 删除消息模板
      * @param  Request  $request
-     * @return array
+     * @return Json
      */
-    function deleteTemplate(Request $request)
+    function deleteTemplate(Request $request): Json
     {
         $id = $request->post('id');
         $officeTemplate = WechatOfficeTemplate::where('id', $id)->findOrEmpty();
         if ($officeTemplate->isEmpty()) {
-            return self::createReturn(false, [], '找不到该记录');
+            return self::makeJsonReturn(false, [], '找不到该记录');
         } else {
             $officeTemplate->delete();
-            return self::createReturn(true, [], '删除成功');
+            return self::makeJsonReturn(true, [], '删除成功');
         }
     }
 
@@ -89,7 +88,7 @@ class Office extends AdminController
         //获取所有的公众号
         foreach ($app_ids as $app_id) {
             try {
-                $templateService = new \app\wechat\servicev2\OfficeService($app_id);
+                $templateService = new OfficeService($app_id);
                 $templateService->template()->getTemplateList();
             } catch (\Exception $exception) {
                 return self::makeJsonReturn(false, [], $exception->getMessage());
@@ -125,19 +124,19 @@ class Office extends AdminController
     /**
      * 删除用户
      * @param  Request  $request
-     * @return array
+     * @return Json
      */
-    public function deleteUser(Request $request)
+    public function deleteUser(Request $request): Json
     {
         $id = $request->post('id');
         $officeUsersModel = WechatOfficeUser::where('id', $id)->findOrEmpty();
         if ($officeUsersModel->isEmpty()) {
-            return self::createReturn(false, [], '找不到删除信息');
+            return self::makeJsonReturn(false, [], '找不到删除信息');
         }
         if ($officeUsersModel->delete()) {
-            return self::createReturn(true, [], '删除成功');
+            return self::makeJsonReturn(true, [], '删除成功');
         } else {
-            return self::createReturn(false, [], '删除失败');
+            return self::makeJsonReturn(false, [], '删除失败');
         }
     }
 
@@ -173,7 +172,7 @@ class Office extends AdminController
 
     /**
      * 参数二维码
-     * @return array|string
+     * @throws Throwable
      */
     public function qrcode()
     {
@@ -212,15 +211,16 @@ class Office extends AdminController
                     $expireTime = input('post.expire_time');
                     $param = input('post.param');
 
-                    $QrcodeService = new QrcodeService($appId);
+                    $officeService = new OfficeService($appId);
                     if ($type == WechatOfficeQrcode::QRCODE_TYPE_TEMPORARY) {
                         //将过期时间转化成秒
                         $expireTime = $expireTime * 86400;
-                        $res = $QrcodeService->temporary($param, $expireTime);
+
+                        $res = $officeService->qrcode()->temporary($param, $expireTime);
                     } else {
-                        $res = $QrcodeService->forever($param);
+                        $res = $officeService->qrcode()->forever($param);
                     }
-                    return json($res);
+                    return self::makeJsonReturn(true, $res, '');
                 }
             }
         }
@@ -230,6 +230,7 @@ class Office extends AdminController
     /**
      * 事件消息
      * @return array|string
+     * @throws \think\db\exception\DbException
      */
     function eventMessage()
     {
@@ -302,11 +303,11 @@ class Office extends AdminController
             if ($action == 'deleteMessage') {
                 $id = input('id', '', 'trim');
                 $WechatOfficeMessage = new WechatOfficeMessage();
-                $WechatOfficMessageModel = $WechatOfficeMessage::where('id', $id)->findOrEmpty();
-                if ($WechatOfficMessageModel->isEmpty()) {
+                $WechatOfficeMessageModel = $WechatOfficeMessage::where('id', $id)->findOrEmpty();
+                if ($WechatOfficeMessageModel->isEmpty()) {
                     return self::createReturn(false, [], '找不到删除信息');
                 }
-                if ($WechatOfficMessageModel->delete()) {
+                if ($WechatOfficeMessageModel->delete()) {
                     return self::createReturn(true, [], '删除成功');
                 } else {
                     return self::createReturn(false, [], '删除失败');
