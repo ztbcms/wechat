@@ -15,6 +15,7 @@ use app\common\service\BaseService;
 use app\wechat\model\WechatApplication;
 use app\wechat\servicev2\office\Jssdk;
 use app\wechat\servicev2\office\Message;
+use app\wechat\servicev2\office\Template;
 use app\wechat\servicev2\office\User;
 use EasyWeChat\Factory;
 use Exception;
@@ -26,6 +27,7 @@ use Throwable;
  * @method User            user()
  * @method Jssdk           jssdk()
  * @method Message         message()
+ * @method Template        template()
  */
 class OfficeService extends BaseService
 {
