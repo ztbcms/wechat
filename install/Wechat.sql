@@ -3,6 +3,7 @@ CREATE TABLE `cms_wechat_application`
     `id`               int(11) unsigned NOT NULL AUTO_INCREMENT,
     `application_name` varchar(32)   DEFAULT '' COMMENT '应用名称',
     `account_type`     varchar(16)   DEFAULT '' COMMENT '应用类型',
+    `alias`            varchar(32)   DEFAULT '' COMMENT '应用别名',
     `app_id`           varchar(64)   DEFAULT '' COMMENT '应用app_id',
     `secret`           varchar(128)  DEFAULT '' COMMENT '应用secret',
     `mch_id`           varchar(64)   DEFAULT '' COMMENT '微信支付mch_id',
@@ -14,7 +15,11 @@ CREATE TABLE `cms_wechat_application`
     `create_time`      int(11) DEFAULT '0' COMMENT '创建时间',
     `update_time`      int(11) DEFAULT '0' COMMENT '更新时间',
     `delete_time`      int(11) DEFAULT '0' COMMENT '删除时间',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `app_id`(`app_id`) USING BTREE,
+    INDEX `alias`(`alias`) USING BTREE,
+    INDEX `id`(`id`) USING BTREE,
+    INDEX `account_type`(`account_type`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
@@ -30,7 +35,9 @@ CREATE TABLE `cms_wechat_auth_token`
     `refresh_token`    varchar(128) DEFAULT '' COMMENT '刷新token',
     `create_time`      int(11) DEFAULT '0' COMMENT '创建时间',
     `delete_time`      int(11) DEFAULT '0' COMMENT '删除时间',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `token`(`token`, `expire_time`) USING BTREE,
+    INDEX `token_2`(`token`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -50,7 +57,11 @@ CREATE TABLE `cms_wechat_office_user`
     `create_time` int(11) DEFAULT '0' COMMENT '创建时间',
     `update_time` int(11) DEFAULT '0' COMMENT '更新时间',
     `delete_time` int(11) DEFAULT '0' COMMENT '删除时间',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `id`(`id`) USING BTREE,
+    INDEX `open_id`(`open_id`) USING BTREE,
+    INDEX `app_id`(`app_id`) USING BTREE,
+    INDEX `union_id`(`union_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `cms_wechat_office_template`
@@ -66,7 +77,10 @@ CREATE TABLE `cms_wechat_office_template`
     `create_time`      int(11) DEFAULT '0' COMMENT '添加时间',
     `update_time`      int(11) DEFAULT '0' COMMENT '更新时间',
     `delete_time`      int(11) DEFAULT '0' COMMENT '删除时间',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `id`(`id`) USING BTREE,
+    INDEX `app_id`(`app_id`) USING BTREE,
+    INDEX `template_id`(`template_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `cms_wechat_office_template_send_record`
@@ -110,7 +124,10 @@ CREATE TABLE `cms_wechat_wxpay_order`
     `create_time`      int(11) DEFAULT '0' COMMENT '支付时间',
     `update_time`      int(11) DEFAULT '0' COMMENT '更新时间',
     `delete_time`      int(11) DEFAULT '0' COMMENT '删除时间',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `id`(`id`) USING BTREE,
+    INDEX `app_id`(`app_id`) USING BTREE,
+    INDEX `out_trade_no`(`out_trade_no`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `cms_wechat_wxpay_refund`
@@ -129,7 +146,11 @@ CREATE TABLE `cms_wechat_wxpay_refund`
     `create_time`        int(11) DEFAULT '0' COMMENT '创建时间',
     `update_time`        int(11) DEFAULT '0' COMMENT '更新时间',
     `delete_time`        int(11) DEFAULT '0' COMMENT '删除时间',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `id`(`id`) USING BTREE,
+    INDEX `status`(`status`) USING BTREE,
+    INDEX `out_trade_no`(`out_trade_no`) USING BTREE,
+    INDEX `out_refund_no`(`out_refund_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `cms_wechat_mini_users`
@@ -149,7 +170,11 @@ CREATE TABLE `cms_wechat_mini_users`
     `create_time`  int(10) NULL DEFAULT 0 COMMENT '创建时间',
     `update_time`  int(10) NULL DEFAULT 0 COMMENT '更新时间',
     `delete_time`  int(11) DEFAULT '0' COMMENT '删除时间',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `id`(`id`) USING BTREE,
+    INDEX `app_id`(`app_id`) USING BTREE,
+    INDEX `open_id`(`open_id`) USING BTREE,
+    INDEX `union_id`(`union_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `cms_wechat_mini_phone_number`
@@ -163,7 +188,11 @@ CREATE TABLE `cms_wechat_mini_phone_number`
     `create_time`       int(11) NULL DEFAULT 0 COMMENT '创建时间',
     `update_time`       int(11) NULL DEFAULT 0 COMMENT '更新时间',
     `delete_time`       int(11) NULL DEFAULT 0 COMMENT '删除时间',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `id`(`id`) USING BTREE,
+    INDEX `app_id`(`app_id`) USING BTREE,
+    INDEX `open_id`(`open_id`) USING BTREE,
+    INDEX `phone_number`(`phone_number`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `cms_wechat_mini_code`
@@ -179,7 +208,10 @@ CREATE TABLE `cms_wechat_mini_code`
     `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
     `update_time` int(11) DEFAULT NULL COMMENT '创建时间',
     `delete_time` int(11) DEFAULT '0' COMMENT '删除时间',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `id`(`id`) USING BTREE,
+    INDEX `app_id`(`app_id`) USING BTREE,
+    INDEX `type`(`type`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `cms_wechat_mini_send_message_record`
@@ -196,7 +228,12 @@ CREATE TABLE `cms_wechat_mini_send_message_record`
     `update_time` int(11) DEFAULT '0' COMMENT '更新时间',
     `send_time`   int(11) DEFAULT NULL COMMENT '发送时间',
     `delete_time` int(11) DEFAULT '0' COMMENT '删除时间',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `id`(`id`) USING BTREE,
+    INDEX `app_id`(`app_id`) USING BTREE,
+    INDEX `open_id`(`open_id`) USING BTREE,
+    INDEX `template_id`(`template_id`) USING BTREE,
+    INDEX `status`(`status`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `cms_wechat_mini_subscribe_message`
@@ -211,7 +248,10 @@ CREATE TABLE `cms_wechat_mini_subscribe_message`
     `create_time` int(11) NULL DEFAULT NULL COMMENT '创建时间',
     `update_time` int(11) NULL DEFAULT NULL,
     `delete_time` int(11) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `id`(`id`) USING BTREE,
+    INDEX `app_id`(`app_id`) USING BTREE,
+    INDEX `template_id`(`template_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `cms_wechat_mini_live`
@@ -241,7 +281,10 @@ CREATE TABLE `cms_wechat_mini_live`
     `create_time`     int(11) DEFAULT '0' COMMENT '创建时间',
     `update_time`     int(11) DEFAULT '0' COMMENT '更新时间',
     `delete_time`     int(11) DEFAULT '0' COMMENT '删除时间',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`)  USING BTREE,
+    INDEX `id`(`id`) USING BTREE,
+    INDEX `roomid`(`roomid`) USING BTREE,
+    INDEX `app_id`(`app_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `cms_wechat_mini_live_playback`
@@ -254,7 +297,10 @@ CREATE TABLE `cms_wechat_mini_live_playback`
     `create_time` bigint(11) DEFAULT '0',
     `update_time` int(11) DEFAULT '0',
     `delete_time` int(11) DEFAULT '0',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `id`(`id`) USING BTREE,
+    INDEX `roomid`(`roomid`) USING BTREE,
+    INDEX `app_id`(`app_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `cms_wechat_wxpay_mchpay`
@@ -272,7 +318,12 @@ CREATE TABLE `cms_wechat_wxpay_mchpay`
     `create_time`       int(11) NULL DEFAULT 0 COMMENT '创建时间',
     `update_time`       int(11) NULL DEFAULT 0 COMMENT '更新时间',
     `delete_time`       int(11) NULL DEFAULT 0 COMMENT '删除时间',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `id`(`id`) USING BTREE,
+    INDEX `app_id`(`app_id`) USING BTREE,
+    INDEX `partner_trade_no`(`partner_trade_no`) USING BTREE,
+    INDEX `open_id`(`open_id`) USING BTREE,
+    INDEX `status`(`status`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `cms_wechat_office_qrcode`
@@ -286,7 +337,9 @@ CREATE TABLE `cms_wechat_office_qrcode`
     `qrcode_url`  varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '访问地址',
     `create_time` int(11) NULL DEFAULT NULL COMMENT '创建时间',
     `delete_time` int(11) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `id`(`id`) USING BTREE,
+    INDEX `app_id`(`app_id`) USING BTREE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `cms_wechat_office_event_message`
@@ -304,7 +357,9 @@ CREATE TABLE `cms_wechat_office_event_message`
     `longitude`      varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '地理位置经度',
     `precision`      varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '地址位置精确度',
     `delete_time`    int(15) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `id`(`id`) USING BTREE,
+    INDEX `app_id`(`app_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `cms_wechat_office_message`
@@ -330,7 +385,11 @@ CREATE TABLE `cms_wechat_office_message`
     `description`    varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '链接介绍',
     `url`            varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '分享链接url',
     `delete_time`    int(15) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `id`(`id`) USING BTREE,
+    INDEX `app_id`(`app_id`) USING BTREE,
+    INDEX `to_user_name`(`to_user_name`) USING BTREE,
+    INDEX `msg_id`(`msg_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `cms_wechat_open_app`
@@ -347,7 +406,9 @@ CREATE TABLE `cms_wechat_open_app`
     `create_time`      int(11) UNSIGNED NULL DEFAULT 0 COMMENT '创建时间',
     `update_time`      int(11) UNSIGNED NULL DEFAULT 0 COMMENT '更新时间',
     `delete_time`      int(11) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `id`(`id`) USING BTREE,
+    INDEX `authorizer_appid`(`authorizer_appid`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `cms_wechat_open_event`
@@ -360,7 +421,10 @@ CREATE TABLE `cms_wechat_open_event`
     `authorization_code`              varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '授权code',
     `authorization_code_expired_time` int(11) NULL DEFAULT NULL COMMENT '授权code过期时间',
     `pre_auth_code`                   varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '预授权码',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `id`(`id`) USING BTREE,
+    INDEX `app_id`(`app_id`) USING BTREE,
+    INDEX `authorizer_appid`(`authorizer_appid`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `cms_wechat_wxpay_redpack`
@@ -381,5 +445,8 @@ CREATE TABLE `cms_wechat_wxpay_redpack`
     `create_time`       int(11) NULL DEFAULT 0 COMMENT '创建时间',
     `update_time`       int(11) NULL DEFAULT 0 COMMENT '更新时间',
     `delete_time`       int(11) NULL DEFAULT 0 COMMENT '删除时间',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `id`(`id`) USING BTREE,
+    INDEX `app_id`(`app_id`) USING BTREE,
+    INDEX `open_id`(`open_id`) USING BTREE
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
