@@ -7,9 +7,7 @@
  */
 
 declare(strict_types=1);
-
 namespace app\wechat\service;
-
 
 use app\common\service\BaseService;
 use app\wechat\model\WechatApplication;
@@ -37,15 +35,27 @@ class MiniService extends BaseService
     protected $log_file = './wechat.log';
     protected $debug_level = 'debug';
 
+    const APPID_APPLICATION = 'app_id';
+    const ALIAS_APPLICATION = 'alias';
+
     /**
+     * MiniService constructor.
+     * @param  string  $key
+     * @param  string  $application_type
      * @throws Throwable
      */
-    public function __construct($app_id)
+    public function __construct($key = '',$application_type = self::APPID_APPLICATION)
     {
-        $application = WechatApplication::where('app_id', $app_id)
-            ->where('account_type', WechatApplication::ACCOUNT_TYPE_MINI)
-            ->findOrEmpty();
-        throw_if($application->isEmpty(), new Exception('找不到该应用信息：'.$app_id));
+        if($application_type == self::APPID_APPLICATION) {
+            $where[] = ['app_id','=',$key];
+        } else if($application_type == self::ALIAS_APPLICATION) {
+            $where[] = ['alias','=',$key];
+        } else {
+            throw_if(true, new Exception('抱歉，您使用的类型有误'));
+        }
+        $where[] = ['account_type','=',WechatApplication::ACCOUNT_TYPE_MINI];
+        $application = WechatApplication::where($where)->findOrEmpty();
+        throw_if($application->isEmpty(), new Exception('找不到该应用信息：'.$key));
         $config = [
             'app_id'        => $application->app_id,
             'secret'        => $application->secret,
@@ -54,13 +64,12 @@ class MiniService extends BaseService
             // 下面为可选项
             // 指定 API 调用返回结果的类型：array(default)/collection/object/raw/自定义类名
             'response_type' => 'array',
-
             'log' => [
                 'level' => $this->debug_level,
                 'file'  => $this->log_file,
             ],
         ];
-        $this->app_id = $app_id;
+        $this->app_id = $application->app_id;
         $this->app = Factory::miniProgram($config);
     }
 

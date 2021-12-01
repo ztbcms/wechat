@@ -1,3 +1,8 @@
+<style>
+    body .el-table th.gutter {
+        display: table-cell !important;
+    }
+</style>
 <div>
     <div id="app" v-cloak>
         <el-card>
@@ -18,6 +23,12 @@
                             prop="application_name"
                             align="center"
                             label="名称"
+                            min-width="100">
+                    </el-table-column>
+                    <el-table-column
+                            prop="alias"
+                            align="center"
+                            label="别名"
                             min-width="100">
                     </el-table-column>
                     <el-table-column

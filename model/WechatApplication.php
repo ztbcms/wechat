@@ -21,4 +21,15 @@ class WechatApplication extends Model
 
     const ACCOUNT_TYPE_OFFICE = "office";
     const ACCOUNT_TYPE_MINI = "mini";
+
+    /**
+     * 获取APPID
+     * @param  string  $alias
+     * @return int|mixed
+     */
+    public static function getAppId($alias = ''){
+       return self::where('alias','=',$alias)
+            ->value('app_id') ?: 0;
+    }
+
 }

@@ -17,6 +17,10 @@
                         <el-radio label="mini">小程序</el-radio>
                     </el-radio-group>
                 </el-form-item>
+                <el-form-item label="应用别名">
+                    <el-input v-model="form.alias"></el-input>
+                    <div class="el-tip">调用时方法时使用，避免更换了app_id需要修改代码</div>
+                </el-form-item>
                 <el-form-item label="app_id">
                     <el-input v-model="form.app_id"></el-input>
                 </el-form-item>

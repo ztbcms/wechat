@@ -62,6 +62,7 @@ class Application extends AdminController
             $application->application_name = $request->post('application_name');
             $application->account_type = $request->post('account_type');
             $application->app_id = $request->post('app_id');
+            $application->alias = $request->post('alias');
             $application->secret = $request->post('secret');
             $application->mch_id = $request->post('mch_id', '');
             $application->mch_key = $request->post('mch_key', '');

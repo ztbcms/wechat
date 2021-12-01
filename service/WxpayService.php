@@ -38,18 +38,34 @@ class WxpayService extends BaseService
     protected $log_file = './wechat.log';
     protected $debug_level = 'debug';
 
+    const APPID_APPLICATION = 'app_id';
+    const ALIAS_APPLICATION = 'alias';
+
     /**
      * @throws Throwable
      */
-    public function __construct($app_id, $is_sandbox = false)
+    public function __construct(
+        $key, $is_sandbox = false,
+        $application_type = self::APPID_APPLICATION)
     {
-        $application = WechatApplication::where('app_id', $app_id)
+        if($application_type == self::APPID_APPLICATION) {
+            $where[] = ['app_id','=',$key];
+        } else if($application_type == self::ALIAS_APPLICATION) {
+            $where[] = ['alias','=',$key];
+        } else {
+            throw_if(true, new Exception('抱歉，您使用的类型有误'));
+        }
+
+        $application = WechatApplication::where($where)
             ->findOrEmpty();
+        $app_id = $application->app_id;
+
         throw_if($application->isEmpty(), new Exception('找不到该应用信息'));
         $certDir = runtime_path()."wechat/cert/{$app_id}/";
         if (!is_dir($certDir)) {
             mkdir($certDir, 0755, true);
         }
+
         $certPath = $certDir."cert.pem";
         $keyPath = $certDir."key.pem";
 
