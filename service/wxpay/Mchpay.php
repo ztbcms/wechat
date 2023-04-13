@@ -45,6 +45,7 @@ class Mchpay
     }
 
     /**
+     * 执行企业付款到用户零钱
      * @return bool
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -72,6 +73,7 @@ class Mchpay
                     'desc'             => $mchpayOrder->description, // 企业付款操作说明信息。必填
                 ]);
                 if ($mchpayRes['result_code'] == 'SUCCESS' && $mchpayRes['return_code'] == 'SUCCESS') {
+                    // 成功
                     $postData = [
                         'status'            => $WechatWxpayMchpay::STATUS_YES,
                         'refund_result'     => json_encode($mchpayRes),
@@ -81,6 +83,7 @@ class Mchpay
                     ];
                     WechatWxpayMchpay::where('id', $mchpayOrder->id)->update($postData);
                 } else {
+                    // 失败
                     $postData = [
                         'status'            => $WechatWxpayMchpay::STATUS_NO,
                         'refund_result'     => json_encode($mchpayRes),

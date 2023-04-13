@@ -18,10 +18,10 @@
                     <el-button type="primary" @click="searchEvent">查询</el-button>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="handleEvent">调用处理</el-button>
+                    <el-button type="primary" @click="createOrder">手动创建企业付款订单</el-button>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="virtualOrder">创建虚拟企业付款</el-button>
+                    <el-button type="primary" @click="handleEvent">手动触发订单消费</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -57,7 +57,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column
-                        label="信息介绍"
+                        label="描述"
                         align="center"
                         min-width="250">
                     <template slot-scope="scope">
@@ -76,7 +76,7 @@
                         min-width="100">
                     <template slot-scope="scope">
                         <div v-if="scope.row.status==1">已完成</div>
-                        <div v-else>未完成</div>
+                        <div v-if="scope.row.status==0">未完成</div>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -131,13 +131,7 @@
             size="small"
             :visible.sync="detailDialogVisible"
             width="600px">
-        <el-form ref="form" size="small" label-width="140px">
-            <div v-for="(item,key) in resultDetail">
-                <el-form-item v-if="item" :label="key">
-                    {{ item }}
-                </el-form-item>
-            </div>
-        </el-form>
+        <p>{{ resultDetail }}</p>
     </el-dialog>
 </div>
 <style>
@@ -171,39 +165,50 @@
                 detailDialogVisible: false
             },
             mounted: function () {
-                this.getRedpacks();
+                this.getList();
             },
             methods: {
                 handleEvent: function () {
+                    var that = this
+                    layer.confirm('该操作会非常耗时，请在业务不繁忙时进行操作', {
+                        title: '提示',
+                        btn: ['继续执行', '取消'] //按钮
+                    }, function () {
+                        that.doHandleOrders()
+                        layer.closeAll()
+                    }, function () {
+                        layer.closeAll()
+                    });
+                },
+                doHandleOrders: function () {
                     var _this = this;
                     this.httpPost("{:api_url('/wechat/Wxmchpay/mchpays')}", {
-                        action : 'handleMchpay'
+                        action: 'handleMchpay'
                     }, function (res) {
                         if (res.status) {
                             _this.$message.success('处理成功');
-                            _this.getRedpacks();
+                            _this.getList();
                         } else {
                             this.$message.error(res.msg);
                         }
                     })
                 },
-                virtualOrder:function () {
-                    var _this = this;
-                    this.httpPost("{:api_url('/wechat/Wxmchpay/mchpays')}", {
-                        action : 'virtualOrder'
-                    }, function (res) {
-                        if (res.status) {
-                            _this.$message.success('处理成功');
-                            _this.getRedpacks();
-                        } else {
-                            this.$message.error(res.msg);
+                createOrder: function () {
+                    var that = this;
+                    layer.open({
+                        type: 2,
+                        title: '创建企业付款订单',
+                        content: "{:api_url('/wechat/Wxmchpay/createMchpay')}",
+                        area: ['85%', '85%'],
+                        end: function () {
+                            that.getList()
                         }
                     })
                 },
                 deleteEvent: function (row) {
                     var postData = {
                         id: row.id,
-                        action : 'deleteEvent'
+                        action: 'deleteEvent'
                     };
                     var _this = this;
                     this.$confirm('是否确认删除该记录', '提示', {
@@ -214,7 +219,7 @@
                             _this.httpPost("{:api_url('/wechat/Wxmchpay/mchpays')}", postData, function (res) {
                                 if (res.status) {
                                     _this.$message.success('删除成功');
-                                    _this.getRedpacks();
+                                    _this.getList();
                                 } else {
                                     _this.$message.error(res.msg);
                                 }
@@ -224,31 +229,23 @@
 
                 },
                 detailEvent: function (refund_result) {
-                    if(Object.prototype.toString.call(refund_result) === "[object String]") {
-                        var viewRefundResult = [];
-                        viewRefundResult.push({
-                            refund_result : refund_result
-                        });
-                        this.resultDetail = viewRefundResult;
-                    } else {
-                        this.resultDetail = refund_result;
-                    }
+                    this.resultDetail = refund_result;
                     this.detailDialogVisible = true;
                 },
                 searchEvent: function () {
                     this.page = 1;
-                    this.getRedpacks();
+                    this.getList();
                 },
                 currentChangeEvent: function (page) {
                     this.page = page;
-                    this.getRedpacks();
+                    this.getList();
                 },
-                getRedpacks: function () {
+                getList: function () {
                     var _this = this;
                     var where = Object.assign({
                         page: this.page,
                         limit: this.limit,
-                        action : 'ajaxList'
+                        action: 'ajaxList'
                     }, this.searchData);
                     $.ajax({
                         url: "{:api_url('/wechat/Wxmchpay/mchpays')}",

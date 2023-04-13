@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: cycle_3
- * Date: 2020/10/31
- * Time: 9:26
  */
 
 namespace app\wechat\controller;
@@ -23,7 +20,7 @@ class Wxmchpay extends AdminController
 {
 
     /**
-     * 企业到付
+     * 企业到付记录管理
      * @return string|\think\response\Json
      * @throws \think\db\exception\DbException
      * @throws \Throwable
@@ -38,13 +35,13 @@ class Wxmchpay extends AdminController
 
             $where = [];
             if ($appId) {
-                $where[] = ['app_id', 'like', '%'.$appId.'%'];
+                $where[] = ['app_id', 'like', '%' . $appId . '%'];
             }
             if ($openId) {
-                $where[] = ['open_id', 'like', '%'.$openId.'%'];
+                $where[] = ['open_id', 'like', '%' . $openId . '%'];
             }
             if ($partnerTradeNo) {
-                $where[] = ['partner_trade_no', 'like', '%'.$partnerTradeNo.'%'];
+                $where[] = ['partner_trade_no', 'like', '%' . $partnerTradeNo . '%'];
             }
 
             $WechatWxpayMchpay = new WechatWxpayMchpay();
@@ -66,7 +63,7 @@ class Wxmchpay extends AdminController
                 }
             } else {
                 if ($action == 'handleMchpay') {
-                    //调用处理
+                    //主动调用处理
                     $WechatApplication = new WechatApplication();
                     $app_ids = $WechatApplication->column('app_id');
                     foreach ($app_ids as $app_id) {
@@ -74,17 +71,38 @@ class Wxmchpay extends AdminController
                         $wxpay_service->mchpay()->doMchpayOrder();
                     }
                     return self::makeJsonReturn(true, [], '处理成功');
-                } else {
-                    if ($action == 'virtualOrder') {
-                        //创建虚拟订单
-                        $wxpay_service = new WxpayService('wx284b6e60fa259e39');
-                        return self::makeJsonReturn(true,
-                            $wxpay_service->mchpay()->createMchpay('oizoj0eS812Fms7ejAyQth4rIjsk', 0.30 * 100,
-                                '企业付款'));
-                    }
                 }
             }
         }
         return View::fetch('mchpays');
+    }
+
+    /**
+     * 创建企业付款订单
+     * @return string|\think\response\Json
+     * @throws \Throwable
+     */
+    function createMchpay()
+    {
+        $action = input('_action', '', 'trim');
+        if ($action == 'submit') {
+            $form = input('post.form');
+            $app_id = $form['app_id'];
+            $open_id = $form['open_id'];
+            $price = intval($form['price']);
+            $description = $form['description'];
+            if (empty($app_id) || empty($open_id) || $price <= 0) {
+                return self::makeJsonReturn(false, null, '参数异常');
+            }
+            // 创建订单
+            $wxpay_service = new WxpayService($app_id);
+            try {
+                $res = $wxpay_service->mchpay()->createMchpay($open_id, intval($price * 100), $description);
+                return self::makeJsonReturn(true, $res->id, '已创建企业付款订单，请等候系统打款');
+            } catch (\Throwable $e) {
+                return self::makeJsonReturn(false, null, '操作失败：' . $e->getMessage());
+            }
+        }
+        return View::fetch('createMchpay');
     }
 }
