@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: zhlhuang
- * Date: 2020-09-11
- * Time: 15:29.
  */
 
 namespace app\wechat\controller;
@@ -23,9 +20,13 @@ use think\Request;
 use think\response\Json;
 use Throwable;
 
+/**
+ * 公众号管理
+ */
 class Office extends AdminController
 {
     /**
+     * 发送模板消息
      * @param  Request  $request
      * @return Json
      * @throws Throwable
@@ -98,7 +99,7 @@ class Office extends AdminController
     }
 
     /**
-     * 消息模板列表
+     * 消息模板管理
      * @param  Request  $request
      * @return array|string
      * @throws \think\db\exception\DbException
@@ -141,7 +142,7 @@ class Office extends AdminController
     }
 
     /**
-     * 用户列表
+     * 用户管理
      * @param  Request  $request
      * @return array|string
      * @throws \think\db\exception\DbException
@@ -171,7 +172,7 @@ class Office extends AdminController
     }
 
     /**
-     * 参数二维码
+     * 参数二维码管理
      * @throws Throwable
      */
     public function qrcode()
@@ -228,7 +229,7 @@ class Office extends AdminController
     }
 
     /**
-     * 事件消息
+     * 事件消息管理
      * @return array|string
      * @throws \think\db\exception\DbException
      */
@@ -275,7 +276,7 @@ class Office extends AdminController
     }
 
     /**
-     * 内容消息
+     * 内容消息管理
      * @return array|string
      */
     function message()

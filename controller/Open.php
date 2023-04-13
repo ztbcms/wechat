@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: cycle_3
- * Date: 2020/11/2
- * Time: 11:27
  */
 
 
@@ -18,7 +15,6 @@ use EasyWeChat\OpenPlatform\Server\Guard;
 
 /**
  * 第三方公众平台管理
- * Class Open
  * @package app\wechat\controller
  */
 class Open extends BaseController

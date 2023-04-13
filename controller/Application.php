@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: zhlhuang
- * Date: 2020-09-08
- * Time: 16:27.
  */
 
 namespace app\wechat\controller;
@@ -93,6 +90,10 @@ class Application extends AdminController
         return self::createReturn(true, $lists, '');
     }
 
+    /**
+     * 应用列表
+     * @return string
+     */
     public function index()
     {
         return View::fetch('index');

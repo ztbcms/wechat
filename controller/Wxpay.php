@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: zhlhuang
- * Date: 2020-09-11
- * Time: 15:59.
  */
 
 namespace app\wechat\controller;
@@ -16,6 +13,9 @@ use think\facade\View;
 use think\Request;
 use think\response\Json;
 
+/**
+ * 微信支付管理
+ */
 class Wxpay extends AdminController
 {
     /**

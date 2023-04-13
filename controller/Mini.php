@@ -1,7 +1,6 @@
 <?php
 /**
  * User: Cycle3
- * Date: 2020/10/28
  */
 
 namespace app\wechat\controller;

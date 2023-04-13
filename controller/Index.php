@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: zhlhuang
- * Date: 2020-09-08
- * Time: 17:39.
  */
 
 namespace app\wechat\controller;
@@ -30,7 +27,7 @@ class Index extends BaseController
 
     /**
      * 用户信息授权
-     *
+     * snsapi_userinfo （弹出授权页面，可通过openid拿到昵称、性别、所在地。并且， 即使在未关注的情况下，只要用户授权，也能获取其信息 ）
      * @param $appid
      * @param  Request  $request
      * @throws Throwable
@@ -43,7 +40,7 @@ class Index extends BaseController
             throw new BaseApiException('未设置回调URL');
         }
         $token = md5(time().rand(100000, 999999));
-        Cache::set($token, $redirectUrl);
+        Cache::set($token, $redirectUrl, 3*60);
         //统一回调到 callback 处理
         $url = api_url("/wechat/index/callback", [])."/appid/{$appid}/token/{$token}";
         $response = $office->getApp()->oauth->scopes(['snsapi_userinfo'])
@@ -53,6 +50,7 @@ class Index extends BaseController
 
     /**
      * 用户静默授权
+     * snsapi_base （不弹出授权页面，直接跳转，只能获取用户openid）
      * @param $appid
      * @param  Request  $request
      * @throws Throwable
