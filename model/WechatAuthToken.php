@@ -10,15 +10,10 @@ namespace app\wechat\model;
 
 
 use app\wechat\model\mini\WechatMiniUser;
-use app\wechat\model\WechatOfficeUser;
 use think\Model;
-use think\model\concern\SoftDelete;
 
 class WechatAuthToken extends Model
 {
-    use SoftDelete;
-    protected $deleteTime = 'delete_time';
-    protected $defaultSoftDelete = 0;
     protected $name = 'wechat_auth_token';
     protected $updateTime = false;
 
@@ -49,13 +44,13 @@ class WechatAuthToken extends Model
     function getUserInfoByToken($token)
     {
         $where = [
-            'token'       => $token,
+            'token' => $token,
             'expire_time' => ['gt', time()]
         ];
         $res = $this->where($where)->find();
         if ($res) {
             $userWhere = [
-                'app_id'  => $res['app_id'],
+                'app_id' => $res['app_id'],
                 'open_id' => $res['open_id']
             ];
             if ($res['app_account_type'] == self::ACCOUNT_TYPE_OFFICE) {
