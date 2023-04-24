@@ -6,6 +6,10 @@
 $ composer require overtrue/wechat 4.0 -vvv
 ```
 
+## 配置
+
+1、请求日志的level默认为info，如果需要打印debug日志，请到`config/wechat.php`中配置`channels`为`dev`
+
 ## 应用管理
 微信开发涉及到公众号（服务号）、小程序开发，都需要添加应用。目前微信支付是依附于公众号和小程序，下阶段再考虑分开。所以有可能同一个微信支付，需要分别在小程序、公众号填写配置内容。
 
