@@ -37,9 +37,6 @@ class OfficeService extends BaseService
     protected $app;
     protected $app_id;
 
-    protected $log_file = './wechat.log';
-    protected $debug_level = 'debug';
-
     const APPID_APPLICATION = 'app_id';
     const ALIAS_APPLICATION = 'alias';
 
@@ -66,10 +63,7 @@ class OfficeService extends BaseService
             // 下面为可选项
             // 指定 API 调用返回结果的类型：array(default)/collection/object/raw/自定义类名
             'response_type' => 'array',
-            'log' => [
-                'level' => $this->debug_level,
-                'file'  => $this->log_file,
-            ],
+            'log' => config('wechat.log'),
         ];
         $this->app_id = $application->app_id;
         $this->app = Factory::officialAccount($config);
