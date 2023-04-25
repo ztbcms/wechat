@@ -158,7 +158,7 @@ class Index extends BaseController
     }
 
     /**
-     * 接收消息
+     * 接收公众号消息推送（普通消息、事件）
      * @param $appid
      * @throws Throwable
      */
@@ -170,12 +170,10 @@ class Index extends BaseController
             {
                 switch ($message['MsgType']) {
                     case 'event':
-                        $officeService->message()->handleEventMessage($message);
-                        break;
+                        return $officeService->message()->handleEventMessage($message);
                     default:
                         //其他消息形式都归到消息处理
-                        $officeService->message()->handleMessage($message);
-                        break;
+                        return $officeService->message()->handleMessage($message);
                 }
             });
             $officeService->getApp()->server->serve()->send();

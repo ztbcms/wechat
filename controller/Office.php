@@ -27,7 +27,7 @@ class Office extends AdminController
 {
     /**
      * 发送模板消息
-     * @param  Request  $request
+     * @param Request $request
      * @return Json
      * @throws Throwable
      */
@@ -47,7 +47,7 @@ class Office extends AdminController
         $miniProgram = [];
         if ($pageType == 'mini') {
             $miniProgram = [
-                'appid'    => $miniAppid,
+                'appid' => $miniAppid,
                 'pagepath' => $page
             ];
         }
@@ -63,7 +63,7 @@ class Office extends AdminController
 
     /**
      * 删除消息模板
-     * @param  Request  $request
+     * @param Request $request
      * @return Json
      */
     function deleteTemplate(Request $request): Json
@@ -100,7 +100,7 @@ class Office extends AdminController
 
     /**
      * 消息模板管理
-     * @param  Request  $request
+     * @param Request $request
      * @return array|string
      * @throws \think\db\exception\DbException
      */
@@ -124,7 +124,7 @@ class Office extends AdminController
 
     /**
      * 删除用户
-     * @param  Request  $request
+     * @param Request $request
      * @return Json
      */
     public function deleteUser(Request $request): Json
@@ -143,7 +143,7 @@ class Office extends AdminController
 
     /**
      * 用户管理
-     * @param  Request  $request
+     * @param Request $request
      * @return array|string
      * @throws \think\db\exception\DbException
      */
@@ -155,13 +155,13 @@ class Office extends AdminController
             $nickName = $request->get('nick_name');
             $where = [];
             if ($appId) {
-                $where[] = ['app_id', 'like', '%'.$appId.'%'];
+                $where[] = ['app_id', 'like', '%' . $appId . '%'];
             }
             if ($openId) {
-                $where[] = ['open_id', 'like', '%'.$openId.'%'];
+                $where[] = ['open_id', 'like', '%' . $openId . '%'];
             }
             if ($nickName) {
-                $where[] = ['nick_name', 'like', '%'.$nickName.'%'];
+                $where[] = ['nick_name', 'like', '%' . $nickName . '%'];
             }
             $officeUsersModel = new WechatOfficeUser();
             $lists = $officeUsersModel->where($where)->order('id', 'DESC')->paginate(20);
@@ -185,10 +185,10 @@ class Office extends AdminController
             $category = input('get.category', '');
             $where = [];
             if ($appId) {
-                $where[] = ['app_id', 'like', '%'.$appId.'%'];
+                $where[] = ['app_id', 'like', '%' . $appId . '%'];
             }
             if ($category) {
-                $where[] = ['category', 'like', '%'.$category.'%'];
+                $where[] = ['category', 'like', '%' . $category . '%'];
             }
 
             $WechatOfficeQrcode = new WechatOfficeQrcode();
@@ -250,10 +250,10 @@ class Office extends AdminController
             $event = input('get.event', '');
             $where = [];
             if ($appId) {
-                $where[] = ['app_id', 'like', '%'.$appId.'%'];
+                $where[] = ['app_id', 'like', '%' . $appId . '%'];
             }
             if ($openId) {
-                $where[] = ['from_user_name', 'like', '%'.$openId.'%'];
+                $where[] = ['from_user_name', 'like', '%' . $openId . '%'];
             }
             if ($event) {
                 $where[] = ['event', '=', $event];
@@ -293,10 +293,10 @@ class Office extends AdminController
             $msgType = input('get.msg_type', '');
             $where = [];
             if ($appId) {
-                $where[] = ['app_id', 'like', '%'.$appId.'%'];
+                $where[] = ['app_id', 'like', '%' . $appId . '%'];
             }
             if ($openId) {
-                $where[] = ['from_user_name', 'like', '%'.$openId.'%'];
+                $where[] = ['from_user_name', 'like', '%' . $openId . '%'];
             }
             if ($msgType) {
                 $where[] = ['msg_type', '=', $msgType];
@@ -321,6 +321,35 @@ class Office extends AdminController
             }
         }
         return View::fetch('message');
+    }
+
+    /**
+     * 模拟消息推送
+     */
+    function simulatedMsg()
+    {
+        $action = input('_action');
+        if ($action == 'submit') {
+            $appid = input('app_id');
+            $msg = $_POST['msg'];
+            $msg = json_decode(json_encode(simplexml_load_string($msg)), true);
+            if (empty($appid) || empty($msg['MsgType'])) {
+                return self::makeJsonReturn(false, null, '参数异常');
+            }
+            $officeService = new OfficeService($appid);
+            switch ($msg['MsgType']) {
+                case 'event':
+                    $officeService->message()->handleEventMessage($msg);
+                    break;
+                default:
+                    //其他消息形式都归到消息处理
+                    $officeService->message()->handleMessage($msg);
+                    break;
+            }
+            return self::makeJsonReturn(true, $msg, '操作完成');
+        }
+
+        return view('simulatedMsg');
     }
 
 }
