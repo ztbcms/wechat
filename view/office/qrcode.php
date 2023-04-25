@@ -5,8 +5,11 @@
         </div>
         <div>
             <el-form :inline="true" :model="searchData" class="demo-form-inline">
-                <el-form-item label="appid">
-                    <el-input v-model="searchData.app_id" placeholder="请输入公众号appid"></el-input>
+                <el-form-item label="AppID">
+                    <el-input v-model="searchData.app_id" placeholder="请输入公众号AppID"></el-input>
+                </el-form-item>
+                <el-form-item label="分类名称">
+                    <el-input v-model="searchData.category" placeholder="请输入分类名称"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="searchEvent">查询</el-button>
@@ -24,7 +27,7 @@
                 <el-table-column
                         prop="app_id"
                         align="center"
-                        label="appid"
+                        label="AppID"
                         min-width="180">
                 </el-table-column>
                 <el-table-column
@@ -32,8 +35,8 @@
                         align="center"
                         min-width="100">
                     <template slot-scope="scope">
-                        <img class="avatar" @click="showImageDialogVisible=true;showImageUrl=scope.row.qrcode_url"
-                             :src="scope.row.qrcode_url" alt="">
+                        <img class="avatar" @click="showImageDialogVisible=true;showImageUrl=scope.row.qrcode_base64"
+                             :src="scope.row.qrcode_base64" alt="">
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -48,6 +51,12 @@
                             永久
                         </div>
                     </template>
+                </el-table-column>
+                <el-table-column
+                        label="分类名称"
+                        prop="category"
+                        align="center"
+                        min-width="100">
                 </el-table-column>
                 <el-table-column
                         prop="param"
@@ -126,17 +135,21 @@
                         <el-radio v-model="createCodeType" label="0">临时</el-radio>
                         <el-radio v-model="createCodeType" label="1">永久</el-radio>
                     </el-form-item>
-                    <el-form-item v-if="createCodeType=='0'" label="过期时间">
+                    <el-form-item label="分类名称">
+                        <el-input v-model="createCategory" placeholder="分类名称"></el-input>
+                        <div class="tip">英文数字均可；仅作为分类标识用</div>
+                    </el-form-item>
+                    <el-form-item v-if="createCodeType=='0'" label="过期时间（天）">
                         <el-input-number v-model="createExpireTime" :min="1" :max="30"
                                          label="过期时间"></el-input-number>
                     </el-form-item>
                     <el-form-item label="二维码参数">
                         <el-input v-model="createCodeParam" placeholder="请输入二维码参数"></el-input>
                         <div v-if="createCodeType=='0'" class="tip">
-                            临时类二维码参数可以是32位内字符串
+                            临时二维码时为32位非0整型或字符串类型，长度限制为1到64
                         </div>
                         <div v-if="createCodeType=='1'" class="tip">
-                            永久类二维码参数只可以数字1~100000
+                            永久类二维码参数只可以数字1~100000或字符串类型，长度限制为1到64
                         </div>
                     </el-form-item>
                 </el-form>
@@ -174,18 +187,18 @@
                 showImageDialogVisible: false,
                 showImageUrl: "",
                 searchData: {
-                    open_id: "",
                     app_id: "",
-                    nick_name: ""
+                    category: ""
                 },
                 users: [],
                 page: 1,
-                limit: 20,
+                limit: 10,
                 totalPages: 0,
                 totalItems: 0,
                 createDialogVisible: false,
                 createAppId: 0,
                 createCodeType: "0",
+                createCategory: '',
                 createCodeParam: '',
                 createExpireTime: 1,
                 offices: []
@@ -200,9 +213,10 @@
                     var postData = {
                         app_id: this.createAppId,
                         type: this.createCodeType,
+                        category: this.createCodeType,
                         expire_time: this.createExpireTime,
                         param: this.createCodeParam,
-                        action : 'createCode'
+                        action : 'createCode',
                     };
                     var _this = this;
                     this.httpPost("{:api_url('wechat/office/qrcode')}", postData, function (res) {

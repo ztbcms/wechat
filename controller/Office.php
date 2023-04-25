@@ -182,9 +182,13 @@ class Office extends AdminController
         if ($action == 'ajaxList') {
             //二维码列表
             $appId = input('get.app_id', '');
+            $category = input('get.category', '');
             $where = [];
             if ($appId) {
                 $where[] = ['app_id', 'like', '%'.$appId.'%'];
+            }
+            if ($category) {
+                $where[] = ['category', 'like', '%'.$category.'%'];
             }
 
             $WechatOfficeQrcode = new WechatOfficeQrcode();
@@ -211,6 +215,7 @@ class Office extends AdminController
                     $type = input('post.type');
                     $expireTime = input('post.expire_time');
                     $param = input('post.param');
+                    $category = input('post.category');
 
                     $officeService = new OfficeService($appId);
                     if ($type == WechatOfficeQrcode::QRCODE_TYPE_TEMPORARY) {
