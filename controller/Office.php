@@ -332,23 +332,26 @@ class Office extends AdminController
         if ($action == 'submit') {
             $appid = input('app_id');
             $msg = $_POST['msg'];
-            $msg = json_decode(json_encode(simplexml_load_string($msg)), true);
-            if (empty($appid) || empty($msg['MsgType'])) {
-                return self::makeJsonReturn(false, null, '参数异常');
+            try {
+                $msg = json_decode(json_encode(simplexml_load_string($msg)), true);
+                if (empty($appid) || empty($msg['MsgType'])) {
+                    return self::makeJsonReturn(false, null, '参数异常');
+                }
+                $officeService = new OfficeService($appid);
+                switch ($msg['MsgType']) {
+                    case 'event':
+                        $officeService->message()->handleEventMessage($msg);
+                        break;
+                    default:
+                        //其他消息形式都归到消息处理
+                        $officeService->message()->handleMessage($msg);
+                        break;
+                }
+                return self::makeJsonReturn(true, $msg, '操作完成');
+            } catch (\Exception $exception) {
+                return self::makeJsonReturn(false, null, $exception->getMessage());
             }
-            $officeService = new OfficeService($appid);
-            switch ($msg['MsgType']) {
-                case 'event':
-                    $officeService->message()->handleEventMessage($msg);
-                    break;
-                default:
-                    //其他消息形式都归到消息处理
-                    $officeService->message()->handleMessage($msg);
-                    break;
-            }
-            return self::makeJsonReturn(true, $msg, '操作完成');
         }
-
         return view('simulatedMsg');
     }
 

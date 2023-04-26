@@ -5,7 +5,7 @@
                 <el-form-item label="公众号AppID" required>
                     <el-input v-model="form.app_id"></el-input>
                 </el-form-item>
-                <el-form-item label="消息内容">
+                <el-form-item label="消息内容" required>
                     <el-input type="textarea"
                               v-model="form.msg"
                               :autosize="{ minRows: 4 }"
@@ -35,7 +35,6 @@
                         app_id: "",
                         msg: "",
                     },
-                    // sample: "<xml> <ToUserName>gh123123</ToUserName> <FromUserName>wx123</FromUserName> <CreateTime>1348831860</CreateTime> <MsgType>text</MsgType> <Content>This is test</Content> <MsgId>11122</MsgId> <MsgDataId>111</MsgDataId> <Idx>2222</Idx> </xml>",
                     sample: `<xml>
   <ToUserName>gh123123</ToUserName>
   <FromUserName>wx123</FromUserName>

@@ -29,6 +29,7 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="searchEvent">查询</el-button>
+                    <el-button type="primary" @click="toSimulatedMsg">模拟事件消息</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -205,6 +206,19 @@
                                 _this.totalPages = res.data.last_page;
                                 _this.totalItems = res.data.total
                             }
+                        }
+                    })
+                },
+                toSimulatedMsg: function () {
+                    var that = this
+                    var url = '{:api_url("/wechat/Office/simulatedMsg")}';
+                    layer.open({
+                        type: 2,
+                        title: '模拟消息',
+                        content: url,
+                        area: ['60%', '75%'],
+                        end: function () {
+                            that.getMessage()
                         }
                     })
                 }
