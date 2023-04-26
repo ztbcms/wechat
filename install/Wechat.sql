@@ -356,7 +356,6 @@ CREATE TABLE `cms_wechat_office_event_message`
     `latitude`       varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '地理位置纬度',
     `longitude`      varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '地理位置经度',
     `precision`      varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '地址位置精确度',
-    `delete_time`    int(15) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
     PRIMARY KEY (`id`) USING BTREE,
     INDEX `id`(`id`) USING BTREE,
     INDEX `app_id`(`app_id`) USING BTREE
@@ -384,7 +383,6 @@ CREATE TABLE `cms_wechat_office_message`
     `title`          varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '链接标题',
     `description`    varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '链接介绍',
     `url`            varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '分享链接url',
-    `delete_time`    int(15) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
     PRIMARY KEY (`id`) USING BTREE,
     INDEX `id`(`id`) USING BTREE,
     INDEX `app_id`(`app_id`) USING BTREE,
