@@ -25,7 +25,7 @@ class Message
      * @param $message
      * @return \EasyWeChat\Kernel\Messages\Message|null
      */
-    function handleEventMessage($message)
+    function handleEventMessage($appid, $message)
     {
         $postData = [
             'app_id' => $this->office->getAppId(),
@@ -48,7 +48,7 @@ class Message
         $class_name = "\\app\\wechat\\libs\\office\\handler\\$name";
         throw_if(!class_exists($class_name), new Exception('文件不存在' . $class_name));
         $handler = new $class_name();
-        return $handler->handle($message);
+        return $handler->handle($appid, $message);
     }
 
 
@@ -57,7 +57,7 @@ class Message
      * @param $message
      * @return \EasyWeChat\Kernel\Messages\Message|null
      */
-    function handleMessage($message)
+    function handleMessage($appid, $message)
     {
         $postData = [
             'app_id' => $this->office->getAppId(),
@@ -88,6 +88,6 @@ class Message
         $class_name = "\\app\\wechat\\libs\\office\\handler\\$name";
         throw_if(!class_exists($class_name), new Exception('文件不存在' . $class_name));
         $handler = new $class_name();
-        return $handler->handle($message);
+        return $handler->handle($appid, $message);
     }
 }

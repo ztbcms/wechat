@@ -8,7 +8,7 @@ namespace app\wechat\libs\office\handler;
 class ImageMessageHandler implements EventHandlerInterface
 {
 
-    public function handle(array $msg_payload)
+    public function handle($appid, array $msg_payload)
     {
         return null;
     }

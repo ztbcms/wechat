@@ -71,11 +71,19 @@ class OfficeScanLogin extends BaseController
     }
 
     /**
-     * 确认登录完成页
+     * 默认的确认登录完成页
      * @return string
      */
     function finishLogin()
     {
         return '登录完成';
+    }
+
+    /**
+     * 确认登录页
+     * @return void
+     */
+    function confirmLogin(){
+        return '确认登录页';
     }
 }

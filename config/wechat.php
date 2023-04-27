@@ -37,6 +37,6 @@ return [
     ],
     // 公众号扫码登录功能配置
     'office_scan_login' => [
-        'enable' => false,// 是否启用
+        'enable' => true,// 是否启用
     ],
 ];
