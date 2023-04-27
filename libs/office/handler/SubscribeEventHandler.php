@@ -39,7 +39,8 @@ class SubscribeEventHandler implements EventHandlerInterface
             'open_id' => $msg_payload['FromUserName'],
             'login_code' => str_replace('qrscene_', '', $msg_payload['EventKey']),
         ];
-        $token = $jwtService->createToken($info);
+        $res = $jwtService->createToken($info);
+        $token = $res['data']['token'];
         $url = api_url('wechat/login.OfficeScanLogin/confirmLogin', ['code' => $token]);
         return new Text("<a href='{$url}'>点击此处确认登录</a>");
     }

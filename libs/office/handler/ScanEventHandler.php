@@ -7,6 +7,7 @@ namespace app\wechat\libs\office\handler;
 
 use app\common\service\jwt\JwtService;
 use EasyWeChat\Kernel\Messages\Text;
+use think\Exception;
 
 /**
  * 扫描带参数二维码事件
@@ -38,7 +39,8 @@ class ScanEventHandler implements EventHandlerInterface
             'open_id' => $msg_payload['FromUserName'],
             'login_code' => $msg_payload['EventKey'],
         ];
-        $token = $jwtService->createToken($info);
+        $res = $jwtService->createToken($info);
+        $token = $res['data']['token'];
         $url = api_url('wechat/login.OfficeScanLogin/confirmLogin', ['code' => $token]);
         return new Text("<a href='{$url}'>点击此处确认登录</a>");
     }
