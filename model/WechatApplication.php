@@ -25,7 +25,7 @@ class WechatApplication extends Model
      * @param  string  $alias
      * @return int|mixed
      */
-    public static function getAppId($alias = ''){
+    public static function getAppIdByAlias($alias = ''){
        $res = self::where('alias','=',$alias)
             ->value('app_id') ?: 0;
        throw_if(!$res, new Exception('找不到应用'));

@@ -1,0 +1,81 @@
+<?php
+/**
+ * Author: Jayin Taung <tonjayin@gmail.com>
+ */
+
+namespace app\wechat\controller\login;
+
+use app\BaseController;
+use app\wechat\model\WechatApplication;
+use app\wechat\service\OfficeService;
+use think\facade\Cache;
+use think\facade\View;
+
+/**
+ * 公众号扫码登录
+ */
+class OfficeScanLogin extends BaseController
+{
+    /**
+     * 授权首页
+     * @return \think\response\View
+     */
+    function index()
+    {
+        $redirect_url = input('get.redirect_url');
+        if (empty($redirect_url)) {
+            $redirect_url = api_url('/wechat/login.OfficeScanLogin/finishLogin');
+        }
+        View::assign('redirect_url', $redirect_url);
+        return view('index');
+    }
+
+    /**
+     * 获取登录二维码
+     * @return \think\response\Json
+     * @throws \Throwable
+     */
+    function getLoginCode()
+    {
+        $login_code = generateUniqueId();
+        $app_config = config('wechat.application');
+        $app_id = WechatApplication::getAppIdByAlias($app_config['default_office_alias']);
+        $officeService = new OfficeService($app_id);
+        try {
+            $ttl = 5 * 60;
+            $qrcode = $officeService->qrcode()->temporary($login_code, $ttl, date('Ymd'));
+            return self::makeJsonReturn(true, [
+                'code' => $login_code,
+                'qrcode' => $qrcode->qrcode_base64,
+                'ttl' => $ttl,
+            ]);
+        } catch (\Throwable $e) {
+            return self::makeJsonReturn(false, null, $e->getMessage());
+        }
+    }
+
+    /**
+     * 校验登录码是否已确认登录
+     * @return \think\response\Json
+     */
+    function checkCode()
+    {
+        $login_code = input('code');
+        if (empty($login_code)) {
+            return self::makeJsonReturn(false, null, '参数异常');
+        }
+        $token = Cache::get('LoginCode_' . $login_code . '_token', '');
+        return self::makeJsonReturn(true, [
+            'token' => $token,
+        ]);
+    }
+
+    /**
+     * 确认登录完成页
+     * @return string
+     */
+    function finishLogin()
+    {
+        return '登录完成';
+    }
+}
