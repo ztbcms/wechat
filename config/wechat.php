@@ -4,6 +4,12 @@
  */
 
 return [
+    'application' => [
+        // 默认的公众号的别名
+        'default_office_alias' => 'default_office',
+        // 默认的小程序别名
+        'default_mini_alias' => 'default_mini',
+    ],
     /**
      * easywechat 日志配置
      *
