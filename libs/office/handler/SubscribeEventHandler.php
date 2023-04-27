@@ -19,13 +19,28 @@ class SubscribeEventHandler implements EventHandlerInterface
     {
         $config = config('wechat.office_scan_login');
         if ($config['enable']) {
-            $msg_payload['appid'] = $appid;
-            $jwtService = new JwtService();
-            $token = $jwtService->createToken($msg_payload);
-            $url = api_url('wechat/login.OfficeScanLogin/index', ['code' => $token]);
-            return new Text("<a href='{$url}'>点击确认登录</a>");
+            return $this->handleOfficeScanLogin($appid, $msg_payload);
         }
 
         return null;
+    }
+
+    /**
+     * 扫码登录业务逻辑
+     * @param $appid
+     * @param array $msg_payload
+     * @return Text
+     */
+    function handleOfficeScanLogin($appid, array $msg_payload)
+    {
+        $jwtService = new JwtService();
+        $info = [
+            'app_id' => $appid,
+            'open_id' => $msg_payload['FromUserName'],
+            'login_code' => str_replace('qrscene_', '', $msg_payload['EventKey']),
+        ];
+        $token = $jwtService->createToken($info);
+        $url = api_url('wechat/login.OfficeScanLogin/confirmLogin', ['code' => $token]);
+        return new Text("<a href='{$url}'>点击此处确认登录</a>");
     }
 }
