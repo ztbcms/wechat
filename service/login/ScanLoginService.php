@@ -28,7 +28,7 @@ class ScanLoginService extends BaseService
             return $res;
         }
         $info = $res['data'];
-        $app_id = $res['app_id'];
+        $app_id = $info['app_id'];
         $open_id = $info['open_id'];
         $login_code = $info['login_code'];
         $officeService = new OfficeService($app_id);
