@@ -6,6 +6,7 @@
 namespace app\wechat\libs\office\handler;
 
 use app\common\service\jwt\JwtService;
+use app\wechat\service\login\ScanLoginService;
 use EasyWeChat\Kernel\Messages\Text;
 use think\facade\Cache;
 
@@ -40,10 +41,14 @@ class SubscribeEventHandler implements EventHandlerInterface
             'open_id' => $msg_payload['FromUserName'],
             'login_code' => str_replace('qrscene_', '', $msg_payload['EventKey']),
         ];
-        $token = $jwtService->createToken($info);
-        $url = api_url('wechat/login.OfficeScanLogin/confirmLogin', ['code' => $token]);
-        // 登录码标识为空，即用户已扫码
-        Cache::set('LoginCode_' . $info['login_code'] . '_token', '', 5 * 60);
-        return new Text("<a href='{$url}'>点击此处确认登录</a>");
+        $token = Cache::get(ScanLoginService::getLoginCodeCacheKey($info['login_code']));
+        if ($token === null) {
+            $token = $jwtService->createToken($info);
+            $url = api_url('wechat/login.OfficeScanLogin/confirmLogin', ['code' => $token]);
+            // 登录码标识为空，即用户已扫码
+            Cache::set(ScanLoginService::getLoginCodeCacheKey($info['login_code']), '', 5 * 60);
+            return new Text("<a href='{$url}'>点击此处确认登录</a>");
+        }
+        return null;
     }
 }

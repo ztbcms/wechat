@@ -14,6 +14,18 @@ use think\facade\Cache;
 
 class ScanLoginService extends BaseService
 {
+    // 公众号二维码分类：扫码登录
+    const OFFICE_QRCODE_CATEGORY_SCAN_LOGIN = 'SCAN_LOGIN';
+
+    /**
+     * 换取登录码对应的缓存key
+     * @param $login_code
+     * @return string
+     */
+    static function getLoginCodeCacheKey($login_code)
+    {
+        return 'LoginCode_' . $login_code . '_token';
+    }
 
     /**
      * 以临时token换取登录凭证
@@ -51,8 +63,8 @@ class ScanLoginService extends BaseService
                 'open_id' => $open_id,
                 'exp' => time() + 30 * 24 * 60 * 60,
             ]);
-            Cache::set('LoginCode_' . $login_code . '_token', $token, 5 * 60);
-            return self::createReturn(true, ['token' => $token], '微信配置异常');
+            Cache::set(ScanLoginService::getLoginCodeCacheKey($login_code), $token, 2 * 60);
+            return self::createReturn(true, ['token' => $token], '授权完成');
         } catch (InvalidConfigException $e) {
             return self::createReturn(false, null, '微信配置异常');
         }

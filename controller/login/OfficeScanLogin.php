@@ -6,6 +6,7 @@
 namespace app\wechat\controller\login;
 
 use app\BaseController;
+use app\Request;
 use app\wechat\model\WechatApplication;
 use app\wechat\service\login\ScanLoginService;
 use app\wechat\service\OfficeService;
@@ -21,12 +22,23 @@ class OfficeScanLogin extends BaseController
      * 授权首页
      * @return \think\response\View
      */
-    function index()
+    function index(Request $request)
     {
         $redirect_url = input('get.redirect_url');
         if (empty($redirect_url)) {
             $redirect_url = api_url('/wechat/login.OfficeScanLogin/finishLogin');
         }
+        // 跳转URL校验
+        $req_url_info = parse_url($request->url(true));
+        $redirect_url_info = parse_url($redirect_url);
+        if ($req_url_info['host'] != $redirect_url_info['host'] && !in_array($redirect_url_info, config('wechat.office_scan_login.auth_allow_domain'))) {
+            return view('tips', [
+                'page_title' => '提示',
+                'status' => 0,
+                'msg' => '跳转域名不在白名单内',
+            ]);
+        }
+
         View::assign('redirect_url', $redirect_url);
         return view('index');
     }
@@ -44,7 +56,7 @@ class OfficeScanLogin extends BaseController
         $officeService = new OfficeService($app_id);
         try {
             $ttl = 5 * 60;
-            $qrcode = $officeService->qrcode()->temporary($login_code, $ttl, date('Ymd'));
+            $qrcode = $officeService->qrcode()->temporary($login_code, $ttl, ScanLoginService::OFFICE_QRCODE_CATEGORY_SCAN_LOGIN);
             return self::makeJsonReturn(true, [
                 'code' => $login_code,
                 'qrcode' => $qrcode->qrcode_base64,
@@ -65,8 +77,9 @@ class OfficeScanLogin extends BaseController
         if (empty($login_code)) {
             return self::makeJsonReturn(false, null, '参数异常');
         }
-        $token = Cache::get('LoginCode_' . $login_code . '_token', null);
+        $token = Cache::get(ScanLoginService::getLoginCodeCacheKey($login_code), null);
         return self::makeJsonReturn(true, [
+            // token=null,说明还没触发扫码事件消息;token=''说明已扫码，未确认;token不为空，说明已确认登录
             'token' => $token,
         ]);
     }
