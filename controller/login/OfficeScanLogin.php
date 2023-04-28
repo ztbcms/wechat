@@ -6,7 +6,9 @@
 namespace app\wechat\controller\login;
 
 use app\BaseController;
+use app\common\service\jwt\JwtService;
 use app\wechat\model\WechatApplication;
+use app\wechat\service\login\ScanLoginService;
 use app\wechat\service\OfficeService;
 use think\facade\Cache;
 use think\facade\View;
@@ -64,7 +66,7 @@ class OfficeScanLogin extends BaseController
         if (empty($login_code)) {
             return self::makeJsonReturn(false, null, '参数异常');
         }
-        $token = Cache::get('LoginCode_' . $login_code . '_token', '');
+        $token = Cache::get('LoginCode_' . $login_code . '_token', null);
         return self::makeJsonReturn(true, [
             'token' => $token,
         ]);
@@ -81,9 +83,15 @@ class OfficeScanLogin extends BaseController
 
     /**
      * 确认登录页
-     * @return void
+     * @return \think\response\View
      */
     function confirmLogin(){
-        return '确认登录页';
+        $code = input('get.code', '');
+        $scanLoginService = new ScanLoginService();
+        $res = $scanLoginService->loginByToken($code);
+        if(!$res['status']) {
+            return view('confirmLogin', ['status' => 0, 'msg' => '参数异常，请重新扫码']);
+        }
+        return view('confirmLogin', ['status' => 1, 'msg' => '已确认登录']);
     }
 }

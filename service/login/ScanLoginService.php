@@ -9,53 +9,52 @@ use app\common\service\BaseService;
 use app\common\service\jwt\JwtService;
 use app\wechat\model\WechatOfficeUser;
 use app\wechat\service\OfficeService;
-use think\Exception;
+use EasyWeChat\Kernel\Exceptions\InvalidConfigException;
 use think\facade\Cache;
 
 class ScanLoginService extends BaseService
 {
+
     /**
-     * 扫参数二维码，用户未关注时，进行关注后的事件推送
-     * @see https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_event_pushes.html
-     * @param $subscribe_msg
+     * 以临时token换取登录凭证
+     * @param $token
+     * @return array|void
+     * @throws \Throwable
      */
-    function loginBySubscribeFromQrcode($office_appid, $subscribe_msg)
+    function loginByToken($token)
     {
-        $qrcode_param = str_replace('qrscene_', '', $subscribe_msg['EventKey']);
-        if (empty($qrcode_param)) {
-            return self::createReturn(false, null, '找不到login_code');
-        }
-        $openid = $subscribe_msg['openid'];
-        $app_config = config('wechat.application');
-        $officeService = new OfficeService($app_config['default_office_alias'], OfficeService::ALIAS_APPLICATION);
-        $res = $officeService->user()->userInfo($openid);
+        $res = (new JwtService())->parserToken($token);
         if (!$res['status']) {
             return $res;
         }
-        $userInfo = $res['data'];
-        $officeUser = WechatOfficeUser::getUserByOpenid($office_appid, $userInfo['openid']);
-        if (!$officeUser) {
-            WechatOfficeUser::addOfficeUser($office_appid, $userInfo);
+        $info = $res['data'];
+        $app_id = $res['app_id'];
+        $open_id = $info['open_id'];
+        $login_code = $info['login_code'];
+        $officeService = new OfficeService($app_id);
+        try {
+            $result = $officeService->user()->userInfo($open_id);
+            if (!$result['status']) {
+                return $res;
+            }
+            $userInfo = $result['data'];
+            $officeUser = WechatOfficeUser::getUserByOpenid($app_id, $open_id);
+            if (!$officeUser) {
+                WechatOfficeUser::addOfficeUser($app_id, $userInfo);
+            } else {
+                WechatOfficeUser::updateOfficeUser($app_id, $userInfo);
+            }
+            // 登录码换取登录凭证token
+            $jwtService = new JwtService();
+            $token = $jwtService->createToken([
+                'app_id' => $app_id,
+                'open_id' => $open_id,
+                'exp' => time() + 30 * 24 * 60 * 60,
+            ]);
+            Cache::set('LoginCode_' . $login_code . '_token', $token, 5 * 60);
+            return self::createReturn(true, ['token' => $token], '微信配置异常');
+        } catch (InvalidConfigException $e) {
+            return self::createReturn(false, null, '微信配置异常');
         }
-
-        $jwtService = new JwtService();
-        $res = $jwtService->createToken([
-            'app_id' => $office_appid,
-            'open_id' => $subscribe_msg['openid'],
-        ]);
-        throw_if(!$res['status'], new Exception('生成jwt失败'));
-        Cache::set('LoginCode_' . $qrcode_param . '_token', $res['data']['token'], 5 * 60);
-        return self::createReturn(true, ['token' => $res['token']]);
-    }
-
-    /**
-     * 扫参数二维码，用户已关注时，使用扫描事件
-     * @see https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_event_pushes.html
-     * @param $scan_msg
-     * @return void
-     */
-    function loginByScanOfficeQrcode($scan_msg)
-    {
-//        return view('');
     }
 }
