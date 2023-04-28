@@ -44,14 +44,14 @@ class Qrcode
 
         throw_if(!$WechatOfficeQrcode->save(), new \Exception('保存二维码失败'));
         return $WechatOfficeQrcode->visible([
-            'qrcode_url', 'type'
+            'qrcode_url', 'type', 'qrcode_base64'
         ]);
     }
 
     /**
      * 生成临时带参二维码
      * @param $param
-     * @param int $expireTime
+     * @param int $expireTime 有效时间，单位秒
      * @return WechatOfficeQrcode
      * @throws Throwable
      */
@@ -75,7 +75,7 @@ class Qrcode
         //生成数据入库
         throw_if(!$WechatOfficeQrcode->save(), new \Exception('保存二维码失败'));
         return $WechatOfficeQrcode->visible([
-            'qrcode_url', 'expire_time', 'type'
+            'qrcode_url', 'expire_time', 'type', 'qrcode_base64'
         ]);
     }
 

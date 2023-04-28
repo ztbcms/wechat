@@ -10,7 +10,7 @@ use EasyWeChat\Kernel\Messages\Text;
 class TextMessageHandler implements EventHandlerInterface
 {
 
-    public function handle(array $msg_payload)
+    public function handle($appid, array $msg_payload)
     {
         return null;
     }

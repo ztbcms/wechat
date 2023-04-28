@@ -166,14 +166,13 @@ class Index extends BaseController
     {
         try {
             $officeService = new OfficeService($appid);
-            $officeService->getApp()->server->push(function ($message) use ($officeService)
-            {
+            $officeService->getApp()->server->push(function ($message) use ($appid, $officeService) {
                 switch ($message['MsgType']) {
                     case 'event':
-                        return $officeService->message()->handleEventMessage($message);
+                        return $officeService->message()->handleEventMessage($appid, $message);
                     default:
                         //其他消息形式都归到消息处理
-                        return $officeService->message()->handleMessage($message);
+                        return $officeService->message()->handleMessage($appid, $message);
                 }
             });
             $officeService->getApp()->server->serve()->send();
