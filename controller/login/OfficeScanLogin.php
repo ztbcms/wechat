@@ -6,7 +6,6 @@
 namespace app\wechat\controller\login;
 
 use app\BaseController;
-use app\common\service\jwt\JwtService;
 use app\wechat\model\WechatApplication;
 use app\wechat\service\login\ScanLoginService;
 use app\wechat\service\OfficeService;
@@ -74,24 +73,37 @@ class OfficeScanLogin extends BaseController
 
     /**
      * 默认的确认登录完成页
-     * @return string
+     * @return \think\response\View
      */
     function finishLogin()
     {
-        return '登录完成';
+        return view('tips', [
+            'page_title' => '登录完成',
+            'status' => 1,
+            'msg' => '登录完成',
+        ]);
     }
 
     /**
      * 确认登录页
      * @return \think\response\View
      */
-    function confirmLogin(){
+    function confirmLogin()
+    {
         $code = input('get.code', '');
         $scanLoginService = new ScanLoginService();
         $res = $scanLoginService->loginByToken($code);
-        if(!$res['status']) {
-            return view('confirmLogin', ['status' => 0, 'msg' => '参数异常，请重新扫码']);
+        if (!$res['status']) {
+            return view('tips', [
+                'page_title' => '登录确认结果',
+                'status' => 0,
+                'msg' => '参数异常，请重新扫码'
+            ]);
         }
-        return view('confirmLogin', ['status' => 1, 'msg' => '已确认登录']);
+        return view('tips', [
+            'page_title' => '登录确认结果',
+            'status' => 1,
+            'msg' => '已确认登录'
+        ]);
     }
 }
