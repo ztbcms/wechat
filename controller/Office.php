@@ -235,7 +235,6 @@ class Office extends AdminController
 
     /**
      * 事件消息管理
-     * @return array|string
      * @throws \think\db\exception\DbException
      */
     function eventMessage()
@@ -248,6 +247,8 @@ class Office extends AdminController
             $appId = input('get.app_id', '');
             $openId = input('get.open_id', '');
             $event = input('get.event', '');
+            $date = input('get.date', []);
+            $limit = intval(input('get.limit', 10));
             $where = [];
             if ($appId) {
                 $where[] = ['app_id', 'like', '%' . $appId . '%'];
@@ -258,9 +259,11 @@ class Office extends AdminController
             if ($event) {
                 $where[] = ['event', '=', $event];
             }
-
-            $lists = $WechatOfficeEventMessage->where($where)->order('id', 'DESC')->paginate(20);
-            return self::createReturn(true, $lists, 'ok');
+            if (!empty($date)) {
+                $where[] = ['create_time', 'between', [strtotime($date[0]), strtotime($date[1]) + 24 * 60 * 60 - 1]];
+            }
+            $lists = $WechatOfficeEventMessage->where($where)->order('id', 'DESC')->paginate($limit);
+            return self::makeJsonReturn(true, $lists->toArray(), 'ok');
         } else {
             if ($action == 'deleteEvent') {
                 //删除消息
@@ -268,12 +271,12 @@ class Office extends AdminController
                 $WechatOfficeEventMessage = new WechatOfficeEventMessage();
                 $WechatOfficeEventModel = $WechatOfficeEventMessage::where('id', $id)->findOrEmpty();
                 if ($WechatOfficeEventModel->isEmpty()) {
-                    return self::createReturn(false, [], '找不到删除信息');
+                    return self::makeJsonReturn(false, [], '找不到删除信息');
                 }
                 if ($WechatOfficeEventModel->delete()) {
-                    return self::createReturn(true, [], '删除成功');
+                    return self::makeJsonReturn(true, [], '删除成功');
                 } else {
-                    return self::createReturn(false, [], '删除失败');
+                    return self::makeJsonReturn(false, [], '删除失败');
                 }
             }
         }
@@ -291,6 +294,8 @@ class Office extends AdminController
             $appId = input('get.app_id', '');
             $openId = input('get.open_id', '');
             $msgType = input('get.msg_type', '');
+            $date = input('get.date', []);
+            $limit = intval(input('get.limit', 10));
             $where = [];
             if ($appId) {
                 $where[] = ['app_id', 'like', '%' . $appId . '%'];
@@ -301,9 +306,12 @@ class Office extends AdminController
             if ($msgType) {
                 $where[] = ['msg_type', '=', $msgType];
             }
+            if (!empty($date)) {
+                $where[] = ['create_time', 'between', [strtotime($date[0]), strtotime($date[1]) + 24 * 60 * 60 - 1]];
+            }
 
             $WechatOfficeMessage = new WechatOfficeMessage();
-            $lists = $WechatOfficeMessage->where($where)->order('id', 'DESC')->paginate(20);
+            $lists = $WechatOfficeMessage->where($where)->order('id', 'DESC')->paginate($limit);
             return self::createReturn(true, $lists, 'ok');
         } else {
             if ($action == 'deleteMessage') {

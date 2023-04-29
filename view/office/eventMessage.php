@@ -6,14 +6,14 @@
         <el-alert type="success">
             <slot name="title">
                 <p>1.消息接受需要开启"服务配置"：微信公众平台>开发>基本配置>服务配置（启用）</p>
-                <p>2.填写 服务器地址(URL)：http://{xxx}/Wechat/Server/push/appid/{appid}</p>
+                <p>2.填写 服务器地址(URL)：http://{domain}/wechat/index/serverPush/appid/{appid}</p>
                 <p>3.填写token，aes_key，注意token验证，需要在服务器先配置</p>
             </slot>
         </el-alert>
         <div style="margin-top: 8px">
             <el-form :inline="true" :model="searchData" class="demo-form-inline">
                 <el-form-item label="appid">
-                    <el-input v-model="searchData.app_id" placeholder="请输入小程序appid"></el-input>
+                    <el-input v-model="searchData.app_id" placeholder="公众号appid"></el-input>
                 </el-form-item>
                 <el-form-item label="open_id">
                     <el-input v-model="searchData.open_id" placeholder="发送用户openid"></el-input>
@@ -26,6 +26,16 @@
                         <el-option value="SCAN" label="扫描"></el-option>
                         <el-option value="LOCATION" label="地理位置"></el-option>
                     </el-select>
+                </el-form-item>
+                <el-form-item label="创建时间">
+                    <el-date-picker
+                            v-model="searchData.date"
+                            type="daterange"
+                            value-format="yyyy-MM-dd"
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期">
+                    </el-date-picker>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="searchEvent">查询</el-button>
@@ -144,7 +154,8 @@
                 searchData: {
                     open_id: "",
                     app_id: "",
-                    event: ""
+                    event: "",
+                    date: ["{:date('Y-m-d')}", "{:date('Y-m-d')}"],
                 },
                 users: [],
                 page: 1,
