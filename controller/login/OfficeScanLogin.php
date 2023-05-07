@@ -31,7 +31,7 @@ class OfficeScanLogin extends BaseController
         // 跳转URL校验
         $req_url_info = parse_url($request->url(true));
         $redirect_url_info = parse_url($redirect_url);
-        if ($req_url_info['host'] != $redirect_url_info['host'] && !in_array($redirect_url_info, config('wechat.office_scan_login.auth_allow_domain'))) {
+        if ($req_url_info['host'] != $redirect_url_info['host'] && !in_array($redirect_url_info['host'], config('wechat.office_scan_login.auth_allow_domain'))) {
             return view('tips', [
                 'page_title' => '提示',
                 'status' => 0,

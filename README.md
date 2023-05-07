@@ -110,7 +110,7 @@ function wxpayNotify(string $appid)
 大致流程：用户访问扫码页进行扫码，公众号推送一个确认登录入口，用户点击确认登录，扫码页识别出已确认登录并跳转到指定的URL
 
 1、配置文件`config/wechat.php`中开功能并设置授权域名
-2、访问扫码页`/wechat/login.ScanLogin/index?redirect_url={授权完成后跳转链接}`。 PS：跳转链接可以先不填写，系统默认有个默认的链接，可以试试看
+2、访问扫码页`/wechat/login.OfficeScanLogin/index?redirect_url={授权完成后跳转链接}`。 PS：跳转链接可以先不填写，系统默认有个默认的链接，可以试试看
 3、授权完成后跳转链接会携带一个code参数，你可以使用JwtService::parserToken()来获取授权用户的`app_id`、`open_id`,接下来就是你的业务逻辑。
 
 

@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: zhlhuang
- * Date: 2021/7/22
- * Time: 10:20.
  */
 
 declare(strict_types=1);
