@@ -52,13 +52,18 @@ class ScanLoginService extends BaseService
             $userInfo = $result['data'];
             $officeUser = WechatOfficeUser::getUserByOpenid($app_id, $open_id);
             if (!$officeUser) {
-                WechatOfficeUser::addOfficeUser($app_id, $userInfo);
+                $res = WechatOfficeUser::addOfficeUser($app_id, $userInfo);
+                if (!$res['status']) {
+                    return $res;
+                }
+                $officeUser = $res['data'];
             } else {
                 WechatOfficeUser::updateOfficeUser($app_id, $userInfo);
             }
             // 登录码换取登录凭证token
             $jwtService = new JwtService();
             $token = $jwtService->createToken([
+                'uid' => $officeUser['id'],
                 'app_id' => $app_id,
                 'open_id' => $open_id,
                 'exp' => time() + 30 * 24 * 60 * 60,
