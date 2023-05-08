@@ -40,6 +40,7 @@ class SubscribeEventHandler implements EventHandlerInterface
             'app_id' => $appid,
             'open_id' => $msg_payload['FromUserName'],
             'login_code' => str_replace('qrscene_', '', $msg_payload['EventKey']),
+            'exp' => time() + 5 * 60,
         ];
         $token = Cache::get(ScanLoginService::getLoginCodeCacheKey($info['login_code']));
         if ($token === null) {
