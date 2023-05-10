@@ -40,7 +40,7 @@ class ScanEventHandler implements EventHandlerInterface
             'app_id' => $appid,
             'open_id' => $msg_payload['FromUserName'],
             'login_code' => $msg_payload['EventKey'],
-            'exp' => time() + 5 * 60,
+            'exp' => time() + 30,
         ];
         $token = Cache::get(ScanLoginService:: getLoginCodeCacheKey($info['login_code']));
         if ($token === null) {
