@@ -55,7 +55,7 @@
                         <label for="js_input2" class="weui-cell weui-cell_active">
                             <div class="weui-cell__hd"><span class="weui-label">订单号</span></div>
                             <div class="weui-cell__bd">
-                                <input v-model="order_info.order_sn" class="weui-input text-right text-color-gray"
+                                <input v-model="order_info.order_no" class="weui-input text-right text-color-gray"
                                        disabled/>
                             </div>
                         </label>
@@ -105,7 +105,7 @@
             data: {
                 order_info_token: "{:input('order_token')}",
                 order_info: {
-                    order_sn: "{$order_info['order_sn']}",
+                    order_no: "{$order_info['order_no']}",
                     order_desc: "{$order_info['order_desc']}",
                     pay_price: "{$order_info['pay_price']}",
                 },

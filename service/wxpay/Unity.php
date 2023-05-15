@@ -22,8 +22,24 @@ class Unity
         $this->wxpay = $wxpayService;
     }
 
+
     /**
+     * 统一下单
+     * @param string $openId 微信用户openid
+     * @param string $outTradeNo 商户订单号
+     * @param string $outTradeNoType 商户订单类型
+     * @param int $totalFee 付款金额，单位：分
+     * @param string $notifyUrl 支付结果通知url
+     * @param string $body 订单内容
+     * @param string $tradeType
+     * @return string
      * @throws Throwable
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     private function createUnity(
         string $openId,

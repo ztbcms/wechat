@@ -23,7 +23,7 @@ class OfficeCheckout extends BaseController
      */
     function checkoutPrepare()
     {
-        // 获取订单信息：公众号appid,订单号order_sn,订单类型order_type,订单描述order_desc,支付金额pay_price（单位元）
+        // 获取订单信息：公众号appid,订单号order_no,订单类型order_type,订单描述order_desc,支付金额pay_price（单位元）
         $order_info_token = input('order_token', '');
         $jwtService = new JwtService();
         $res = $jwtService->parserToken($order_info_token);
@@ -31,7 +31,7 @@ class OfficeCheckout extends BaseController
             return '参数异常';
         }
         $order_info = $res['data'];
-        $required_keys = ['appid', 'order_sn', 'order_type', 'order_desc', 'pay_price'];
+        $required_keys = ['appid', 'order_no', 'order_type', 'order_desc', 'pay_price'];
         foreach ($required_keys as $key) {
             if (!isset($order_info[$key]) || empty($order_info[$key])) {
                 return "参数异常（{$key}）";
@@ -72,7 +72,7 @@ class OfficeCheckout extends BaseController
             return self::makeJsonReturn(false, null, '参数异常');
         }
         $order_info = $res['data'];
-        $required_keys = ['appid', 'order_sn', 'order_type', 'order_desc', 'pay_price', 'openid'];
+        $required_keys = ['appid', 'order_no', 'order_type', 'order_desc', 'pay_price', 'openid'];
         foreach ($required_keys as $key) {
             if (!isset($order_info[$key]) || empty($order_info[$key])) {
                 return self::makeJsonReturn(false, null, "参数异常（{$key}）");
@@ -83,18 +83,18 @@ class OfficeCheckout extends BaseController
         if ($action == 'getPayConfig') {
             $appid = $order_info['appid'];
             $openid = $order_info['openid'];
-            $order_sn = $order_info['order_sn'];
+            $order_no = $order_info['order_no'];
             $order_type = $order_info['order_type'];
             $order_desc = $order_info['order_desc'];
             $pay_price = intval($order_info['pay_price']) * 100;// 单位元=>分
             $notifyUrl = WxpayUtils::getOrderNotifyUrl($order_type, $appid);
             $wxpayService = new WxpayService($appid);
-            $config = $wxpayService->unity()->getOfficePayConfig($openid, $order_sn, $order_type, $pay_price, $notifyUrl, $order_desc);
+            $config = $wxpayService->unity()->getOfficePayConfig($openid, $order_no, $order_type, $pay_price, $notifyUrl, $order_desc);
             return self::makeJsonReturn(true, $config);
         }
         // 显示页面
         View::assign('order_info', [
-            'order_sn' => $order_info['order_sn'],
+            'order_no' => $order_info['order_no'],
             'order_desc' => $order_info['order_desc'],
             'pay_price' => $order_info['pay_price'],
             'paid_success_url' => api_url('/wechat/wxpay.OfficeCheckout/paidSuccess'),
