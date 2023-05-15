@@ -23,7 +23,7 @@ class OfficeCheckout extends BaseController
      */
     function checkoutPrepare()
     {
-        // 获取订单信息：公众号appid,订单号order_no,订单类型order_type,订单描述order_desc,支付金额pay_price（单位元）
+        // 获取订单信息：公众号appid,订单号order_no,订单类型order_type,订单描述order_desc,支付金额pay_price（单位:分）
         $order_info_token = input('order_token', '');
         $jwtService = new JwtService();
         $res = $jwtService->parserToken($order_info_token);
@@ -86,7 +86,7 @@ class OfficeCheckout extends BaseController
             $order_no = $order_info['order_no'];
             $order_type = $order_info['order_type'];
             $order_desc = $order_info['order_desc'];
-            $pay_price = intval($order_info['pay_price']) * 100;// 单位元=>分
+            $pay_price = intval($order_info['pay_price']);// 单位元=>分
             $notifyUrl = WxpayUtils::getOrderNotifyUrl($order_type, $appid);
             $wxpayService = new WxpayService($appid);
             $config = $wxpayService->unity()->getOfficePayConfig($openid, $order_no, $order_type, $pay_price, $notifyUrl, $order_desc);
