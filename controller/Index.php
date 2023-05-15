@@ -66,7 +66,7 @@ class Index extends BaseController
             session('redirect_url', $redirectUrl);
         }
         $token = md5(time().rand(100000, 999999));
-        Cache::set($token, $redirectUrl);
+        Cache::set($token, $redirectUrl, 30);
         //统一回调到 callback 处理
         $url = api_url("/Wechat/index/callback", [])."/appid/{$appid}/token/{$token}";
         $response = $office->getApp()->oauth->scopes(['snsapi_base'])
@@ -214,6 +214,7 @@ class Index extends BaseController
 
     /**
      * 微信支付回调
+     * @deprecated 迁移到Notify.class
      * @param  string  $appid
      * @throws Throwable
      */
