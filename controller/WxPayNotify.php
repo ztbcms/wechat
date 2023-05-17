@@ -29,6 +29,7 @@ class WxPayNotify extends BaseController
                         ['app_id', '=', $message['appid']],
                         ['out_trade_no', '=', $message['out_trade_no']],
                     ])->column('out_trade_no_type');
+                    // 根据订单类型选择订单处理器。处理器不存在，默认使用default
                     if ($order_type) {
                         $handler = WxpayUtils::getOrderHandler($order_type);
                         return $handler->paidOrder($message);
