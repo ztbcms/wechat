@@ -25,20 +25,20 @@ class WxPayNotify extends BaseController
             $response = $wxpay->unity()->handlePaidNotify(function ($message, $fail) {
                 // 支付成功
                 if ($message['return_code'] === 'SUCCESS' && $message['result_code'] === 'SUCCESS') {
-                    $order_type = WechatWxpayOrder::where([
+                    $order = WechatWxpayOrder::where([
                         ['app_id', '=', $message['appid']],
                         ['out_trade_no', '=', $message['out_trade_no']],
-                    ])->column('out_trade_no_type');
+                    ])->find();
                     // 根据订单类型选择订单处理器。处理器不存在，默认使用default
-                    if ($order_type) {
-                        $handler = WxpayUtils::getOrderHandler($order_type);
+                    if ($order && $order['out_trade_no_type']) {
+                        $handler = WxpayUtils::getOrderHandler($order['out_trade_no_type']);
                         return $handler->paidOrder($message);
                     }
                     return true;
                 }
                 return $fail('支付未成功，请稍后再通知我');
             });
-            echo $response->send();
+            $response->send();
         } catch (Exception $exception) {
             echo '格式或签名错误';
         }

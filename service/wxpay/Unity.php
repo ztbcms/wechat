@@ -220,6 +220,7 @@ class Unity
     {
         $wxpayOrderModel = WechatWxpayOrder::where('out_trade_no', $out_trade_no)->findOrEmpty();
         // TODO 已成功的不再更新
+        $wxpayOrderModel->app_id = $message['appid'] ?? '';
         $wxpayOrderModel->mch_id = $message['mch_id'] ?? '';
         $wxpayOrderModel->nonce_str = $message['nonce_str'] ?? '';
         $wxpayOrderModel->sign = $message['sign'] ?? '';
@@ -227,7 +228,6 @@ class Unity
         $wxpayOrderModel->trade_state_desc = $message['trade_state_desc'] ?? '';
         $wxpayOrderModel->return_code = $message['return_code'] ?? '';
         $wxpayOrderModel->result_code = $message['result_code'] ?? '';
-        $wxpayOrderModel->mch_id = $message['mch_id'] ?? '';
         $wxpayOrderModel->err_code = $message['err_code'] ?? '';
         $wxpayOrderModel->err_code_des = $message['err_code_des'] ?? '';
         $wxpayOrderModel->is_subscribe = $message['is_subscribe'] ?? '';
@@ -237,6 +237,7 @@ class Unity
         $wxpayOrderModel->cash_fee = $message['cash_fee'] ?? '';
         $wxpayOrderModel->transaction_id = $message['transaction_id'] ?? '';
         $wxpayOrderModel->time_end = $message['time_end'] ?? '';
+        $wxpayOrderModel->out_trade_no = $message['out_trade_no'] ?? '';
         return $wxpayOrderModel->save();
     }
 }
