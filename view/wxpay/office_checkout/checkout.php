@@ -113,9 +113,7 @@
                 paid_success_url: "{$order_info['paid_success_url']}",
                 loading: false,
             },
-            mounted: function () {
-                window.location.replace(this.paid_success_url)
-            },
+            mounted: function () {},
             methods: {
                 confirmPay: function () {
                     this.fetchPayConfig()
