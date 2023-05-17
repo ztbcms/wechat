@@ -96,7 +96,7 @@ class OfficeCheckout extends BaseController
         View::assign('order_info', [
             'order_no' => $order_info['order_no'],
             'order_desc' => $order_info['order_desc'],
-            'pay_price' => $order_info['pay_price'],
+            'pay_price' => sprintf("%.2f", $order_info['pay_price'] / 100),
             'paid_success_url' => api_url('/wechat/wxpay.OfficeCheckout/paidSuccess'),
         ]);
         return view('checkout');
