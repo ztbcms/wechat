@@ -134,13 +134,13 @@
                 requestPayment: function (payConfig) {
                     if (typeof WeixinJSBridge == "undefined") {
                         if (document.addEventListener) {
-                            document.addEventListener('WeixinJSBridgeReady', this.doRequestPayment.bind(this), false);
+                            document.addEventListener('WeixinJSBridgeReady', this.doRequestPayment.bind(this, payConfig), false);
                         } else if (document.attachEvent) {
-                            document.attachEvent('WeixinJSBridgeReady', this.doRequestPayment.bind(this));
-                            document.attachEvent('onWeixinJSBridgeReady', this.doRequestPayment.bind(this));
+                            document.attachEvent('WeixinJSBridgeReady', this.doRequestPayment.bind(this, payConfig));
+                            document.attachEvent('onWeixinJSBridgeReady', this.doRequestPayment.bind(this, payConfig));
                         }
                     } else {
-                        this.doRequestPayment();
+                        this.doRequestPayment(payConfig);
                     }
                 },
                 doRequestPayment: function (payConfig) {
