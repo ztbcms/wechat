@@ -63,10 +63,8 @@ class Unity
             'trade_type' => $tradeType, // 请对应换成你的支付方式对应的值类型
             'openid' => $openId,
         ]);
-        $return_code = $result['return_code'] ?? '';
-        throw_if($return_code != 'SUCCESS', new \Exception('创建支付订单错误:'.$result['return_msg']));
-        $result_code = $result['result_code'] ?? '';
-        throw_if($result_code != 'SUCCESS', new \Exception('创建支付订单错误:'.$result['err_code'].$result['err_code_des']));
+        throw_if($result['return_code'] != 'SUCCESS', new \Exception('创建支付订单错误:' . $result['return_msg']));
+        throw_if($result['result_code'] != 'SUCCESS', new \Exception('创建支付订单错误:' . ($result['err_code'] ?? '') . ' ' . ($result['err_code_des'] ?? '')));
 
         //添加支付订单入库
         $wxpayOrderModel = new WechatWxpayOrder();
