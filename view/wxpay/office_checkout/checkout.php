@@ -48,14 +48,14 @@
                         <label for="js_input1" class="weui-cell weui-cell_active">
                             <div class="weui-cell__hd"><span class="weui-label">商品名称</span></div>
                             <div class="weui-cell__bd">
-                                <input v-model="order_info.order_desc" class="weui-input text-right text-color-gray"
+                                <input v-model="order_info.order_desc" class="weui-input text-right"
                                        disabled/>
                             </div>
                         </label>
                         <label for="js_input2" class="weui-cell weui-cell_active">
                             <div class="weui-cell__hd"><span class="weui-label">订单号</span></div>
                             <div class="weui-cell__bd">
-                                <input v-model="order_info.order_no" class="weui-input text-right text-color-gray"
+                                <input v-model="order_info.order_no" class="weui-input text-right"
                                        disabled/>
                             </div>
                         </label>
@@ -65,7 +65,7 @@
             </div>
 
             <div class="weui-form__opr-area">
-                <a @click="confirmPay" class="weui-btn weui-btn_primary weui-btn_disabled1">
+                <a @click="confirmPay" class="weui-btn weui-btn_primary">
                     <i v-if="loading" class="weui-mask-loading" style="color: white;font-size: 21px"></i>
                     <span v-else>确认支付</span>
                 </a>
@@ -91,10 +91,6 @@
 
     .text-right {
         text-align: right;
-    }
-
-    .text-color-gray {
-        color: gray;
     }
 </style>
 
