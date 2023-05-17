@@ -47,7 +47,7 @@ class OfficeCheckout extends BaseController
         }
         $auth_token = WechatAuthToken::where([
             ['app_id', '=', $appid],
-            ['token', '=', $code],
+            ['code', '=', $code],
         ])->field('id,app_id,open_id')->find();
         if (!$auth_token) {
             return '凭证异常';
