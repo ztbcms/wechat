@@ -68,7 +68,7 @@ class Index extends BaseController
         $token = md5(time().rand(100000, 999999));
         Cache::set($token, $redirectUrl, 30);
         //统一回调到 callback 处理
-        $url = api_url("/Wechat/index/callback", [])."/appid/{$appid}/token/{$token}";
+        $url = api_url("/wechat/index/callback", [])."/appid/{$appid}/token/{$token}";
         $response = $office->getApp()->oauth->scopes(['snsapi_base'])
             ->redirect($url);
         $response->send();
