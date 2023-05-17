@@ -42,7 +42,7 @@ class OfficeCheckout extends BaseController
         if (empty($code)) {
             // 未授权：跳转去静默授权
             $callback_url = api_url('/wechat/wxpay.OfficeCheckout/checkoutPrepare', ['order_token' => $order_info_token]);
-            $oauth_url = '/wechat/index/oauthBase/appid/' . $appid . '?redirect_url=' . urlencode($callback_url);
+            $oauth_url = api_url('/wechat/index/oauthBase/appid/' . $appid, ['redirect_url' => urlencode($callback_url)]);
             return redirect($oauth_url);
         }
         $auth_token = WechatAuthToken::where([
