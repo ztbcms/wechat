@@ -149,7 +149,7 @@
                         'getBrandWCPayRequest', payConfig,
                         function (res) {
                             if (res.err_msg == "get_brand_wcpay_request:ok") {
-                                //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+                                //将在用户支付成功后返回ok，但并不保证它绝对可靠。
                                 window.location.replace(that.paid_success_url)
                             }
                         });
