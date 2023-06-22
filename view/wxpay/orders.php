@@ -42,9 +42,8 @@
                             align="center"
                             min-width="180">
                         <template slot-scope="scope">
-                            <el-tag v-if="scope.row.trade_state=='SUCCESS'" type="success">{{
-                                scope.row.trade_state_desc
-                                }}
+                            <el-tag v-if="scope.row.trade_state=='SUCCESS'" type="success">
+                                {{ scope.row.trade_state_desc }}
                             </el-tag>
                             <el-tag v-else type="danger">{{
                                 scope.row.trade_state_desc?scope.row.trade_state_desc:'订单未支付' }}
@@ -107,8 +106,8 @@
                             align="center"
                             width="180">
                         <template slot-scope="scope">
-                            <el-button @click="queryEvent(scope.row)" type="primary">查询</el-button>
-                            <el-button @click="deleteEvent(scope.row)" type="danger">删除</el-button>
+                            <el-button @click="queryEvent(scope.row)" type="primary" size="mini">查询订单</el-button>
+                            <el-button @click="deleteEvent(scope.row)" type="danger" size="mini">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>

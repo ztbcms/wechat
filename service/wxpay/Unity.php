@@ -175,15 +175,24 @@ class Unity
     /**
      * 查询订单
      * @param string $out_trade_no
-     * @return bool
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
      */
-    function queryByOutTrade(string $out_trade_no): bool
+    function queryByOutTrade(string $out_trade_no): array
     {
-        $order = $this->wxpay->getPayment()->order->queryByOutTradeNumber($out_trade_no);
-        // TODO 触发对应订单类型处理
-        return $this->updateOrder($out_trade_no, $order);
+        $response = $this->wxpay->getPayment()->order->queryByOutTradeNumber($out_trade_no);
+        $this->updateOrder($out_trade_no, $response);
+        if ($response['return_code'] !== 'SUCCESS') {
+            return ['status' => false, 'msg' => $response['return_msg']];
+        }
+        if ($response['result_code'] !== 'SUCCESS') {
+            return ['status' => false, 'msg' => $response['err_code_des']];
+        }
+        if ($response['trade_state'] !== 'SUCCESS') {
+            return ['status' => false, 'msg' => $response['trade_state_desc']];
+        }
+        // 交易成功判断条件： return_code、result_code和trade_state都为SUCCESS
+        return ['status' => true, 'data' => $response];
     }
 
     /**

@@ -7,6 +7,7 @@ namespace app\wechat\controller;
 
 
 use app\common\controller\AdminController;
+use app\wechat\libs\wxpay\WxpayUtils;
 use app\wechat\model\{WechatApplication, WechatWxpayOrder, WechatWxpayRedpack, WechatWxpayRefund};
 use app\wechat\service\WxpayService;
 use think\facade\View;
@@ -108,10 +109,17 @@ class Wxpay extends AdminController
             return self::makeJsonReturn(false, [], '找不到该订单');
         }
         $wxpay = new WxpayService($wxpayOrder->app_id);
-        if ($wxpay->unity()->queryByOutTrade((string) $wxpayOrder->out_trade_no)) {
-            return self::makeJsonReturn(true, [], '操作成功');
+        $res = $wxpay->unity()->queryByOutTrade($wxpayOrder->out_trade_no);
+        if ($res['status']) {
+            // 触发对应订单类型处理
+            // 根据订单类型选择订单处理器。处理器不存在，默认使用default
+            if ($wxpayOrder->out_trade_no_type) {
+                $handler = WxpayUtils::getOrderHandler($wxpayOrder->out_trade_no_type);
+                $handler->paidOrder($res['data']);
+            }
+            return self::makeJsonReturn(true, [], '订单已支付');
         } else {
-            return self::makeJsonReturn(false, [], '操作失败');
+            return self::makeJsonReturn(false, [], '操作失败:' . $res['msg']);
         }
     }
 
