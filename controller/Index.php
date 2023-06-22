@@ -211,24 +211,4 @@ class Index extends BaseController
         $res = $wxpay->unity()->getMiniPayConfig($open_id, time(), 1, $notify_url);
         return self::makeJsonReturn(true, ['config' => $res]);
     }
-
-    /**
-     * 微信支付回调
-     * @deprecated 迁移到Notify.class
-     * @param  string  $appid
-     * @throws Throwable
-     */
-    function wxpayNotify(string $appid)
-    {
-        $wxpay = new WxpayService($appid);
-        try {
-            $response = $wxpay->unity()->handlePaidNotify(function ($message, $fail)
-            {
-                //TODO 微信支付业务调用成功   trade_state==SUCCESS 才是支付成功
-            });
-            echo $response->send();
-        } catch (Exception $exception) {
-            echo $exception->getMessage();
-        }
-    }
 }
