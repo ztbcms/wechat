@@ -59,8 +59,9 @@ class OfficeCheckout extends BaseController
 
     /**
      * 结算页
-     * 显示订单订单号+订单价格+订单标题
-     * 获取jssdk配置。点击支付时调起微信支付
+     * /wechat/wxpay.OfficeCheckout/checkout?order_token={JWT封装的订单信息}
+     * 1、显示订单订单号+订单价格+订单标题
+     * 2、获取jssdk配置。点击支付时调起微信支付
      *
      */
     function checkout()

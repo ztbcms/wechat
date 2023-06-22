@@ -11,12 +11,14 @@ use app\wechat\model\WechatWxpayOrder;
 use app\wechat\service\WxpayService;
 use EasyWeChat\Kernel\Exceptions\Exception;
 
+/**
+ * 微信支付异步通知
+ */
 class WxPayNotify extends BaseController
 {
     /**
      * 微信支付结果通知
      * @param string $appid
-     * @deprecated 迁移到Notify.class
      */
     function wxpayNotify(string $appid)
     {
