@@ -13,7 +13,6 @@ use app\wechat\model\mini\WechatMiniSubscribeMessage;
 use app\wechat\service\{WxpayService, OfficeService, MiniService};
 use Psr\SimpleCache\InvalidArgumentException;
 use think\facade\{Cache, View};
-use EasyWeChat\Kernel\Exceptions\Exception;
 use think\response\{Json, Redirect};
 use Throwable;
 
@@ -27,6 +26,7 @@ class Index extends BaseController
 
     /**
      * 用户信息授权
+     * /wechat/index/oauth/appid/{公众号appid}?redirect_url={授权后跳转URl}
      * snsapi_userinfo （弹出授权页面，可通过openid拿到昵称、性别、所在地。并且， 即使在未关注的情况下，只要用户授权，也能获取其信息 ）
      * @param $appid
      * @param  Request  $request
@@ -50,6 +50,7 @@ class Index extends BaseController
 
     /**
      * 用户静默授权
+     * /wechat/index/oauthBase/appid/{公众号appid}?redirect_url={授权后跳转URl}
      * snsapi_base （不弹出授权页面，直接跳转，只能获取用户openid）
      * @param $appid
      * @param  Request  $request
@@ -66,9 +67,9 @@ class Index extends BaseController
             session('redirect_url', $redirectUrl);
         }
         $token = md5(time().rand(100000, 999999));
-        Cache::set($token, $redirectUrl);
+        Cache::set($token, $redirectUrl, 30);
         //统一回调到 callback 处理
-        $url = api_url("/Wechat/index/callback", [])."/appid/{$appid}/token/{$token}";
+        $url = api_url("/wechat/index/callback", [])."/appid/{$appid}/token/{$token}";
         $response = $office->getApp()->oauth->scopes(['snsapi_base'])
             ->redirect($url);
         $response->send();
@@ -210,24 +211,5 @@ class Index extends BaseController
         $notify_url = api_url("/wechat/index/wxpayNotify");
         $res = $wxpay->unity()->getMiniPayConfig($open_id, time(), 1, $notify_url);
         return self::makeJsonReturn(true, ['config' => $res]);
-    }
-
-    /**
-     * 微信支付回调
-     * @param  string  $appid
-     * @throws Throwable
-     */
-    function wxpayNotify(string $appid)
-    {
-        $wxpay = new WxpayService($appid);
-        try {
-            $response = $wxpay->unity()->handlePaidNotify(function ($message, $fail)
-            {
-                //TODO 微信支付业务调用成功   trade_state==SUCCESS 才是支付成功
-            });
-            echo $response->send();
-        } catch (Exception $exception) {
-            echo $exception->getMessage();
-        }
     }
 }

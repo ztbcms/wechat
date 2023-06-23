@@ -35,9 +35,6 @@ class WxpayService extends BaseService
     protected $payment;
     protected $app_id;
 
-    protected $log_file = './wechat.log';
-    protected $debug_level = 'debug';
-
     const APPID_APPLICATION = 'app_id';
     const ALIAS_APPLICATION = 'alias';
 
@@ -84,10 +81,7 @@ class WxpayService extends BaseService
             'cert_path'     => $certPath, // XXX: 绝对路径！！！！
             'key_path'      => $keyPath,      // XXX: 绝对路径！！！！
             'response_type' => 'array',
-            'log'           => [
-                'level' => $this->debug_level,
-                'file'  => $this->log_file,
-            ],
+            'log'           => config('wechat.log'),
         ];
         $this->app_id = $app_id;
         $this->payment = Factory::payment($config);
@@ -101,7 +95,7 @@ class WxpayService extends BaseService
         $name = ucfirst($name);
         $class_name = "\\app\wechat\\service\\wxpay\\{$name}";
         throw_if(!class_exists($class_name), new Exception('对象不存在'.$class_name));
-        return new  $class_name($this);
+        return new $class_name($this);
     }
 
 
