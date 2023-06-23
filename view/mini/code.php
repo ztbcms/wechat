@@ -32,8 +32,7 @@
                         align="center"
                         min-width="100">
                     <template slot-scope="scope">
-                        <img class="avatar" @click="showImageDialogVisible=true;showImageUrl=scope.row.file_url"
-                             :src="scope.row.file_url" alt="">
+                        <el-link type="primary" @click="showImageDialogVisible=true;showImageUrl=scope.row.file_url">点击查看</el-link>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -81,7 +80,7 @@
                         align="center"
                         min-width="100">
                     <template slot-scope="scope">
-                        <el-button @click="deleteEvent(scope.row)" type="danger">删除</el-button>
+                        <el-button @click="deleteEvent(scope.row)" type="danger" size="mini">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -206,7 +205,7 @@
                         action: 'createCode'
                     };
                     var _this = this;
-                    this.httpPost("{:api_url('/Wechat/Mini/code')}", postData, function (res) {
+                    this.httpPost("{:api_url('/wechat/Mini/code')}", postData, function (res) {
                         if (res.status) {
                             _this.$message.success("创建成功");
                             _this.createDialogVisible = false;
@@ -241,7 +240,7 @@
                             if (e !== 'confirm') {
                                 return;
                             }
-                            _this.httpPost('{:api_url("/Wechat/Mini/code")}', postData, function (res) {
+                            _this.httpPost('{:api_url("/wechat/Mini/code")}', postData, function (res) {
                                 if (res.status) {
                                     _this.$message.success('删除成功');
                                     _this.getCodeList();
@@ -269,7 +268,7 @@
                         action: "ajaxList"
                     }, this.searchData);
                     $.ajax({
-                        url: "{:api_url('/Wechat/Mini/code')}",
+                        url: "{:api_url('/wechat/Mini/code')}",
                         dataType: 'json',
                         type: 'get',
                         data: where,

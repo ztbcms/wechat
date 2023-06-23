@@ -43,4 +43,10 @@ return [
         // 填写顶级域名即可，例如 baidu.com
         'auth_allow_domain' => [],
     ],
+    'mini_code' => [
+        // 限制二维码的图片保存基准路径。请不要以/开头
+        'code_base_path' => 'd/wechat/mini_code/',
+        // 无限制二维码的图片保存基准路径。请不要以/开头
+        'ulmcode_base_path' => 'd/wechat/ulm_mini_code/',
+    ],
 ];

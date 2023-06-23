@@ -4,6 +4,8 @@
 
 ```shell
 $ composer require overtrue/wechat 4.0 -vvv
+# 图片处理
+$ composer require intervention/image 2 -vvv
 ```
 
 ## 配置
