@@ -196,7 +196,7 @@ class Unity
     }
 
     /**
-     * 更新订单信息
+     * 更新支付订单信息
      * @param string $out_trade_no
      * @param $message
      * @return bool
@@ -204,7 +204,6 @@ class Unity
     private function updateOrder(string $out_trade_no, $message): bool
     {
         $wxpayOrderModel = WechatWxpayOrder::where('out_trade_no', $out_trade_no)->findOrEmpty();
-        // TODO 已成功的不再更新
         $wxpayOrderModel->app_id = $message['appid'] ?? '';
         $wxpayOrderModel->mch_id = $message['mch_id'] ?? '';
         $wxpayOrderModel->nonce_str = $message['nonce_str'] ?? '';

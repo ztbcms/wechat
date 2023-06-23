@@ -77,10 +77,22 @@ $ composer require overtrue/wechat 4.0 -vvv
 ### 支付订单
 
 获取支付配置
-- 小程序支付配置：`$wxpay_service->unity()->getMiniPayConfig($openId,$outTradeNo,$outTradeNoType,$totalFee,$notifyUrl)`
-- 公众号H5支付配置：`$wxpay_service->unity()->getOfficePayConfig($openId,$outTradeNo,$outTradeNoType,$totalFee,$notifyUrl)`
-- App支付配置：`$wxpay_service->unity()->getAppPayConfig($openId,$outTradeNo,$outTradeNoType,$totalFee,$notifyUrl)`
-- notifyUrl根据订单类型生成`$notifyUrl = WxpayUtils::getOrderNotifyUrl($order_type, $appid);`
+- 小程序支付配置：
+```php
+$wxpay_service->unity()->getMiniPayConfig($openId,$outTradeNo,$outTradeNoType,$totalFee,$notifyUrl)
+ ```
+- 公众号H5支付配置：
+```php
+  $wxpay_service->unity()->getOfficePayConfig($openId,$outTradeNo,$outTradeNoType,$totalFee,$notifyUrl)
+```
+- App支付配置：
+```php
+$wxpay_service->unity()->getAppPayConfig($openId,$outTradeNo,$outTradeNoType,$totalFee,$notifyUrl)`
+```
+- notifyUrl根据订单类型生成
+```php
+$notifyUrl = WxpayUtils::getOrderNotifyUrl($order_type, $appid);
+```
 
 支付回调操作：本应用提供了统一的异步通知入口(`wechat/WxPayNotify/wxpayNotify`)，并根据订单类型`order_type`选择支付通知URL(`order_notify`)和调用对应的支付处理器`order_handler`
 
@@ -93,14 +105,14 @@ $ composer require overtrue/wechat 4.0 -vvv
 
 为了演示公众号的完整住功能，新增了一个开箱即用的应用:OfficeCheckout
 主要流程：
-0. 用户自定义的订单页(`/user/order/detail`)，构建参数跳转到`结算前准备页`即可，后面都是自动的
+1. 用户自定义的订单页(`/user/order/detail`)，构建参数跳转到`结算前准备页`即可，后面都是自动的
 ```php
 // $order_info 包含：// 获取订单信息：公众号appid,订单号order_no,订单类型order_type,订单描述order_desc,支付金额pay_price（单位:分）
 $order_token = (new JwtService)->createToken($order_ino)
 ```
-1. 结算前准备页 `/wechat/wxpay.OfficeCheckout/checkoutPrepare?order_token={JWT封装的订单信息}`自动实现静默微信静默登录
-2. 结算页 `/wechat/wxpay.OfficeCheckout/checkout?order_token={JWT封装的订单信息}`
-2. 支付完成页 `/wechat/wxpay.OfficeCheckout/paidSuccess`
+2. 结算前准备页 `/wechat/wxpay.OfficeCheckout/checkoutPrepare?order_token={JWT封装的订单信息}`自动实现静默微信静默登录
+3. 结算页 `/wechat/wxpay.OfficeCheckout/checkout?order_token={JWT封装的订单信息}`
+4. 支付完成页 `/wechat/wxpay.OfficeCheckout/paidSuccess`
 
 Tips: 你可以为订单页(`/user/order/detail`)的链接生成一个二维码，用户使用微信扫码即可实现支付
 
