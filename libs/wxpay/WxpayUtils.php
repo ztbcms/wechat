@@ -5,6 +5,8 @@
 
 namespace app\wechat\libs\wxpay;
 
+use app\wechat\libs\WechatConfig;
+
 class WxpayUtils
 {
     /**
@@ -13,8 +15,7 @@ class WxpayUtils
      */
     static function getDefaultOrderType()
     {
-        //TODO 支持跨模块调用
-        return config('wxpay.default_order_type', 'default');
+        return WechatConfig::get('wxpay.default_order_type');
     }
 
     /**
@@ -25,7 +26,7 @@ class WxpayUtils
      */
     static function getOrderNotifyUrl($order_type, $appid)
     {
-        $notify_urls = config('wxpay.order_notify');
+        $notify_urls = WechatConfig::get('wxpay.order_notify');
         $url = $notify_urls[$order_type] ?? $notify_urls[self::getDefaultOrderType()];
         return str_replace('{appid}', $appid, $url);
     }
@@ -37,7 +38,7 @@ class WxpayUtils
      */
     static function getOrderHandler($order_type)
     {
-        $handlers = config('wxpay.order_handler');
+        $handlers = WechatConfig::get('wxpay.order_handler');
         $handler = $handlers[$order_type] ?? $handlers[self::getDefaultOrderType()];
         return new $handler;
     }
