@@ -13,6 +13,7 @@ class WxpayUtils
      */
     static function getDefaultOrderType()
     {
+        //TODO 支持跨模块调用
         return config('wxpay.default_order_type', 'default');
     }
 

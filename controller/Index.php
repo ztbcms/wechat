@@ -13,7 +13,6 @@ use app\wechat\model\mini\WechatMiniSubscribeMessage;
 use app\wechat\service\{WxpayService, OfficeService, MiniService};
 use Psr\SimpleCache\InvalidArgumentException;
 use think\facade\{Cache, View};
-use EasyWeChat\Kernel\Exceptions\Exception;
 use think\response\{Json, Redirect};
 use Throwable;
 
@@ -27,6 +26,7 @@ class Index extends BaseController
 
     /**
      * 用户信息授权
+     * /wechat/index/oauth/appid/{公众号appid}?redirect_url={授权后跳转URl}
      * snsapi_userinfo （弹出授权页面，可通过openid拿到昵称、性别、所在地。并且， 即使在未关注的情况下，只要用户授权，也能获取其信息 ）
      * @param $appid
      * @param  Request  $request
@@ -50,6 +50,7 @@ class Index extends BaseController
 
     /**
      * 用户静默授权
+     * /wechat/index/oauthBase/appid/{公众号appid}?redirect_url={授权后跳转URl}
      * snsapi_base （不弹出授权页面，直接跳转，只能获取用户openid）
      * @param $appid
      * @param  Request  $request

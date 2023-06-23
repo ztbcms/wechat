@@ -41,9 +41,14 @@ $ composer require overtrue/wechat 4.0 -vvv
 公众号的调用都统一使用 OfficeService 为入口。`$office_service=new OfficeService($app_id)`
 
 ### 用户
-公众号授权消息处理：`$office->user()->oauth()`
 
-具体使用方法，可以到 wechat/index/callback 查看
+公众号授权消息处理：`$office->user()->oauth()`,具体使用方法，可以到 `wechat/index/callback` 查看
+
+[拓展]模块已实现了用户授权和用户静默授权,你只需要构建链接接口
+1. 用户授权入口`/wechat/index/oauth/appid/{公众号appid}?redirect_url={授权后跳转URl}`
+2. 用户静默授权入口`/wechat/index/oauthBase/appid/{公众号appid}?redirect_url={授权后跳转URl}`
+
+原理:授权完成后会跳转到`redirect_url`并携带`code=xxxx`的参数，可以通过`code`换取收取用户信息
 
 ### 模板消息
 同步消息模板：`$office_service->template()->sendTemplateMsg($touserOpenid, $templateId, $sendData, $page,$miniProgram)`
