@@ -10,6 +10,7 @@ use app\BaseController;
 use app\common\exception\BaseApiException;
 use app\Request;
 use app\wechat\model\mini\WechatMiniSubscribeMessage;
+use app\wechat\model\WechatAuthToken;
 use app\wechat\service\{WxpayService, OfficeService, MiniService};
 use Psr\SimpleCache\InvalidArgumentException;
 use think\facade\{Cache, View};
@@ -126,20 +127,33 @@ class Index extends BaseController
 
 
     /**
-     * 获取微信小程序授权信息
-     * @param $appid
+     * 获取微信小程序用户授权信息
      * @return Json
      * @throws Throwable
      */
-    function miniAuthUserInfo($appid): Json
+    function miniAuthByCode(): Json
     {
+        $appid = input('post.appid', '', 'trim');
         $code = input('post.code', '', 'trim');
-        $iv = input('post.iv', '', 'trim');
-        $encrypted_data = input('post.encrypted_data', '', 'trim');
-        $user_info = input('post.user_info', [], 'trim');
         $MiniService = new MiniService($appid);
-        $res = $MiniService->user()->getUserInfoByCode($code, $iv, $encrypted_data, $user_info);
-        return self::makeJsonReturn(true, $res);
+        try {
+            $userInfo = $MiniService->user()->getUserInfoByCode($code);
+            //生成登录token
+            $authTokenModel = new WechatAuthToken();
+            $authTokenModel->createAuthToken($userInfo['app_id'], $userInfo['open_id'], $authTokenModel::ACCOUNT_TYPE_MINI);
+            throw_if(!$authTokenModel->token, new \Exception('生成登录信息失败'));
+            $token_info = [
+                'token' => $authTokenModel->token,
+                'expire_time' => $authTokenModel->expire_time,
+                'refresh_token' => $authTokenModel->refresh_token,
+            ];
+            return self::makeJsonReturn(true, [
+                'user_info' => $userInfo,
+                'token_info' => $token_info,
+            ]);
+        } catch (Throwable $e) {
+            return self::makeJsonReturn(false, [], $e->getMessage());
+        }
     }
 
     /**

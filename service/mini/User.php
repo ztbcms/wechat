@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: zhlhuang
- * Date: 2021/7/22
- * Time: 10:22.
  */
 
 declare(strict_types=1);
@@ -15,7 +12,6 @@ use app\wechat\model\mini\WechatMiniPhoneNumber;
 use app\wechat\model\mini\WechatMiniUser;
 use app\wechat\model\WechatAuthToken;
 use app\wechat\service\MiniService;
-use app\wechat\service\OfficeService;
 use think\Model;
 use Throwable;
 
@@ -32,13 +28,11 @@ class User
     /**
      * 通过授权code 获取用户信息
      * @param  string  $code
-     * @param  string  $iv
-     * @param  string  $encrypted_data
      * @param  array  $user_info
      * @return array
      * @throws Throwable
      */
-    function getUserInfoByCode(string $code, string $iv, string $encrypted_data, array $user_info = []): array
+    function getUserInfoByCode(string $code, array $user_info = []): array
     {
         $res = $this->mini->getApp()->auth->session($code);
         $session_key = $res['session_key'] ?? '';
@@ -47,12 +41,8 @@ class User
         $open_id = $res['openid'] ?? '';
         $unionid = $res['unionid'] ?? '';
 
-        if (empty($user_info['nickName'])) {
-            $user_info = $this->mini->getApp()->encryptor->decryptData($session_key, $iv, $encrypted_data);
-        }
-        throw_if(empty($user_info['nickName']), new \Exception('获取用户信息失败'));
         $user = WechatMiniUser::where([
-            'app_id'  => $this->mini->getAppId(),
+            'app_id' => $this->mini->getAppId(),
             'open_id' => $open_id
         ])->findOrEmpty();
         $user->app_id = $this->mini->getAppId();
@@ -68,11 +58,7 @@ class User
 
         throw_if(!$user->save(), new \Exception('生成登录信息失败'));
 
-        //生成登录token
-        $authTokenModel = new WechatAuthToken();
-        $authTokenModel->createAuthToken($this->mini->getAppId(), $open_id, $authTokenModel::ACCOUNT_TYPE_MINI);
-        throw_if(!$authTokenModel->token, new \Exception('生成登录信息失败'));
-        return array_merge($user->visible([
+        return $user->visible([
             'app_id',
             'open_id',
             'union_id',
@@ -83,11 +69,7 @@ class User
             'province',
             'country',
             'avatar_url',
-        ])->toArray(), [
-            'token'         => $authTokenModel->token,
-            'expire_time'   => $authTokenModel->expire_time,
-            'refresh_token' => $authTokenModel->refresh_token,
-        ]);
+        ])->toArray();
     }
 
 

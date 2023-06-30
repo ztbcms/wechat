@@ -19,7 +19,9 @@ $ composer require intervention/image 2 -vvv
 小程序的调用都统一使用 MiniService 为入口。`$mini_service=new MiniService($app_id)`
 
 ### 用户
-获取用户基本信息：`$mini_service->user()->getUserInfoByCode($code, $iv, $encrypted_data, $user_info)`
+获取用户基本信息：`$mini_service->user()->getUserInfoByCode($code, $user_info)`
+
+【拓展】根据 loin_code 登录接口`/wechat/index/miniAuthByCode`
 
 获取用户手机号码：`$mini_service->user()->getPhoneNumberByCode($code, $iv, $encrypted_data)`
 
