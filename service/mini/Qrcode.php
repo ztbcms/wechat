@@ -28,7 +28,7 @@ class Qrcode
     }
 
     /**
-     * 限制类二维码
+     * 【不推荐】限制类二维码
      * @param $path
      * @param array $optional
      * @return Model
@@ -69,7 +69,7 @@ class Qrcode
     }
 
     /**
-     * 获取不限制的小程序码
+     * 【推荐】获取不限制的小程序码
      * @param string $scene
      * @param array $optional
      * @return Model
@@ -79,6 +79,13 @@ class Qrcode
     {
         if (!isset($optional['width'])) {
             $optional['width'] = 280;
+        } else {
+            if ($optional['width'] > 1280) {
+                $optional['width'] = 1280;
+            }
+            if ($optional['width'] < 280) {
+                $optional['width'] = 280;
+            }
         }
         if (!isset($optional['page'])) {
             $optional['page'] = '';
@@ -115,6 +122,42 @@ class Qrcode
         $min_code->file_path = $file_path;
         throw_if(!$min_code->save(), new \Exception('保存小程序码失败'));
         return $min_code;
+    }
+
+    /**
+     * 【推荐】获取不限制的小程序码(Base64格式图片)
+     * @param string $scene
+     * @param array $optional
+     * @throws Throwable
+     */
+    public function getUnlimitMiniCodeInBase64(string $scene, array $optional = [])
+    {
+
+        // 二维码的宽度，单位 px，最小 280px，最大 1280px
+        if (!isset($optional['width'])) {
+            $optional['width'] = 280;
+        } else {
+            if ($optional['width'] > 1280) {
+                $optional['width'] = 1280;
+            }
+            if ($optional['width'] < 280) {
+                $optional['width'] = 280;
+            }
+        }
+        // 图片重置的宽度
+        $resize_width = $optional['resize_width'] ?? $optional['width'];
+        unset($optional['resize_width']);
+        if (!isset($optional['page'])) {
+            $optional['page'] = '';
+        }
+        $response = $this->mini->getApp()->app_code->getUnlimit($scene, $optional);
+        throw_if(!($response instanceof StreamResponse), new \Exception('获取小程序码失败'));
+        $manager = new ImageManager();
+        $image = $manager->make($response->getBody()->getContents());
+        // 图片压缩：缩小+降低质量
+        $image->resize($resize_width, $resize_width);
+        $stream = $image->stream('jpg', 80);
+        return 'data:image/jpg;base64,' . base64_encode($stream->getContents());
     }
 
 }

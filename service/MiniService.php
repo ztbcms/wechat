@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace app\wechat\service;
 
 use app\common\service\BaseService;
+use app\wechat\libs\WechatConfig;
 use app\wechat\model\WechatApplication;
 use app\wechat\service\mini\Live;
 use app\wechat\service\mini\Qrcode;
@@ -61,10 +62,7 @@ class MiniService extends BaseService
             // 下面为可选项
             // 指定 API 调用返回结果的类型：array(default)/collection/object/raw/自定义类名
             'response_type' => 'array',
-            'log' => [
-                'level' => $this->debug_level,
-                'file'  => $this->log_file,
-            ],
+            'log' => WechatConfig::get('wechat.mini_log'),
         ];
         $this->app_id = $application->app_id;
         $this->app = Factory::miniProgram($config);

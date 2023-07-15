@@ -12,6 +12,7 @@ namespace app\wechat\service;
 
 
 use app\common\service\BaseService;
+use app\wechat\libs\WechatConfig;
 use app\wechat\model\WechatApplication;
 use app\wechat\service\office\Jssdk;
 use app\wechat\service\office\Message;
@@ -63,7 +64,7 @@ class OfficeService extends BaseService
             // 下面为可选项
             // 指定 API 调用返回结果的类型：array(default)/collection/object/raw/自定义类名
             'response_type' => 'array',
-            'log' => config('wechat.log'),
+            'log' => WechatConfig::get('wechat.log'),
         ];
         $this->app_id = $application->app_id;
         $this->app = Factory::officialAccount($config);

@@ -35,6 +35,15 @@ $ composer require intervention/image 2 -vvv
 
 发送订阅消息：`$mini_service->subscribe()->sendSubscribeMessage($openid, $template_id, $data,$page)`
 
+### 🔥拓展功能实现：扫小程序码，登录PC端网页
+
+流程：用户在PC端点击登录，生成小程序码 -> 用户使用微信扫生成的小程序码，打开登录页，确认登录 -> PC端轮询结果，确认登录
+
+涉及接口：
+1、[PC]获取小程序扫码登录配置 `/wechat/login.MiniScanLogin/getLoginConfig`，(在这里自定义确认登录页，默认`page/login-confirm/login-confirm`)
+2、[PC]获取LoginCode的授权状态 `/wechat/login.MiniScanLogin/queryLoginCode`
+3、[小程序]确认登录操作`/wechat/login.MiniScanLogin/confirmLogin` （这里定义jwt token的payload内容，默认只有uid）
+
 ### 直播
 获取直播间列表：`$mini_service->live()->sysMiniLive()`
 

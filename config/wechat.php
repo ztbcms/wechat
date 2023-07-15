@@ -11,7 +11,7 @@ return [
         'default_mini_alias' => 'default_mini',
     ],
     /**
-     * easywechat 日志配置
+     * easywechat 日志配置（微信公众号）
      *
      * level: 日志级别, 可选为：
      *         debug/info/notice/warning/error/critical/alert/emergency
@@ -23,15 +23,27 @@ return [
             // 测试环境
             'dev' => [
                 'driver' => 'single',
-                'path' => runtime_path() . 'wxlog/easywechat.log',
+                'path' => runtime_path() . 'wxlog/office.log',
                 'level' => 'debug',
             ],
             // 生产环境
             'prod' => [
                 'driver' => 'daily',
-                'path' => runtime_path() . 'wxlog/easywechat.log',
-                'level' => 'info',
+                'path' => runtime_path() . 'wxlog/office.log',
+                'level' => 'error',
                 'days' => 30, // 保留最近30日
+            ],
+        ],
+    ],
+    // 小程序日志配置
+    'mini_log' => [
+        'default' => 'prod',
+        'channels' => [
+            'prod' => [
+                'driver' => 'daily',
+                'path' => runtime_path() . 'wxlog/mini.log',
+                'level' => 'error',
+                'days' => 30,
             ],
         ],
     ],
