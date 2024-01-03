@@ -5,9 +5,8 @@
 
 namespace app\wechat\controller\login;
 
-use app\BaseController;
 use app\Request;
-use app\wechat\model\WechatApplication;
+use app\wechat\controller\BaseFrontController;
 use app\wechat\service\login\ScanLoginService;
 use app\wechat\service\OfficeService;
 use think\facade\Cache;
@@ -16,14 +15,23 @@ use think\facade\View;
 /**
  * 公众号扫码登录
  */
-class OfficeScanLogin extends BaseController
+class OfficeScanLogin extends BaseFrontController
 {
+
     /**
-     * 授权首页
+     * 授权入口
      * @return \think\response\View
      */
     function index(Request $request)
     {
+        $appid = input('get.appid');
+        if (!$appid) {
+            return view('tips', [
+                'page_title' => '提示',
+                'status' => 0,
+                'msg' => '参数异常：appid',
+            ]);
+        }
         $redirect_url = input('get.redirect_url');
         if (empty($redirect_url)) {
             $redirect_url = api_url('/wechat/login.OfficeScanLogin/finishLogin');
@@ -39,6 +47,7 @@ class OfficeScanLogin extends BaseController
             ]);
         }
 
+        View::assign('appid', $appid);
         View::assign('redirect_url', $redirect_url);
         return view('index');
     }
@@ -50,11 +59,13 @@ class OfficeScanLogin extends BaseController
      */
     function getLoginCode()
     {
-        $login_code = generateUniqueId();
-        $app_config = config('wechat.application');
-        $app_id = WechatApplication::getAppIdByAlias($app_config['default_office_alias']);
+        $app_id = input('get.appid');
+        if (empty($app_id)) {
+            return self::makeJsonReturn(false, null, '参数异常');
+        }
         $officeService = new OfficeService($app_id);
         try {
+            $login_code = md5($app_id.generateUniqueId());
             $ttl = 5 * 60;
             $qrcode = $officeService->qrcode()->temporary($login_code, $ttl, ScanLoginService::OFFICE_QRCODE_CATEGORY_SCAN_LOGIN);
             return self::makeJsonReturn(true, [

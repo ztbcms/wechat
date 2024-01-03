@@ -32,7 +32,12 @@ class MiniScanLogin extends BaseApi
      */
     function getLoginConfig()
     {
-        $mini_service = new MiniService(WechatConfig::get('wechat.application.default_mini_alias'), MiniService::ALIAS_APPLICATION);
+        $appid = input('appid');
+        if (!empty($appid)) {
+            $mini_service = new MiniService($appid);
+        } else {
+            $mini_service = new MiniService(WechatConfig::get('wechat.application.default_mini_alias'), MiniService::ALIAS_APPLICATION);
+        }
         $scene = generateUniqueId();
 
         $optional = [

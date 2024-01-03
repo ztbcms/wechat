@@ -10,6 +10,7 @@ use app\common\service\jwt\JwtService;
 use app\wechat\model\WechatOfficeUser;
 use app\wechat\service\OfficeService;
 use EasyWeChat\Kernel\Exceptions\InvalidConfigException;
+use EasyWeChat\Kernel\Messages\Text;
 use think\facade\Cache;
 
 class ScanLoginService extends BaseService
@@ -73,5 +74,32 @@ class ScanLoginService extends BaseService
         } catch (InvalidConfigException $e) {
             return self::createReturn(false, null, '微信配置异常');
         }
+    }
+
+    /**
+     * 实现扫码登录业务逻辑
+     * 场景：扫码消息，扫码后关注产生事件消息
+     * @param $appid string 公众号AppID
+     * @param array $msg_payload 微信推送的消息内容
+     * @return Text
+     */
+    static function handleOfficeScanLogin($appid, array $msg_payload)
+    {
+        $jwtService = new JwtService();
+        $info = [
+            'app_id' => $appid,
+            'open_id' => $msg_payload['FromUserName'],
+            'login_code' => str_replace('qrscene_', '', $msg_payload['EventKey']),
+            'exp' => time() + 30,
+        ];
+        $token = Cache::get(ScanLoginService::getLoginCodeCacheKey($info['login_code']));
+        if ($token === null) {
+            $token = $jwtService->createToken($info);
+            $url = api_url('wechat/login.OfficeScanLogin/confirmLogin', ['code' => $token]);
+            // 登录码标识为空，即用户已扫码
+            Cache::set(ScanLoginService::getLoginCodeCacheKey($info['login_code']), '', 5 * 60);
+            return new Text("<a href='{$url}'>点击此处确认登录</a>");
+        }
+        return null;
     }
 }

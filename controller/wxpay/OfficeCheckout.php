@@ -5,8 +5,8 @@
 
 namespace app\wechat\controller\wxpay;
 
-use app\BaseController;
 use app\common\service\jwt\JwtService;
+use app\wechat\controller\BaseFrontController;
 use app\wechat\libs\wxpay\WxpayUtils;
 use app\wechat\model\WechatAuthToken;
 use app\wechat\service\WxpayService;
@@ -15,7 +15,7 @@ use think\facade\View;
 /**
  * 公众号收款结算
  */
-class OfficeCheckout extends BaseController
+class OfficeCheckout extends BaseFrontController
 {
     /**
      * 结算前准备页

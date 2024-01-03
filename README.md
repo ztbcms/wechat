@@ -40,9 +40,9 @@ $ composer require intervention/image 2 -vvv
 流程：用户在PC端点击登录，生成小程序码 -> 用户使用微信扫生成的小程序码，打开登录页，确认登录 -> PC端轮询结果，确认登录
 
 涉及接口：
-1、[PC]获取小程序扫码登录配置 `/wechat/login.MiniScanLogin/getLoginConfig`，(在这里自定义确认登录页，默认`page/login-confirm/login-confirm`)
-2、[PC]获取LoginCode的授权状态 `/wechat/login.MiniScanLogin/queryLoginCode`
-3、[小程序]确认登录操作`/wechat/login.MiniScanLogin/confirmLogin` （这里定义jwt token的payload内容，默认只有uid）
+1. [PC]获取小程序扫码登录配置 `/wechat/login.MiniScanLogin/getLoginConfig`，(在这里自定义确认登录页，默认`page/login-confirm/login-confirm`)
+2. [PC]获取LoginCode的授权状态 `/wechat/login.MiniScanLogin/queryLoginCode`
+3. [小程序]确认登录操作`/wechat/login.MiniScanLogin/confirmLogin` （这里定义jwt token的payload内容，默认只有uid）
 
 ### 直播
 获取直播间列表：`$mini_service->live()->sysMiniLive()`
@@ -52,6 +52,19 @@ $ composer require intervention/image 2 -vvv
 ## 3.公众号
 
 公众号的调用都统一使用 OfficeService 为入口。`$office_service=new OfficeService($app_id)`
+
+公众号配置：
+```
+1. 获取公众号的 AppId 和 AppSecret 并在管理后台添加公众号应用
+2. 开启公众号服务器配置，配置入口为：/wechat/index/serverPush/app/{公众号appid} 
+3. 检测是否配置正确：向公众号发送文字消息后，在管理后台的“内容消息”中可以看到回复的消息
+```
+
+常见问题：
+```
+Q:配置后没，发送消息，扫码都没有事件消息
+答：1)大概率是配置参数有问题 2）可能有缓存未生效
+```
 
 ### 用户
 
@@ -83,11 +96,11 @@ $ composer require intervention/image 2 -vvv
 
 ### [拓展功能]公众号扫码登录功能
 
-大致流程：用户跳转到`扫码页`进行扫码,`扫码页`轮询扫码结果->公众号推送一个`确认登录`链接，用户点击链接即确认登录->`扫码页`识别出已确认登录并跳转到自定义的URL
+大致流程：用户跳转到`扫码页`进行扫码,`扫码页`轮询扫码结果 -> 公众号推送一个`确认登录`链接，用户点击链接即确认登录 -> `扫码页`识别出已确认登录并跳转到自定义的URL
 
-1、配置文件`config/wechat.php`中开功能并设置授权域名
-2、访问扫码页`/wechat/login.OfficeScanLogin/index?redirect_url={授权完成后跳转链接}`。 PS：跳转链接可以先不填写，系统默认有个默认的链接，可以试试看
-3、授权完成后跳转链接会携带一个code参数，你可以使用`JwtService::parserToken()`来获取授权用户的`app_id`、`open_id`,接下来就是你的业务逻辑。
+1. 配置文件`config/wechat.php`中开功能并设置授权域名
+2. 访问扫码页`/wechat/login.OfficeScanLogin/index?appid={公众号AppID}redirect_url={授权完成后跳转链接}`。 PS：跳转链接可以先不填写，系统默认有个默认的链接，可以试试看
+3. 授权完成后跳转链接会携带一个code参数，你可以使用`JwtService::parserToken()`来获取授权用户的`app_id`、`open_id`,这部分需要自行实现逻辑，本组件只负责实现扫码获取用户 openid。
 
 ## 4. 微信支付
 微信支付的调用都统一使用 WxpayService 为入口。`$wxpay_service=new WxpayService($app_id)`

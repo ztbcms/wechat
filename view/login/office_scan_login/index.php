@@ -181,6 +181,7 @@
                 timeoutId: 0,
                 checkCodeRepeatTime: 2 * 1000,
                 redirect_url: "{$redirect_url}",
+                appid: "{$appid}",
                 status: 0,// 1拉取中 2拉取失败 3二维码生效中 5已扫码 4二维码已失效
             },
             mounted: function () {
@@ -196,7 +197,9 @@
                     if (this.timeoutId) {
                         clearTimeout(this.timeoutId)
                     }
-                    this.httpGet("{:api_url('/wechat/login.OfficeScanLogin/getLoginCode')}", {}, function (res) {
+                    this.httpGet("{:api_url('/wechat/login.OfficeScanLogin/getLoginCode')}", {
+                        appid: this.appid,
+                    }, function (res) {
                         if (res.status) {
                             that.code = res.data.code
                             that.qrcode = res.data.qrcode
