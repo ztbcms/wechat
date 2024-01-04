@@ -19,8 +19,7 @@ class SubscribeEventHandler implements EventHandlerInterface
 
     public function handle($appid, array $msg_payload)
     {
-        $config = config('wechat.office_scan_login');
-        if ($config['enable']) {
+        if (ScanLoginService::shouldHandleOfficeScanLoginInSubscribeEvent($msg_payload)) {
             return ScanLoginService::handleOfficeScanLogin($appid, $msg_payload);
         }
 

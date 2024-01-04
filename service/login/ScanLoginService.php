@@ -15,6 +15,8 @@ use think\facade\Cache;
 
 class ScanLoginService extends BaseService
 {
+    // 场景值前缀
+    const ScenePrefix = '_SCANLOGIN_';
     // 公众号二维码分类：扫码登录
     const OFFICE_QRCODE_CATEGORY_SCAN_LOGIN = 'SCAN_LOGIN';
 
@@ -74,6 +76,18 @@ class ScanLoginService extends BaseService
         } catch (InvalidConfigException $e) {
             return self::createReturn(false, null, '微信配置异常');
         }
+    }
+
+    // 发生关注公众号时，是否匹配扫码登录业务
+    static function shouldHandleOfficeScanLoginInSubscribeEvent(array $msg_payload)
+    {
+        return $msg_payload['Event'] == 'subscribe' && strpos($msg_payload['EventKey'], 'qrscene_' . self::ScenePrefix) === 0;
+    }
+
+    // 发生扫码事件时，是否匹配扫码登录业务
+    static function shouldHandleOfficeScanLoginInScanEvent(array $msg_payload)
+    {
+        return $msg_payload['Event'] == 'SCAN' && strpos($msg_payload['EventKey'], self::ScenePrefix) === 0;
     }
 
     /**

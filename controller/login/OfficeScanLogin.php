@@ -65,7 +65,8 @@ class OfficeScanLogin extends BaseFrontController
         }
         $officeService = new OfficeService($app_id);
         try {
-            $login_code = md5($app_id.generateUniqueId());
+            // 字符串类型，长度限制为1到64,必须固定开头
+            $login_code = ScanLoginService::ScenePrefix.md5($app_id.generateUniqueId());
             $ttl = 5 * 60;
             $qrcode = $officeService->qrcode()->temporary($login_code, $ttl, ScanLoginService::OFFICE_QRCODE_CATEGORY_SCAN_LOGIN);
             return self::makeJsonReturn(true, [
