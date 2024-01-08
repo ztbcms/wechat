@@ -64,14 +64,15 @@ class ScanLoginService extends BaseService
                 WechatOfficeUser::updateOfficeUser($app_id, $userInfo);
             }
             // 登录码换取登录凭证token
+            $ttl = 2 * 60; // 仅用于短时间内的认证凭证
             $jwtService = new JwtService();
             $token = $jwtService->createToken([
                 'uid' => $officeUser['id'],
                 'app_id' => $app_id,
                 'open_id' => $open_id,
-                'exp' => time() + 30 * 24 * 60 * 60,
+                'exp' => time() + $ttl,
             ]);
-            Cache::set(ScanLoginService::getLoginCodeCacheKey($login_code), $token, 2 * 60);
+            Cache::set(ScanLoginService::getLoginCodeCacheKey($login_code), $token, $ttl);
             return self::createReturn(true, ['token' => $token], '授权完成');
         } catch (InvalidConfigException $e) {
             return self::createReturn(false, null, '微信配置异常');
@@ -104,15 +105,17 @@ class ScanLoginService extends BaseService
             'app_id' => $appid,
             'open_id' => $msg_payload['FromUserName'],
             'login_code' => str_replace('qrscene_', '', $msg_payload['EventKey']),
-            'exp' => time() + 30,
+            'exp' => time() + 60,
         ];
         $token = Cache::get(ScanLoginService::getLoginCodeCacheKey($info['login_code']));
         if ($token === null) {
             $token = $jwtService->createToken($info);
-            $url = api_url('wechat/login.OfficeScanLogin/confirmLogin', ['code' => $token]);
-            // 登录码标识为空，即用户已扫码
-            Cache::set(ScanLoginService::getLoginCodeCacheKey($info['login_code']), '', 5 * 60);
-            return new Text("<a href='{$url}'>点击此处确认登录</a>");
+            $scanLoginService = new ScanLoginService();
+            $res = $scanLoginService->loginByToken($token);
+            if (!$res['status']) {
+                return new Text($res['msg']);
+            }
+            return new Text("登录成功");
         }
         return null;
     }

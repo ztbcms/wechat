@@ -32,7 +32,7 @@ class OfficeScanLogin extends BaseFrontController
                 'msg' => '参数异常：appid',
             ]);
         }
-        $redirect_url = input('get.redirect_url');
+        $redirect_url = input('get.redirect_url', '', 'urldecode');
         if (empty($redirect_url)) {
             $redirect_url = api_url('/wechat/login.OfficeScanLogin/finishLogin');
         }
@@ -97,7 +97,7 @@ class OfficeScanLogin extends BaseFrontController
     }
 
     /**
-     * 默认的确认登录完成页
+     * 默认的登录完成页
      * @return \think\response\View
      */
     function finishLogin()
@@ -106,29 +106,6 @@ class OfficeScanLogin extends BaseFrontController
             'page_title' => '登录完成',
             'status' => 1,
             'msg' => '登录完成',
-        ]);
-    }
-
-    /**
-     * 确认登录页
-     * @return \think\response\View
-     */
-    function confirmLogin()
-    {
-        $code = input('get.code', '');
-        $scanLoginService = new ScanLoginService();
-        $res = $scanLoginService->loginByToken($code);
-        if (!$res['status']) {
-            return view('tips', [
-                'page_title' => '登录确认结果',
-                'status' => 0,
-                'msg' => '参数异常，请重新扫码'
-            ]);
-        }
-        return view('tips', [
-            'page_title' => '登录确认结果',
-            'status' => 1,
-            'msg' => '已确认登录'
         ]);
     }
 }
