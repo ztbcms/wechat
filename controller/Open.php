@@ -1,33 +1,45 @@
 <?php
-/**
- * User: cycle_3
- */
-
 
 namespace app\wechat\controller;
 
 use app\BaseController;
-use app\wechat\model\open\WechatOpenApp;
-use app\wechat\model\open\WechatOpenEvent;
+use app\wechat\libs\utils\RequestUtils;
+use app\wechat\service\open\OpenAuthorizerService;
+use app\wechat\service\open\OpenWxcallbackBizService;
+use app\wechat\service\open\OpenWxcallbackComponentService;
 use app\wechat\service\OpenService;
-use app\wechat\service\OfficeService;
-use EasyWeChat\OpenPlatform\Server\Guard;
 
 /**
- * 第三方公众平台管理
- * @package app\wechat\controller
+ * 微信第三方平台
  */
 class Open extends BaseController
 {
 
     /**
-     * 获取用户授权页 URL
+     * 用户授权入口页 URL
+     * @see 文档：https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Before_Develop/Authorization_Process_Technical_Description.html
      */
     function auth()
     {
+        // 授权链接使用场景,pc电脑版,h5手机版
+        $env = input('get.env', 'pc');
+        if(!in_array($env, ['pc', 'h5'])){
+            return '参数异常';
+        }
         $openService = new OpenService();
-        $url = $openService->app->getPreAuthorizationUrl(api_url('/wechat/Open/callback'));
-        echo ' <script> location.href = "'.$url.'" </script> ';
+        $optional = [];
+        // 要授权的账号类型,1 表示手机端仅展示公众号；2 表示仅展示小程序，3 表示公众号和小程序都展示, 4~6请看文档
+        $auth_type = input('get.auth_type', '');
+        if(!empty($auth_type)){
+            $optional['auth_type'] = $auth_type;
+        }
+        if($env == 'h5'){
+            $url = $openService->getOpenApp()->getMobilePreAuthorizationUrl(api_url('/wechat/Open/callback'), $optional);
+        } else {
+            $url = $openService->getOpenApp()->getPreAuthorizationUrl(api_url('/wechat/Open/callback'), $optional);
+        }
+
+        return ' <script> location.href = "' . $url . '" </script> ';
     }
 
     /**
@@ -37,138 +49,74 @@ class Open extends BaseController
     {
         $authCode = input('get.auth_code');
         $openService = new OpenService();
-        $res = $openService->app->handleAuthorize($authCode);
-        if (!empty($res['authorization_info'])) {
-            $authorizationInfo = $res['authorization_info'];
+        $resp = $openService->getOpenApp()->handleAuthorize($authCode);
+        if (RequestUtils::isRquestSuccessed($resp)) {
+            $authorizationInfo = $resp['authorization_info'];
             $authorizerAppid = $authorizationInfo['authorizer_appid'];
-            $authorizerRes = $openService->app->getAuthorizer($authorizerAppid);
 
-            $WechatOpenApp = new WechatOpenApp();
-
-            if (!empty($authorizerRes['authorizer_info'])) {
-                $authorizerInfo = $authorizerRes['authorizer_info'];
-                $data = [
-                    'authorizer_appid' => $authorizerAppid,
-                    'nick_name'        => $authorizerInfo['nick_name'],
-                    'head_img'         => $authorizerInfo['head_img'],
-                    'service_type'     => $authorizerInfo['service_type_info']['id'],
-                    'verify_type'      => $authorizerInfo['verify_type_info']['id'],
-                    'user_name'        => $authorizerInfo['user_name'],
-                    'alias'            => $authorizerInfo['alias'],
-                    'qrcode_url'       => $authorizerInfo['qrcode_url'],
-                ];
-                if ($WechatOpenApp->where(['authorizer_appid' => $authorizerAppid])->count()) {
-                    $data['update_time'] = time();
-                    $res = $WechatOpenApp->where(['authorizer_appid' => $authorizerAppid])->update($data);
-                } else {
-                    $data['create_time'] = time();
-                    $res = $WechatOpenApp->insertGetId($data);
-                }
-                if ($res) {
-                    echo "授权成功";
-                } else {
-                    echo "授权失败3";
-                }
+            $sync_res = OpenAuthorizerService::syncAuthorizerInfo($authorizerAppid);
+            if ($sync_res['status']) {
+                return "授权成功";
             } else {
-                echo "授权失败2";
+                return "授权失败:".$sync_res['msg'];
             }
         } else {
-            echo "授权失败1";
+            return "授权失败:".RequestUtils::buildErrorMsg($resp);
         }
     }
 
-    /**
-     * 获取授权信息
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    function index()
+    // 开放平台授权流程相关:授权事件接收
+    // 1、component_verify_ticket 推送
+    // 2、授权变更通知推送 https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Before_Develop/authorize_event.html
+    function wxcallback_component()
     {
         $openService = new OpenService();
-        $server = $openService->app->server;
+        $server = $openService->getOpenApp()->server;
+        $server->push(function ($message) {
+            // 记录到数据库
+            OpenWxcallbackComponentService::addWxcallbackComponentRecord($message);
 
-        // 处理授权成功事件
-        $server->push(function ($message)
-        {
+            // 授权成功
+            if ($message['InfoType'] === 'authorized') {
+                OpenWxcallbackComponentService::handleAuthorized($message);
+            }
 
-            $WechatOpenEvent = new WechatOpenEvent();
-            $data = [
-                'app_id'                          => $message['AppId'],
-                'create_time'                     => $message['CreateTime'],
-                'info_type'                       => $message['InfoType'],
-                'authorizer_appid'                => $message['AuthorizerAppid'],
-                'authorization_code'              => $message['AuthorizationCode'],
-                'authorization_code_expired_time' => $message['AuthorizationCodeExpiredTime'],
-                'pre_auth_code'                   => $message['PreAuthCode'],
-            ];
-            $WechatOpenEvent->insertGetId($data);
+            // 授权更新
+            if ($message['InfoType'] === 'updateauthorized') {
+                OpenWxcallbackComponentService::handleUpdateAuthorized($message);
+            }
 
-        }, Guard::EVENT_AUTHORIZED);
+            // 授权取消
+            if ($message['InfoType'] === 'unauthorized') {
+                OpenWxcallbackComponentService::handleUnauthorized($message);
+            }
 
-        // 处理授权更新事件
-        $server->push(function ($message)
-        {
-            $WechatOpenEvent = new WechatOpenEvent();
-            $data = [
-                'app_id'                          => $message['AppId'],
-                'create_time'                     => $message['CreateTime'],
-                'info_type'                       => $message['InfoType'],
-                'authorizer_appid'                => $message['AuthorizerAppid'],
-                'authorization_code'              => $message['AuthorizationCode'],
-                'authorization_code_expired_time' => $message['AuthorizationCodeExpiredTime'],
-                'pre_auth_code'                   => $message['PreAuthCode'],
-            ];
-            $WechatOpenEvent->insertGetId($data);
-        }, Guard::EVENT_UPDATE_AUTHORIZED);
-
-        // 处理授权取消事件
-        $server->push(function ($message)
-        {
-            $WechatOpenEvent = new WechatOpenEvent();
-            $data = [
-                'app_id'           => $message['AppId'],
-                'create_time'      => $message['CreateTime'],
-                'info_type'        => $message['InfoType'],
-                'authorizer_appid' => $message['AuthorizerAppid'],
-            ];
-            $WechatOpenEvent->insertGetId($data);
-        }, Guard::EVENT_UNAUTHORIZED);
+            // TODO 转发到用户配置的地址
+        });
 
         return $server->serve();
     }
 
-    /**
-     * 接收第三方消息通知
-     * @param $appid
-     */
-    function msg($appid)
+    // 开放平台授权后实现业务:消息与事件接收
+    // 消息：https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_standard_messages.html
+    // 事件：https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_event_pushes.html
+    function wxcallback_biz($appid)
     {
         $openService = new OpenService();
-        $server = $openService->app->officialAccount($appid)->server;
-        $server->push(function ($message) use ($appid, $server)
-        {
-            $officeService = new OfficeService($appid);
-            switch ($message['MsgType']) {
-                case 'event':
-                    $officeService->message()->handleEventMessage($message);
-                    break;
-                default:
-                    //其他消息形式都归到消息处理
-                    $officeService->message()->handleMessage($message);
-                    break;
+        $server = $openService->getOpenApp()->officialAccount($appid)->server;
+        $server->push(function ($message) use ($appid) {
+            OpenWxcallbackBizService::addWxcallbackBizRecord($appid, $message);
+            if ($message['MsgType'] === 'event') {
+                $ret = OpenWxcallbackBizService::handleEventReceived($appid, $message);
+            } else {
+                $ret = OpenWxcallbackBizService::handleMsgReceived($appid, $message);
             }
+
+            // TODO 转发到用户配置的地址
+
+            return $ret;
         });
         $server->serve()->send();
-    }
-
-    /**
-     * 获取接收事件
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function serve()
-    {
-        $openService = new OpenService();
-        $server = $openService->app->server;
-        return $server->serve();
     }
 
 }

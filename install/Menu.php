@@ -150,4 +150,52 @@ return [
             ]
         ]
     ],
+    [
+        "parentid" => 0,
+        "route"    => "wechat/application/index",
+        "type"     => 0,
+        "status"   => 1,
+        "name"     => "微信第三方平台",
+        "child"    => [
+            [
+                "route"  => "wechat/open.IndexAdmin/index",
+                "type"   => 0,
+                "status" => 1,
+                "name"   => "授权入口",
+            ],
+            [
+                "route"  => "wechat/open.AuthorizerAdmin/list",
+                "type"   => 0,
+                "status" => 1,
+                "name"   => "授权账号",
+            ],
+            [
+                "route"  => "wechat/open.PublisherAgencyAdmin/list",
+                "type"   => 0,
+                "status" => 1,
+                "name"   => "小程序流量主",
+            ],
+            [
+                "route"  => "wechat/open/debug",
+                "type"   => 0,
+                "status" => 1,
+                "name"   => "开发调试",
+                "child"  => [
+                    [
+                        "route"  => "wechat/open.WxcallbackAdmin/component",
+                        "type"   => 1,
+                        "status" => 1,
+                        "name"   => "授权事件推送",
+                    ],
+                    [
+                        "route"  => "wechat/open.WxcallbackAdmin/biz",
+                        "type"   => 1,
+                        "status" => 1,
+                        "name"   => "消息和事件推送",
+                    ],
+                ]
+            ],
+
+        ]
+    ]
 ];

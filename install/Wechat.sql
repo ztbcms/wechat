@@ -390,40 +390,59 @@ CREATE TABLE `cms_wechat_office_message`
     INDEX `msg_id`(`msg_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `cms_wechat_open_app`
+CREATE TABLE `cms_wechat_open_authorizer`
 (
-    `id`               int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `authorizer_appid` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '授权的appid',
-    `nick_name`        varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '名称',
-    `head_img`         varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '头像',
-    `service_type`     tinyint(1) NULL DEFAULT NULL COMMENT '公众号类型',
-    `verify_type`      tinyint(1) NULL DEFAULT NULL COMMENT '微信认证',
-    `user_name`        varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '用户名',
-    `alias`            varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '别名',
-    `qrcode_url`       varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '二维码',
-    `create_time`      int(11) UNSIGNED NULL DEFAULT 0 COMMENT '创建时间',
-    `update_time`      int(11) UNSIGNED NULL DEFAULT 0 COMMENT '更新时间',
-    `delete_time`      int(11) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `authorizer_appid` varchar(128) NOT NULL DEFAULT '' COMMENT '授权账号appid',
+    `name` varchar(255) NOT NULL COMMENT '授权账号名称',
+    `head_img` text NOT NULL COMMENT '授权账号头像',
+    `account_type` tinyint(1) NOT NULL COMMENT '账号类型：0公众号 1小程序',
+    `account_status` tinyint(1) NOT NULL COMMENT '账号状态: 1正常 14已注销 16已封禁 18已告警 19已冻结',
+    `is_verify` tinyint(1) NOT NULL COMMENT '账号认证: 0未认证 1已认证',
+    `qrcode_url` varchar(512) NOT NULL COMMENT '授权账号二维码',
+    `create_time` int(11) unsigned DEFAULT '0' COMMENT '创建时间',
+    `update_time` int(11) unsigned DEFAULT '0' COMMENT '更新时间',
+    `authorizer_info` text COMMENT '[JSON]授权账号信息',
+    `authorization_info` text COMMENT '[JSON]授权信息',
+    `authorization_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '授权状态 0未授权 1 已授权(授权中)',
     PRIMARY KEY (`id`) USING BTREE,
-    INDEX `id`(`id`) USING BTREE,
-    INDEX `authorizer_appid`(`authorizer_appid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    UNIQUE KEY `authorizer_appid` (`authorizer_appid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='第三方平台授权账号';
 
-CREATE TABLE `cms_wechat_open_event`
+CREATE TABLE `cms_wechat_open_wxcallback_biz` (
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `authorizer_appid` varchar(64) NOT NULL COMMENT '授权公众号或小程序的 appid',
+    `msg_type` varchar(64) NOT NULL COMMENT '消息类型 text,event等',
+    `event` varchar(64) NOT NULL COMMENT '事件名称',
+    `body` text NOT NULL COMMENT '推送内容',
+    `create_time` int(11) NOT NULL COMMENT '创建时间',
+    `receive_time` int(11) NOT NULL COMMENT '接收时间',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息与事件接收日志';
+
+CREATE TABLE `ztb_wechat_open_wxcallback_component` (
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `authorizer_appid` varchar(64) NOT NULL COMMENT '授权公众号或小程序的 appid',
+    `info_type` varchar(128) NOT NULL COMMENT '事件类型',
+    `body` text NOT NULL COMMENT '推送内容',
+    `create_time` int(11) NOT NULL COMMENT '内容创建时间',
+    `receive_time` int(11) NOT NULL COMMENT '接收时间',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='授权事件接收日志';
+
+CREATE TABLE `ztb_wechat_open_publisher`
 (
-    `id`                              int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `app_id`                          varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '开放平台appid',
-    `create_time`                     int(11) NULL DEFAULT NULL COMMENT '创建时间',
-    `authorizer_appid`                varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '授权appid',
-    `info_type`                       varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '事件类型',
-    `authorization_code`              varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '授权code',
-    `authorization_code_expired_time` int(11) NULL DEFAULT NULL COMMENT '授权code过期时间',
-    `pre_auth_code`                   varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '预授权码',
+    `id`                 int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `authorizer_appid`   varchar(128) NOT NULL COMMENT '授权账号appid',
+    `name`               varchar(255) NOT NULL COMMENT '授权账号名称',
+    `publisher_status`   tinyint(1) NOT NULL DEFAULT '0' COMMENT '流量主开通状态：0未开通，1 已开通',
+    `share_ratio`        int(11) NOT NULL DEFAULT '0' COMMENT '生效分成比例 0～99',
+    `custom_share_ratio` int(11) NOT NULL DEFAULT '0' COMMENT '自定义分成比例',
+    `create_time`        int(11) unsigned DEFAULT '0' COMMENT '创建时间',
+    `update_time`        int(11) unsigned DEFAULT '0' COMMENT '更新时间',
     PRIMARY KEY (`id`) USING BTREE,
-    INDEX `id`(`id`) USING BTREE,
-    INDEX `app_id`(`app_id`) USING BTREE,
-    INDEX `authorizer_appid`(`authorizer_appid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    UNIQUE KEY `authorizer_appid` (`authorizer_appid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='小程序流量主';
 
 CREATE TABLE `cms_wechat_wxpay_redpack`
 (
