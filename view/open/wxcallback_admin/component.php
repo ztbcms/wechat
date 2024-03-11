@@ -38,17 +38,17 @@
             <el-table-column
                 prop="receive_time"
                 label="推送时间"
-                min-width="100">
+                width="180">
             </el-table-column>
             <el-table-column
                 prop="authorizer_appid"
                 label="授权账号 APPID"
-                min-width="100">
+                width="180">
             </el-table-column>
             <el-table-column
                 prop="info_type"
                 label="事件类型"
-                min-width="100">
+                width="180">
             </el-table-column>
             <el-table-column
                 prop="body"

@@ -48,22 +48,22 @@
             <el-table-column
                     prop="receive_time"
                     label="推送时间"
-                    min-width="100">
+                    width="180">
             </el-table-column>
             <el-table-column
                     prop="authorizer_appid"
                     label="授权账号 APPID"
-                    min-width="100">
+                    width="180">
             </el-table-column>
             <el-table-column
                     prop="msg_type"
                     label="MsgType"
-                    min-width="100">
+                    width="180">
             </el-table-column>
             <el-table-column
                     prop="event"
                     label="Event"
-                    min-width="100">
+                    width="180">
             </el-table-column>
             <el-table-column
                     prop="body"
