@@ -5,8 +5,6 @@
 
 // 微信开放平台配置
 return [
-    'debug' => env('wechat.open_debug', true),
-    'debug_log' => runtime_path('wechat_open.log'),
     // 平台配置，到微信开放平台获取
     'app_id' => env('wechat.open_app_id', ''), // 开放平台第三方平台 APPID
     'secret' => env('wechat.open_secret', ''),//开放平台第三方平台 Secret
@@ -14,7 +12,7 @@ return [
     'aes_key' => env('wechat.open_aes_key', ''), // 开放平台第三方平台 AES Key
 
     'log' => [
-        'default' => 'dev', // 默认使用的 channel，生产环境可以改为下面的 prod
+        'default' => 'prod', // 默认使用的 channel，生产环境可以改为下面的 prod
         'channels' => [
             // 测试环境
             'dev' => [
