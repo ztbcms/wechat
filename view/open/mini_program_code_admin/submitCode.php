@@ -32,7 +32,7 @@
                     <el-input
                             v-model="form.ext_json"
                             type="textarea"
-                            :rows="4"
+                            :autosize="{ minRows: 4}"
                             placeholder="请输入 JSON 格式内容"
                     >
                     </el-input>

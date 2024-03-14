@@ -164,20 +164,19 @@ class MiniProgramCodeAdmin extends AdminController
         if ($action == 'submitCode') {
             $authorizer_appid = input('authorizer_appid', '');
             $template_id = input('template_id', '');
-            $ext_json = input('ext_json', '');
+            $ext_json = input('ext_json', '', 'trim');
             $user_version = input('user_version', '');
             $user_desc = input('user_desc', '');
             if (empty($authorizer_appid) || empty($template_id) || empty($ext_json) || empty($user_version) || empty($user_desc)) {
                 return self::returnErrorJson('参数错误');
             }
-
             $openService = OpenService::getInstnace();
             $miniProgramAgency = $openService->miniProgramAgency($authorizer_appid);
             $resp = $miniProgramAgency->commit($template_id, $ext_json, $user_version, $user_desc);
             if (!RequestUtils::isRquestSuccessed($resp)) {
                 return self::returnErrorJson(RequestUtils::buildErrorMsg($resp));
             }
-            return self::returnSuccessJson([], '提交成功');
+            return self::returnSuccessJson([], '上传成功');
         }
         return view('submitCode');
     }
