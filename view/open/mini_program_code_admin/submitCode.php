@@ -94,7 +94,7 @@
                     }
                     this.httpGet("/wechat/open.MiniProgramCodeAdmin/submitCode", data, function (res) {
                         if(res.status){
-                            that.templateList = res.data.reverse()
+                            that.templateList = res.data
                         }
                     })
                 },

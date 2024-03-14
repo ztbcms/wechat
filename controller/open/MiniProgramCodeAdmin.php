@@ -6,6 +6,7 @@
 namespace app\wechat\controller\open;
 
 use app\common\controller\AdminController;
+use app\common\libs\helper\ArrayHelper;
 use app\wechat\libs\utils\RequestUtils;
 use app\wechat\service\OpenService;
 use think\Request;
@@ -154,7 +155,10 @@ class MiniProgramCodeAdmin extends AdminController
             if (!RequestUtils::isRquestSuccessed($resp)) {
                 return self::returnErrorJson(RequestUtils::buildErrorMsg($resp));
             }
-            return self::returnSuccessJson($resp['template_list']);
+            // 按创建时间降序排序
+            ArrayHelper::sortByKey($resp['template_list'], 'create_time');
+            $template_list = array_reverse($resp['template_list']);
+            return self::returnSuccessJson($template_list);
         }
         // 提交代码
         if ($action == 'submitCode') {
