@@ -58,8 +58,7 @@
                         <p>权限集id列表： </p>
                         <div style="margin-left: 8px;">
                             <template v-for="(item, index) in form.authorization_info.func_info" :key="index">
-                                <!--没有confirm_info 说明已授权-->
-                                <span v-if="!item.confirm_info">{{ item.funcscope_category.id }}</>
+                                <span>{{ item.funcscope_category.id }}</>
                             </template>
                             <p>具体参考：<a
                                         href="https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/product/third_party_authority_instructions.html">权限集列表说明</a>
