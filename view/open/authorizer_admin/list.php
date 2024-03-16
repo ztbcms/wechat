@@ -22,7 +22,6 @@
                 </el-form-item>
                 <el-form-item label="">
                     <el-button type="primary" @click="search">查询</el-button>
-                    <el-button type="primary" @click="">全量同步授权账号</el-button>
                 </el-form-item>
             </el-form>
         </div>
