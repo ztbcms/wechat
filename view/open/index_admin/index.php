@@ -17,7 +17,7 @@
 
         <div>
             <h3>PC授权入口</h3>
-            <div style="display: flex;">
+            <div style="display: flex;padding-bottom: 12px;">
                 <div style="margin: 0 12px;text-align: center;">
                     <div id="auth_pc_all_url"></div>
                     <div><p style="padding-top: 12px">公众号+小程序</p></div>
@@ -31,9 +31,12 @@
                     <div><p style="padding-top: 12px">仅小程序</p></div>
                 </div>
             </div>
+            <div><p style="padding-bottom: 4px">公众号+小程序：{{ urls.auth_pc_all_url }}</p></div>
+            <div><p style="padding-bottom: 4px">仅公众号：{{ urls.auth_pc_office_url }}</p></div>
+            <div><p style="padding-bottom: 4px">仅小程序：{{ urls.auth_pc_mini_url }}</p></div>
 
             <h3>手机版授权入口</h3>
-            <div style="display: flex;">
+            <div style="display: flex;padding-bottom: 12px;">
                 <div style="margin: 0 12px;text-align: center;">
                     <div id="auth_h5_all_url"></div>
                     <div><p style="padding-top: 12px">公众号+小程序</p></div>
@@ -47,9 +50,10 @@
                     <div><p style="padding-top: 12px">仅小程序</p></div>
                 </div>
             </div>
+            <div><p style="padding-bottom: 4px">公众号+小程序：{{ urls.auth_h5_all_url }}</p></div>
+            <div><p style="padding-bottom: 4px">仅公众号：{{ urls.auth_h5_office_url }}</p></div>
+            <div><p style="padding-bottom: 4px">仅小程序：{{ urls.auth_h5_mini_url }}</p></div>
         </div>
-
-
     </el-card>
 </div>
 <style>
@@ -91,8 +95,7 @@
                         config['text'] = that.urls[key]
                         new QRCode(document.getElementById(key), config)
                     })
-
-                }
+                },
             }
         });
     })

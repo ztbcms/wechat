@@ -45,7 +45,7 @@ class MiniProgramCodeAdmin extends AdminController
             $release_info = null;
             if (isset($resp1['release_info'])) {
                 $release_info = [
-                    'time' => date('Y-m-d H:i', $resp1['release_info']['exp_time']),
+                    'time' => date('Y-m-d H:i', $resp1['release_info']['release_time']),
                     'version' => $resp1['release_info']['release_version'],
                     'desc' => $resp1['release_info']['release_desc'],
                 ];
