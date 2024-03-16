@@ -23,17 +23,17 @@ class Open extends BaseController
     {
         // 授权链接使用场景,pc电脑版,h5手机版
         $env = input('get.env', 'pc');
-        if(!in_array($env, ['pc', 'h5'])){
+        if (!in_array($env, ['pc', 'h5'])) {
             return '参数异常';
         }
         $openService = new OpenService();
         $optional = [];
         // 要授权的账号类型,1 表示手机端仅展示公众号；2 表示仅展示小程序，3 表示公众号和小程序都展示, 4~6请看文档
         $auth_type = input('get.auth_type', '');
-        if(!empty($auth_type)){
+        if (!empty($auth_type)) {
             $optional['auth_type'] = $auth_type;
         }
-        if($env == 'h5'){
+        if ($env == 'h5') {
             $url = $openService->getOpenApp()->getMobilePreAuthorizationUrl(api_url('/wechat/Open/callback'), $optional);
         } else {
             $url = $openService->getOpenApp()->getPreAuthorizationUrl(api_url('/wechat/Open/callback'), $optional);
@@ -56,12 +56,12 @@ class Open extends BaseController
 
             $sync_res = OpenAuthorizerService::syncAuthorizerInfo($authorizerAppid);
             if ($sync_res['status']) {
-                return "授权成功";
+                return view('callback', ['auth_status' => 1, 'msg' => '']);
             } else {
-                return "授权失败:".$sync_res['msg'];
+                return view('callback', ['auth_status' => 0, 'msg' => $sync_res['msg']]);
             }
         } else {
-            return "授权失败:".RequestUtils::buildErrorMsg($resp);
+            return view('callback', ['auth_status' => 0, 'msg' => RequestUtils::buildErrorMsg($resp)]);
         }
     }
 
