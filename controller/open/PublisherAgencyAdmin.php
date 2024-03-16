@@ -20,7 +20,7 @@ class PublisherAgencyAdmin extends AdminController
     {
         $action = input('_action');
         if ($action == 'getList') {
-            //获取列表信息
+            // 获取列表信息
             $page = input('page', 1);
             $page_size = input('page_size', 10);
             $appid = input('appid', '');
@@ -38,11 +38,6 @@ class PublisherAgencyAdmin extends AdminController
                 'page' => intval($page),
                 'limit' => intval($page_size),
             ]);
-        }
-        // 获取默认分成比例
-        if ($action == 'getDefaultShareRatio') {
-            $res = PublisherAgencyService::getDefaultShareRatio();
-            return json($res);
         }
         // 同步默认分成比例
         if ($action == 'syncDefaultShareRatio') {
@@ -87,6 +82,7 @@ class PublisherAgencyAdmin extends AdminController
             $res = PublisherAgencyService::setAuthorizerCustomShareRatio($authorizer_appid, $share_ratio);
             return json($res);
         }
+        // 同步小程序的流量主开通状态
         if ($action == 'syncPublisherStatus') {
             $authorizer_appid = input('post.authorizer_appid');
             $res = PublisherAgencyService::syncAuthorizerPublisherStatus($authorizer_appid);

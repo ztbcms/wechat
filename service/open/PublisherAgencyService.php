@@ -19,38 +19,18 @@ use think\facade\Cache;
  */
 class PublisherAgencyService extends BaseService
 {
-    static function getDefaultShareRatioCacheKey($open_appid)
-    {
-        return 'Open:DefaultShareRatio:' . $open_appid;
-    }
-
     /**
-     * 获取默认分成比例
+     * 查询服务商默认生效的分成比例
+     * @param $open_appid string 开放平台(服务商) appid
      * @return array
      */
-    static function getDefaultShareRatio()
+    static function syncShareRatio($open_appid)
     {
-        $open_appid = WechatConfig::get('open.app_id');
-        $cache = Cache::get(self::getDefaultShareRatioCacheKey($open_appid));
-        if (is_null($cache)) {
-            return self::createReturn(false, null, '请先同步默认分成比例');
-        }
-        return self::createReturn(true, ['share_ratio' => intval($cache)]);
-    }
-
-    /**
-     * 同步生效的分成比例
-     * @param $appid string 开放平台 appid 或 小程序appid
-     * @return array
-     */
-    static function syncShareRatio($appid)
-    {
-        $resp = OpenService::getInstnace()->publisherAgency()->getShareRatio($appid);
+        $resp = OpenService::getInstnace()->publisherAgency()->getShareRatio($open_appid);
         if (!RequestUtils::isRquestSuccessed($resp)) {
             return self::createReturn(false, null, RequestUtils::buildErrorMsg($resp));
         }
         $share_ratio = $resp['share_ratio'];
-        Cache::set(self::getDefaultShareRatioCacheKey($appid), $share_ratio);
         return self::createReturn(true, ['share_ratio' => $share_ratio], '同步成功');
     }
 
@@ -69,7 +49,6 @@ class PublisherAgencyService extends BaseService
         if (!RequestUtils::isRquestSuccessed($resp)) {
             return self::createReturn(false, null, RequestUtils::buildErrorMsg($resp));
         }
-        Cache::set(self::getDefaultShareRatioCacheKey($open_appid), $share_ratio);
         return self::createReturn(true, ['share_ratio' => $share_ratio], '设置成功');
     }
 
@@ -372,7 +351,6 @@ class PublisherAgencyService extends BaseService
     /**
      * 同步小程序的流量主状态(是否开通)
      *
-     * PS.官方 api 没有是否开通的接口，此处有点 hack
      * @param $authorizer_appid
      * @return array
      */
@@ -383,13 +361,16 @@ class PublisherAgencyService extends BaseService
             return self::createReturn(false, null, '找不到流量主记录：' . $authorizer_appid);
         }
         // 开通成功或者已开通(Code=2021)均视为已开通状态，否则未开通
-        $resp = OpenService::getInstnace()->publisherAgency()->agencyCreatePublisher($authorizer_appid);
-        if (!RequestUtils::isRquestSuccessed($resp) && $resp['errcode'] != 2021) {
+        $resp = OpenService::getInstnace()->publisherAgency()->agencyCheckCanOpenPublisher($authorizer_appid);
+        if (!RequestUtils::isRquestSuccessed($resp)) {
             //未开通
-            return self::createReturn(false, null, '未开通');
+            return self::createReturn(false, $resp, RequestUtils::buildErrorMsg($resp));
         }
-        $publisher->save(['publisher_status' => OpenPublisher::PUBLISH_STATUS_YSE]);
-        return self::createReturn(true, null, '已开通');
+        if ($resp['status'] == 1) {
+            $publisher->save(['publisher_status' => OpenPublisher::PUBLISH_STATUS_YSE]);
+            return self::createReturn(true, null, '已开通');
+        }
+        return self::createReturn(false, null, '尚未达到开通条件');
     }
 
 }
