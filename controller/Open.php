@@ -56,12 +56,12 @@ class Open extends BaseController
 
             $sync_res = OpenAuthorizerService::syncAuthorizerInfo($authorizerAppid);
             if ($sync_res['status']) {
-                return view('callback', ['auth_status' => 1, 'msg' => '']);
+                return view('callback', ['auth_status' => 1, 'msg' => '', '_Config' => ['sitename' => '提示']]);
             } else {
-                return view('callback', ['auth_status' => 0, 'msg' => $sync_res['msg']]);
+                return view('callback', ['auth_status' => 0, 'msg' => $sync_res['msg'], '_Config' => ['sitename' => '提示']]);
             }
         } else {
-            return view('callback', ['auth_status' => 0, 'msg' => RequestUtils::buildErrorMsg($resp)]);
+            return view('callback', ['auth_status' => 0, 'msg' => RequestUtils::buildErrorMsg($resp), '_Config' => ['sitename' => '提示']]);
         }
     }
 
