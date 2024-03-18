@@ -5,6 +5,18 @@
                 <span>小程序域名管理</span>
             </div>
 
+            <div style="margin-bottom: 20px;">
+                <el-alert
+                        style="margin-bottom: 15px;"
+                        title=""
+                        type="info"
+                        :closable="false">
+                    <p style="font-weight: bold">
+                        请确保以下的域名均在微信开放平台-第三方平台-开发设置-服务器域名白名单中
+                    </p>
+                </el-alert>
+            </div>
+
             <el-tabs v-model="tabName" @tab-click="handleClickTab">
                 <el-tab-pane label="服务器域名" name="server_domain">
                     <el-form :model="server_domain_form" label-width="160px" size="small" style="max-width: 500px;">
@@ -198,12 +210,12 @@
                     const data = {
                         _action: 'setServerDomain',
                         authorizer_appid: this.authorizer_appid,
-                        requestdomain: that.server_domain_form.requestdomain.split('\n'),
-                        wsrequestdomain: that.server_domain_form.wsrequestdomain.split('\n'),
-                        uploaddomain: that.server_domain_form.uploaddomain.split('\n'),
-                        downloaddomain: that.server_domain_form.downloaddomain.split('\n'),
-                        udpdomain: that.server_domain_form.udpdomain.split('\n'),
-                        tcpdomain: that.server_domain_form.tcpdomain.split('\n'),
+                        requestdomain: that.server_domain_form.requestdomain.trim().split('\n'),
+                        wsrequestdomain: that.server_domain_form.wsrequestdomain.trim().split('\n'),
+                        uploaddomain: that.server_domain_form.uploaddomain.trim().split('\n'),
+                        downloaddomain: that.server_domain_form.downloaddomain.trim().split('\n'),
+                        udpdomain: that.server_domain_form.udpdomain.trim().split('\n'),
+                        tcpdomain: that.server_domain_form.tcpdomain.trim().split('\n'),
                     }
                     this.httpPost("/wechat/open.MiniProgramDomainAdmin/index", data, function (res) {
                         if (res.status) {
@@ -268,7 +280,10 @@
                     }
                     this.httpGet("/wechat/open.MiniProgramDomainAdmin/index", data, function (res) {
                         if (res.status) {
-                            that.prefetch_domain_form.prefetch_dns_domain = res.data.prefetch_dns_domain.join('\n')
+                            let urls = res.data.prefetch_dns_domain.map(function (item) {
+                                return item['url']
+                            })
+                            that.prefetch_domain_form.prefetch_dns_domain = urls.join('\n')
                             that.prefetch_domain_form.size_limit = res.data.size_limit
                         } else {
                             layer.alert(res.msg)

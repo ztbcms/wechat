@@ -1,5 +1,5 @@
 <div>
-    <div id="app" v-cloak>
+    <div id="app" v-cloak style="width: 80%; margin: 0 auto;">
         <!--线上版本 S-->
         <el-card>
             <div slot="header" class="clearfix">
@@ -20,9 +20,6 @@
                                     class="submit_info-value">{{ release_info.desc }}</span></div>
                     </div>
                     <div class="action">
-                        <p>
-                            <el-button type="text" @click="layer.msg('功能未开放')">暂停服务</el-button>
-                        </p>
                         <p>
                             <el-button type="text" @click="handleRevertCodeRelease">版本回退</el-button>
                         </p>
@@ -112,7 +109,7 @@
                     </div>
                     <div class="action">
                         <p>
-                            <el-button type="text" @click="handleSubmitCode">上传新版</el-button>
+                            <el-button type="text" @click="handleSubmitCode">上传代码</el-button>
                         </p>
                         <p>
                             <el-button type="text" @click="handleGetTrialQRCode">体验版二维码</el-button>
@@ -165,14 +162,20 @@
                         that.audit_info = res.data.audit_info
                     })
                 },
+                // 上传代码
                 handleSubmitCode: function () {
+                    let that = this
                     layer.open({
                         type: 2,
                         title: '',
                         content: "{:api_url('wechat/open.MiniProgramCodeAdmin/submitCode')}?authorizer_appid=" + this.authorizer_appid,
                         area: ['70%', '80%'],
+                        end: function () {
+                            that.getVersionInfo()
+                        }
                     })
                 },
+                // 获取体验二维码
                 handleGetTrialQRCode: function () {
                     if (cacheTrialQRCode) {
                         this.previewImage('体验版二维码', cacheTrialQRCode)
@@ -210,15 +213,16 @@
                         , anim: 5, //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
                     })
                 },
+                // 撤回审核
                 handleUndoAudit: function () {
                     let that = this
-                    layer.confirm('是否撤回审核？', {title:'提示'}, function(index){
+                    layer.confirm('是否撤回审核？', {title: '提示'}, function (index) {
                         layer.close(index);
                         that.doUndoAudit()
                     });
                 },
-                doUndoAudit: function(){
-                    if(!this.audit_info) return
+                doUndoAudit: function () {
+                    if (!this.audit_info) return
                     let that = this
                     const data = {
                         _action: 'undoAudit',
@@ -232,15 +236,16 @@
                         }
                     })
                 },
-                handleSpeedupCodeAudit: function(){
+                // 加速审核
+                handleSpeedupCodeAudit: function () {
                     let that = this
-                    layer.confirm('是否确认加速审核？加速额度有限，请务必慎用!', {title:'提示'}, function(index){
+                    layer.confirm('是否确认加速审核？加速额度有限，请务必慎用!', {title: '提示'}, function (index) {
                         layer.close(index);
                         that.doSpeedupCodeAudit()
                     });
                 },
-                doSpeedupCodeAudit: function(){
-                    if(!this.audit_info) return
+                doSpeedupCodeAudit: function () {
+                    if (!this.audit_info) return
                     let that = this
                     const data = {
                         _action: 'speedupCodeAudit',
@@ -251,15 +256,16 @@
                         layer.msg(res.msg)
                     })
                 },
-                handleRelease: function(){
+                // 确认发布
+                handleRelease: function () {
                     let that = this
-                    layer.confirm('是否确认发布？', {title:'提示'}, function(index){
+                    layer.confirm('是否确认发布？', {title: '提示'}, function (index) {
                         layer.close(index);
                         that.doRelease()
                     });
                 },
-                doRelease: function(){
-                    if(!this.audit_info) return
+                doRelease: function () {
+                    if (!this.audit_info) return
                     let that = this
                     const data = {
                         _action: 'release',
@@ -267,16 +273,20 @@
                     }
                     this.httpPost("/wechat/open.MiniProgramCodeAdmin/version", data, function (res) {
                         layer.msg(res.msg)
+                        if (res.status) {
+                            that.getVersionInfo()
+                        }
                     })
                 },
-                handleRevertCodeRelease: function(){
+                // 回滚版本
+                handleRevertCodeRelease: function () {
                     let that = this
-                    layer.confirm('是否确认回滚到上一个版本？', {title:'提示'}, function(index){
+                    layer.confirm('是否确认回滚到上一个版本？', {title: '提示'}, function (index) {
                         layer.close(index);
                         that.doRevertCodeRelease()
                     });
                 },
-                doRevertCodeRelease: function(){
+                doRevertCodeRelease: function () {
                     let that = this
                     const data = {
                         _action: 'revertCodeRelease',
@@ -284,16 +294,20 @@
                     }
                     this.httpPost("/wechat/open.MiniProgramCodeAdmin/version", data, function (res) {
                         layer.msg(res.msg)
+                        if (res.status) {
+                            that.getVersionInfo()
+                        }
                     })
                 },
-                handleSubmitAudit: function(){
+                // 提交审核
+                handleSubmitAudit: function () {
                     let that = this
                     layer.open({
                         type: 2,
                         title: '',
                         content: "{:api_url('wechat/open.MiniProgramCodeAdmin/submitAudit')}?authorizer_appid=" + this.authorizer_appid,
                         area: ['70%', '80%'],
-                        end: function(){
+                        end: function () {
                             that.getVersionInfo()
                         }
                     })

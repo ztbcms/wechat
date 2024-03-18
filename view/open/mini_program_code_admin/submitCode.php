@@ -32,7 +32,7 @@
                     <el-input
                             v-model="form.ext_json"
                             type="textarea"
-                            :rows="4"
+                            :autosize="{ minRows: 4}"
                             placeholder="请输入 JSON 格式内容"
                     >
                     </el-input>
@@ -94,7 +94,7 @@
                     }
                     this.httpGet("/wechat/open.MiniProgramCodeAdmin/submitCode", data, function (res) {
                         if(res.status){
-                            that.templateList = res.data.reverse()
+                            that.templateList = res.data
                         }
                     })
                 },

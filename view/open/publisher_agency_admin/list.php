@@ -46,7 +46,6 @@
             </el-table-column>
 
             <el-table-column
-                    prop=""
                     label="流量主功能"
                     min-width="100">
                 <template slot-scope="props">
@@ -55,7 +54,7 @@
                             <span>未开通</span>
                         </template>
                         <template v-else>
-                            <span>开通</span>
+                            <span>已开通</span>
                         </template>
                     </div>
                     <div v-if="props.row.publisher_status == 0">
@@ -150,7 +149,7 @@
                 defaultShareRatio: '-',
             },
             mounted: function () {
-                this.handleGetDefaultShareRatio()
+                this.handleSyncDefaultShareRatio()
                 this.getList();
             },
             methods: {
@@ -178,19 +177,7 @@
                     this.currentPage = e;
                     this.getList();
                 },
-                handleGetDefaultShareRatio: function () {
-                    let that = this
-                    const data = {
-                        _action: 'getDefaultShareRatio',
-                    }
-                    this.httpGet("/wechat/open.PublisherAgencyAdmin/list", data, function (res) {
-                        if (res.status) {
-                            that.defaultShareRatio = res.data.share_ratio
-                        } else {
-                            layer.msg(res.msg)
-                        }
-                    })
-                },
+                // 查询服务商默认分成比例
                 handleSyncDefaultShareRatio: function () {
                     let that = this
                     const data = {

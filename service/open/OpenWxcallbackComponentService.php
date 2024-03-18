@@ -33,17 +33,16 @@ class OpenWxcallbackComponentService extends BaseService
     // 授权账号取消授权
     static function handleUnauthorized($message)
     {
-
+        $authorizer_appid = $message['AuthorizerAppid'];
+        $authorizer = OpenAuthorizer::getByAuthorizerAppid($authorizer_appid);
+        if ($authorizer) {
+            $authorizer->save(['authorization_status' => OpenAuthorizer::AUTHORIZATION_STATUS_NO]);
+        }
     }
 
     // 授权账号更新授权
     static function handleUpdateAuthorized($message)
     {
         // 更新授权状态
-        $authorizer_appid = $message['AuthorizerAppid'];
-        $authorizer = OpenAuthorizer::getByAuthorizerAppid($authorizer_appid);
-        if ($authorizer) {
-            $authorizer->save(['authorization_status' => OpenAuthorizer::AUTHORIZATION_STATUS_NO]);
-        }
     }
 }

@@ -6,6 +6,7 @@
 namespace app\wechat\controller\open;
 
 use app\common\controller\AdminController;
+use app\common\libs\helper\ArrayHelper;
 use app\wechat\libs\utils\RequestUtils;
 use app\wechat\service\OpenService;
 use think\Request;
@@ -44,7 +45,7 @@ class MiniProgramCodeAdmin extends AdminController
             $release_info = null;
             if (isset($resp1['release_info'])) {
                 $release_info = [
-                    'time' => date('Y-m-d H:i', $resp1['release_info']['exp_time']),
+                    'time' => date('Y-m-d H:i', $resp1['release_info']['release_time']),
                     'version' => $resp1['release_info']['release_version'],
                     'desc' => $resp1['release_info']['release_desc'],
                 ];
@@ -154,26 +155,28 @@ class MiniProgramCodeAdmin extends AdminController
             if (!RequestUtils::isRquestSuccessed($resp)) {
                 return self::returnErrorJson(RequestUtils::buildErrorMsg($resp));
             }
-            return self::returnSuccessJson($resp['template_list']);
+            // 按创建时间降序排序
+            ArrayHelper::sortByKey($resp['template_list'], 'create_time');
+            $template_list = array_reverse($resp['template_list']);
+            return self::returnSuccessJson($template_list);
         }
         // 提交代码
         if ($action == 'submitCode') {
             $authorizer_appid = input('authorizer_appid', '');
             $template_id = input('template_id', '');
-            $ext_json = input('ext_json', '');
+            $ext_json = input('ext_json', '', 'trim');
             $user_version = input('user_version', '');
             $user_desc = input('user_desc', '');
             if (empty($authorizer_appid) || empty($template_id) || empty($ext_json) || empty($user_version) || empty($user_desc)) {
                 return self::returnErrorJson('参数错误');
             }
-
             $openService = OpenService::getInstnace();
             $miniProgramAgency = $openService->miniProgramAgency($authorizer_appid);
             $resp = $miniProgramAgency->commit($template_id, $ext_json, $user_version, $user_desc);
             if (!RequestUtils::isRquestSuccessed($resp)) {
                 return self::returnErrorJson(RequestUtils::buildErrorMsg($resp));
             }
-            return self::returnSuccessJson([], '提交成功');
+            return self::returnSuccessJson([], '上传成功');
         }
         return view('submitCode');
     }

@@ -4,7 +4,7 @@
             <div slot="header" class="clearfix">
                 <span>提交审核</span>
             </div>
-            <el-form :model="form" label-width="120px" size="small" style="max-width: 500px;">
+            <el-form :model="form" label-width="120px" size="small" style="max-width: 560px;">
                 <el-form-item label="APPID">
                     <span>{{ form.authorizer_appid }}</span>
                 </el-form-item>
