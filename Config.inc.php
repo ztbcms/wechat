@@ -2,21 +2,21 @@
 
 return [
     //模块名称
-    'modulename'  => '微信',
+    'modulename'  => '微信开发',
     //图标
     'icon'        => 'https://dn-coding-net-production-pp.qbox.me/e57af720-f26c-4f3b-90b9-88241b680b7b.png',
     //模块简介
-    'introduce'   => '微信开发模块',
+    'introduce'   => '公众号、小程序、第三方平台',
     //模块介绍地址
     'address'     => 'http://doc.ztbcms.com/module/',
     //模块作者
-    'author'      => 'zhlhuang',
+    'author'      => 'zhlhuang,Jayin',
     //作者地址
     'authorsite'  => 'http://ztbcms.com',
     //作者邮箱
-    'authoremail' => '364626853@qq.com',
+    'authoremail' => 'hi@ztbcms.com',
     //版本号，请不要带除数字外的其他字符
-    'version'     => '2.2.0',
+    'version'     => '2.3.0',
     //适配最低CMS版本，
     'adaptation'  => '4.0.0',
     //签名
