@@ -94,7 +94,7 @@ class Open extends BaseController
             // TODO 转发到用户配置的地址
         });
 
-        return $server->serve();
+        $server->serve()->send();
     }
 
     // 开放平台授权后实现业务:消息与事件接收
