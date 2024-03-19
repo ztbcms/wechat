@@ -33,12 +33,12 @@ class OpenAgency
      */
     public function getMobilePreAuthorizationUrl(string $callbackUrl, $optional = []): string
     {
-        $optional['pre_auth_code'] = data_get($this->createPreAuthorizationCode(), 'pre_auth_code');
+        $optional['pre_auth_code'] = data_get($this->openApp->createPreAuthorizationCode(), 'pre_auth_code');
         $queries = \array_merge($optional, [
             'component_appid' => $this->openApp['config']['app_id'],
             'redirect_uri' => $callbackUrl,
         ]);
-        return 'https://open.weixin.qq.com/wxaopen/safe/bindcomponent？' . http_build_query($queries) . '#wechat_redirect';
+        return 'https://open.weixin.qq.com/wxaopen/safe/bindcomponent?' . http_build_query($queries) . '#wechat_redirect';
     }
 
     /**

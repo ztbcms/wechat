@@ -33,10 +33,11 @@ class Open extends BaseController
         if (!empty($auth_type)) {
             $optional['auth_type'] = $auth_type;
         }
+        $openAgency = $openService->openAgency();
         if ($env == 'h5') {
-            $url = $openService->getOpenApp()->getMobilePreAuthorizationUrl(api_url('/wechat/Open/callback'), $optional);
+            $url = $openAgency->getMobilePreAuthorizationUrl(api_url('/wechat/Open/callback'), $optional);
         } else {
-            $url = $openService->getOpenApp()->getPreAuthorizationUrl(api_url('/wechat/Open/callback'), $optional);
+            $url = $openAgency->getPreAuthorizationUrl(api_url('/wechat/Open/callback'), $optional);
         }
 
         return ' <script> location.href = "' . $url . '" </script> ';
