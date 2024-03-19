@@ -5,6 +5,7 @@ namespace app\wechat\service;
 use app\common\service\BaseService;
 use app\wechat\libs\WechatConfig;
 use app\wechat\service\open\MiniProgramAgency;
+use app\wechat\service\open\OpenAgency;
 use app\wechat\service\open\PublisherAgency;
 use EasyWeChat\Factory;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
@@ -19,6 +20,11 @@ class OpenService extends BaseService
      * @var \EasyWeChat\OpenPlatform\Application
      */
     private $app;
+
+    /**
+     * @var OpenAgency
+     */
+    private $open_agency;
 
     /**
      * @var PublisherAgency
@@ -77,6 +83,18 @@ class OpenService extends BaseService
     }
 
     /**
+     * 开放平台代理管理(OpenApp 代理)
+     * @return OpenAgency
+     */
+    public function openAgency()
+    {
+        if ($this->open_agency) {
+            return $this->open_agency;
+        }
+        return $this->open_agency = new OpenAgency($this);
+    }
+
+    /**
      * 小程序流量主代管理
      * @return PublisherAgency
      */
@@ -95,7 +113,7 @@ class OpenService extends BaseService
      */
     public function miniProgramAgency($authorizer_appid)
     {
-        if(empty($authorizer_appid)) new Exception('参数 authorizer_appid 不能为空');
+        if (empty($authorizer_appid)) new Exception('参数 authorizer_appid 不能为空');
         return new MiniProgramAgency($this, $authorizer_appid);
     }
 }
