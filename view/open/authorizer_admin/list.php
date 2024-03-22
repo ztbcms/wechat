@@ -22,6 +22,7 @@
                 </el-form-item>
                 <el-form-item label="">
                     <el-button type="primary" @click="search">查询</el-button>
+                    <el-button type="success" @click="handleBatchSyncAuthorizerInfo">批量拉取授权用户</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -208,6 +209,35 @@
                         title: title,
                         content: "{:api_url('/wechat/open.MiniProgramDomainAdmin/index')}" + '?authorizer_appid=' + item['authorizer_appid'],
                         area: ['90%', '90%'],
+                    })
+                },
+                // 全量拉取授权账号
+                handleBatchSyncAuthorizerInfo: function () {
+                    let that = this
+                    layer.confirm('开始拉取数据？拉取耗时视乎数据量大小。', function (index) {
+                        layer.close(index);
+                        let offset = 0
+                        that.doBatchSyncAuthorizerInfo(offset)
+                    })
+                },
+                doBatchSyncAuthorizerInfo: function (offset = 0) {
+                    let that = this
+                    const data = {
+                        _action: 'batchSyncAuthorizerInfo',
+                        offset: offset,
+                    }
+                    that.httpPost("/wechat/open.AuthorizerAdmin/list", data, function (res) {
+                        if (res.status) {
+                            // Check has next page
+                            if (offset + res.data.count < res.data.total_count) {
+                                that.doBatchSyncAuthorizerInfo(offset + res.data.count)
+                            } else {
+                                layer.msg('拉取完成')
+                                that.getList()
+                            }
+                        } else {
+                            layer.msg(res.msg)
+                        }
                     })
                 },
             }

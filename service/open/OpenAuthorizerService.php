@@ -55,4 +55,30 @@ class OpenAuthorizerService extends BaseService
         }
         return self::createReturn(false, null, '保存数据失败');
     }
+
+    /**
+     * 批量同步授权用户信息
+     * @return void
+     */
+    static function batchSyncAuthorizerInfo($offset = 0, $count = 100)
+    {
+        $open = OpenService::getInstnace();
+        // 获取授权列表
+        $resp = $open->getOpenApp()->getAuthorizers($offset, $count);
+        if (!RequestUtils::isRquestSuccessed($resp)) {
+            return self::createReturn(false, $resp, RequestUtils::buildErrorMsg($resp));
+        }
+        $total_count = $resp['total_count'];
+        $ret = [
+            'offset' => intval($offset),
+            'count' => intval($count),
+            'total_count' => intval($total_count),
+        ];
+        foreach ($resp['list'] as $authorizer) {
+            self::syncAuthorizerInfo($authorizer['authorizer_appid']);
+        }
+
+        return self::createReturn(true, $ret, '同步完成');
+    }
+
 }

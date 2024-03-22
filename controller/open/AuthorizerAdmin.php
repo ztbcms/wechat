@@ -54,6 +54,12 @@ class AuthorizerAdmin extends AdminController
             $res = OpenAuthorizerService::syncAuthorizerInfo($data['appid']);
             return json($res);
         }
+        // 批量同步授权用户信息
+        if ($action == 'batchSyncAuthorizerInfo') {
+            $res = OpenAuthorizerService::batchSyncAuthorizerInfo();
+            return json($res);
+        }
+
         return view('list');
     }
 
