@@ -114,7 +114,7 @@
             <el-table-column
                     prop="date"
                     label="日期"
-                    min-width="60">
+                    min-width="80">
             </el-table-column>
             <el-table-column
                     prop="slot_id"

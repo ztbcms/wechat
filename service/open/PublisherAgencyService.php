@@ -165,9 +165,9 @@ class PublisherAgencyService extends BaseService
         $ret = [
             'list' => array_map(function ($item) {
                 return [
-                    'slot_id' => $item['slot_id'],
-                    'ad_slot' => $item['ad_slot'],
-                    'ad_slot_text' => Constant::AdSlotText($item['ad_slot']),
+                    'slot_id' => $item['slot_id'] ?? '',
+                    'ad_slot' => $item['ad_slot'] ?? '',
+                    'ad_slot_text' => Constant::AdSlotText($item['ad_slot'] ?? ''),
                     'date' => $item['date'],
                     'req_succ_count' => $item['req_succ_count'],
                     'exposure_count' => $item['exposure_count'],
@@ -215,8 +215,8 @@ class PublisherAgencyService extends BaseService
             'list' => array_map(function ($item) {
                 return [
                     'publisher_appid' => $item['publisher_appid'],
-                    'ad_slot' => $item['ad_slot'],
-                    'ad_slot_text' => Constant::AdSlotText($item['ad_slot']),
+                    'ad_slot' => $item['ad_slot'] ?? '',
+                    'ad_slot_text' => Constant::AdSlotText($item['ad_slot'] ?? ''),
                     'date' => $item['date'],
                     'req_succ_count' => $item['req_succ_count'],
                     'exposure_count' => $item['exposure_count'],

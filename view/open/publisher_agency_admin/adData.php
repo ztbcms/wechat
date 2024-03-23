@@ -74,7 +74,7 @@
         <el-divider></el-divider>
         <h4 style="margin: 0px 0px 8px;">广告指标明细</h4>
         <el-tabs v-model="searchForm.ad_slot" @tab-click="handleSwitchAdSlot">
-            <el-tab-pane label="全部" name="0"></el-tab-pane>
+            <el-tab-pane label="整体" name="0"></el-tab-pane>
             <el-tab-pane label="封面广告" name="SLOT_ID_WEAPP_COVER"></el-tab-pane>
             <el-tab-pane label="Banner" name="SLOT_ID_WEAPP_BANNER"></el-tab-pane>
             <el-tab-pane label="激励视频" name="SLOT_ID_WEAPP_REWARD_VIDEO"></el-tab-pane>

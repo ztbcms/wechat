@@ -31,6 +31,6 @@ class Constant
             self::SLOT_ID_WEAPP_COVER => '封面广告',
             self::SLOT_ID_WEAPP_TEMPLATE => '模板广告',
         ];
-        return $map[$ad_slot] ?? '未知';
+        return $map[$ad_slot] ?? '';
     }
 }
