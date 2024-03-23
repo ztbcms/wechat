@@ -208,16 +208,13 @@
                 },
                 handleMiniProgramVersion: function (item) {
                     let title = item['name'] + '_版本管理'
-                    this.openNewIframeByUrl(title, "{:api_url('/wechat/open.MiniProgramCodeAdmin/version')}" + '?authorizer_appid=' + item['authorizer_appid'])
+                    let url = "{:api_url('/wechat/open.MiniProgramCodeAdmin/version')}" + '?authorizer_appid=' + item['authorizer_appid']
+                    this.openNewIframeByUrl(title, url)
                 },
                 handleMiniProgramDomain: function (item) {
                     let title = item['name'] + '_域名管理'
-                    layer.open({
-                        type: 2,
-                        title: title,
-                        content: "{:api_url('/wechat/open.MiniProgramDomainAdmin/index')}" + '?authorizer_appid=' + item['authorizer_appid'],
-                        area: ['90%', '90%'],
-                    })
+                    let url = "{:api_url('/wechat/open.MiniProgramDomainAdmin/index')}" + '?authorizer_appid=' + item['authorizer_appid']
+                    this.openNewIframeByUrl(title, url)
                 },
                 // 全量拉取授权账号
                 handleBatchSyncAuthorizerInfo: function () {
