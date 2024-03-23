@@ -63,14 +63,14 @@
             </el-table-column>
 
             <el-table-column
-                    label="认证类型"
+                    label="认证状态"
                     min-width="80">
                 <template slot-scope="props">
                     <template v-if="props.row.is_verify == 0">
                         <span style="color: red;">未认证</span>
                     </template>
                     <template v-else>
-                        <span>认证</span>
+                        <span>已认证</span>
                     </template>
                 </template>
             </el-table-column>
