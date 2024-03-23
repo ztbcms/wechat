@@ -272,9 +272,9 @@ class PublisherAgencyService extends BaseService
         }
         $ret = [
             'summary' => [
-                'revenue_all' => $resp['revenue_all'],
-                'penalty_all' => $resp['penalty_all'],
-                'settled_revenue_all' => $resp['settled_revenue_all'],
+                'revenue_all' => $resp['revenue_all'] / 100,
+                'penalty_all' => $resp['penalty_all'] / 100,
+                'settled_revenue_all' => $resp['settled_revenue_all'] / 100,
             ],
             'list' => array_map(function ($item) {
                 return [
@@ -320,9 +320,9 @@ class PublisherAgencyService extends BaseService
         }
         $ret = [
             'summary' => [
-                'revenue_all' => $resp['revenue_all'],
-                'penalty_all' => $resp['penalty_all'],
-                'settled_revenue_all' => $resp['settled_revenue_all'],
+                'revenue_all' => $resp['revenue_all'] / 100,
+                'penalty_all' => $resp['penalty_all'] / 100,
+                'settled_revenue_all' => $resp['settled_revenue_all'] / 100,
             ],
             'list' => array_map(function ($item) {
                 return [
