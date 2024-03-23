@@ -67,7 +67,7 @@
                     min-width="80">
                 <template slot-scope="props">
                     <template v-if="props.row.is_verify == 0">
-                        <span>未认证</span>
+                        <span style="color: red;">未认证</span>
                     </template>
                     <template v-else>
                         <span>认证</span>
@@ -79,6 +79,14 @@
                     prop="account_status_text"
                     label="运营状态"
                     min-width="80">
+                <template slot-scope="props">
+                    <template v-if="props.row.account_status_text == '正常'">
+                        <span>{{ props.row.account_status_text }}</span>
+                    </template>
+                    <template v-else>
+                        <span style="color: red;">{{ props.row.account_status_text }}</span>
+                    </template>
+                </template>
             </el-table-column>
 
             <el-table-column

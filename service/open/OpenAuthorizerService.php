@@ -42,7 +42,7 @@ class OpenAuthorizerService extends BaseService
             'head_img' => $authorizerInfo['head_img'] ?? '',
             'account_type' => isset($authorizerInfo['MiniProgramInfo']) ? OpenAuthorizer::ACCOUNT_TYPE_MINI_PROGRAM : OpenAuthorizer::ACCOUNT_TYPE_OFFICIAL_ACCOUNT,
             'account_status' => $authorizerInfo['account_status'] ?? 0,
-            'verify_type' => $authorizerInfo['verify_type_info']['id'] >= 0 ? OpenAuthorizer::IS_VERTIFY_YES : OpenAuthorizer::IS_VERTIFY_NO,
+            'is_verify' => $authorizerInfo['verify_type_info']['id'] >= 0 ? OpenAuthorizer::IS_VERTIFY_YES : OpenAuthorizer::IS_VERTIFY_NO,
             'qrcode_url' => $authorizerInfo['qrcode_url'] ?? '',
             'authorizer_info' => json_encode($resp['authorizer_info'] ?? '{}'),
             'authorization_info' => json_encode($resp['authorization_info'] ?? '{}'),
