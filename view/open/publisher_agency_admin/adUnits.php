@@ -262,7 +262,6 @@
                         ad_unit_id: item.ad_unit_id,
                     }
                     that.httpPost("/wechat/open.PublisherAgencyAdmin/adUnits", data, function (res) {
-                        layer.msg(res.msg)
                         if (res.status) {
                             layer.open({
                                 type: 1,
