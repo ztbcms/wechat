@@ -244,7 +244,7 @@ class PublisherAgency
         if (!empty($ad_slot)) {
             $data['ad_slot'] = $ad_slot;
         }
-        $miniProgramApp = $this->openService->miniProgramAgency($authorizer_appid)->getApp();
+        $miniProgramApp = $this->miniProgramApp($authorizer_appid);
         return $miniProgramApp->httpPostJson('wxa/operationams', $data, ['action' => 'agency_get_adpos_genenral']);
     }
 
@@ -289,7 +289,7 @@ class PublisherAgency
             'start_date' => $start_date,
             'end_date' => $end_date,
         ];
-        $miniProgramApp = $this->openService->miniProgramAgency($authorizer_appid)->getApp();
+        $miniProgramApp = $this->miniProgramApp($authorizer_appid);
         return $miniProgramApp->httpPostJson('wxa/operationams', $data, ['action' => 'agency_get_settlement']);
     }
 
