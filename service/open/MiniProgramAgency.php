@@ -300,4 +300,21 @@ class MiniProgramAgency
 
 
     // 小程序域名管理 E
+
+    /**
+     * 获取用户访问小程序数据日趋势
+     * 限定查询1天数据,，允许设置的最大值为昨日
+     * @param $authorizer_appid
+     * @param $begin_date string 开始日期。格式为 yyyymmdd
+     * @param $end_date string 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
+     * @return mixed
+     */
+    function getDailyVisitTrend($begin_date, $end_date)
+    {
+        $data = [
+            'begin_date' => $begin_date,
+            'end_date' => $end_date,
+        ];
+        return $this->miniProgramApp->httpPostJson('datacube/getweanalysisappiddailyvisittrend', $data, []);
+    }
 }

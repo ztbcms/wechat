@@ -80,40 +80,4 @@ class AuthorizerAdmin extends AdminController
         return view('detail');
     }
 
-
-    /**
-     * @param Request $request
-     * @return array|Response
-     * @throws BadRequestHttpException
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
-     */
-    public function refresh(Request $request)
-    {
-//        $data = $request->post();
-//        $authorizer = new OpenPlatform($data['platform_id']);
-//        $authorizer->refresh($data['platform_id']);
-//        return success();
-    }
-
-
-    /**
-     * @param Request $request
-     * @return array|Response
-     * @throws BadRequestHttpException
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws InvalidArgumentException
-     * @throws ModelNotFoundException
-     */
-    public function getToken(Request $request)
-    {
-//        $data = $request->post();
-//        $MiniProgram = new MiniProgram($data['platform_id']);
-//        $token = $MiniProgram->getToken($data['appid']);
-//        return success($token);
-    }
-
-
 }

@@ -118,6 +118,8 @@
                         </el-button>
                         <el-button @click="handleMiniProgramDomain(props.row)" type="text" size="mini">域名管理
                         </el-button>
+                        <el-button @click="handleMiniProgramAnalysis(props.row)" type="text" size="mini">数据分析
+                        </el-button>
                     </template>
                     <!--小程序 E-->
                 </template>
@@ -206,14 +208,22 @@
                 handleSwitchAccountType: function () {
                     this.search()
                 },
+                // 小程序版本管理
                 handleMiniProgramVersion: function (item) {
                     let title = item['name'] + '_版本管理'
                     let url = "{:api_url('/wechat/open.MiniProgramCodeAdmin/version')}" + '?authorizer_appid=' + item['authorizer_appid']
                     this.openNewIframeByUrl(title, url)
                 },
+                // 小程序域名管理
                 handleMiniProgramDomain: function (item) {
                     let title = item['name'] + '_域名管理'
                     let url = "{:api_url('/wechat/open.MiniProgramDomainAdmin/index')}" + '?authorizer_appid=' + item['authorizer_appid']
+                    this.openNewIframeByUrl(title, url)
+                },
+                // 小程序数据分析
+                handleMiniProgramAnalysis: function (item) {
+                    let title = item['name'] + '_数据分析'
+                    let url = "{:api_url('/wechat/open.MiniProgramAnalysisAdmin/index')}" + '?authorizer_appid=' + item['authorizer_appid']
                     this.openNewIframeByUrl(title, url)
                 },
                 // 全量拉取授权账号
