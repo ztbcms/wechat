@@ -6,9 +6,11 @@
 namespace app\wechat\controller\open;
 
 use app\common\controller\AdminController;
+use app\wechat\libs\utils\RequestUtils;
 use app\wechat\libs\WechatConfig;
 use app\wechat\model\open\OpenPublisher;
 use app\wechat\service\open\PublisherAgencyService;
+use app\wechat\service\OpenService;
 
 /**
  * 流量主代运营管理
@@ -163,5 +165,100 @@ class PublisherAgencyAdmin extends AdminController
         return view('agencySettlement');
     }
 
+    // 小程序广告位
+    function adUnits()
+    {
+        $action = input('_action');
+        // 拉取广告数据
+        if ($action == 'getData') {
+            $authorizer_appid = input('authorizer_appid');
+            $page = intval(input('page'));
+            $ad_slot = input('ad_slot');
+            $page_size = 20;
+            $resp = OpenService::getInstnace()->publisherAgency()->getAdunitList($authorizer_appid, $page, $page_size, $ad_slot);
+            if (!RequestUtils::isRquestSuccessed($resp)) {
+                return self::createReturn(false, $resp, RequestUtils::buildErrorMsg($resp));
+            }
+            return self::createReturn(true, ['list' => $resp['ad_unit'] ?? [], 'page' => $page]);
+        }
+        // 获取封面广告位状态
+        if ($action == 'getCoverAdposStatus') {
+            $authorizer_appid = input('authorizer_appid');
+            $resp = OpenService::getInstnace()->publisherAgency()->getCoverAdposStatus($authorizer_appid);
+            if (!RequestUtils::isRquestSuccessed($resp)) {
+                return self::createReturn(false, $resp, RequestUtils::buildErrorMsg($resp));
+            }
+            return self::createReturn(true, $resp);
+        }
+        // 设置封面广告位状态
+        if ($action == 'setCoverAdposStatus') {
+            $authorizer_appid = input('post.authorizer_appid');
+            $status = input('post.status');
+            $resp = OpenService::getInstnace()->publisherAgency()->setCoverAdposStatus($authorizer_appid, $status);
+            if (!RequestUtils::isRquestSuccessed($resp)) {
+                return self::createReturn(false, $resp, RequestUtils::buildErrorMsg($resp));
+            }
+            return self::createReturn(true, $resp);
+        }
+        // 更新广告位
+        if ($action == 'setAdUnitStatus') {
+            $authorizer_appid = input('post.authorizer_appid');
+            $ad_unit_id = input('post.ad_unit_id');
+            $name = input('post.name');
+            $status = input('post.status');
+            $status = $status == 1 ? 'AD_UNIT_STATUS_ON' : 'AD_UNIT_STATUS_OFF';
+            $resp = OpenService::getInstnace()->publisherAgency()->agencyUpdateAdunit($authorizer_appid, $ad_unit_id, $name, $status);
+            if (!RequestUtils::isRquestSuccessed($resp)) {
+                return self::createReturn(false, $resp, RequestUtils::buildErrorMsg($resp));
+            }
+            return self::createReturn(true, $resp, '操作成功');
+        }
+        // 获取广告单元代码
+        if ($action == 'getAdunitCode') {
+            $authorizer_appid = input('post.authorizer_appid');
+            $ad_unit_id = input('post.ad_unit_id');
+            $resp = OpenService::getInstnace()->publisherAgency()->getAdunitCode($authorizer_appid, $ad_unit_id);
+            if (!RequestUtils::isRquestSuccessed($resp)) {
+                return self::createReturn(false, $resp, RequestUtils::buildErrorMsg($resp));
+            }
+            return self::createReturn(true, ['code' => $resp['code']], '操作成功');
+        }
+        return view('adUnits');
+    }
+
+    // 添加或编辑广告位
+    function addOrEditAdUnit()
+    {
+        $action = input('_action');
+        // 拉取广告数据
+        if ($action == 'submit') {
+            $authorizer_appid = input('post.authorizer_appid');
+            $name = input('post.name');
+            $ad_slot = input('post.ad_slot');
+            $video_range = input('post.video_range');
+            $tmpl_id = input('post.tmpl_id');
+            $video_duration_min = 0;
+            $video_duration_max = 0;
+            $tmpl_type = '';
+            // 激励视频广告
+
+            if ($ad_slot === 'SLOT_ID_WEAPP_REWARD_VIDEO') {
+                if (empty($video_range)) return self::returnErrorJson('参数异常');
+                $video_duration_min = intval(explode('-', $video_range)[0]);
+                $video_duration_max = intval(explode('-', $video_range)[1]);
+            }
+
+            // 模板广告
+            if ($ad_slot === 'SLOT_ID_WEAPP_TEMPLATE') {
+                if (empty($tmpl_id)) return self::returnErrorJson('参数异常');
+            }
+            $resp = OpenService::getInstnace()->publisherAgency()->agencyCreateAdunit($authorizer_appid, $name, $ad_slot, $video_duration_min, $video_duration_max, $tmpl_type, $tmpl_id);
+            if (!RequestUtils::isRquestSuccessed($resp)) {
+                return self::createReturn(false, $resp, RequestUtils::buildErrorMsg($resp));
+            }
+            return self::createReturn(true, $resp, '操作成功');
+        }
+        return view('addOrEditAdUnit');
+    }
 
 }

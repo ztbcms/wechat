@@ -82,7 +82,7 @@
                     label="广告位"
                     min-width="60">
                 <template slot-scope="props">
-                    <el-button type="text" @click="handleViewAdPos">查看</el-button>
+                    <el-button type="text" @click="handleViewAdPos(props.row)">查看</el-button>
                 </template>
             </el-table-column>
 
@@ -323,8 +323,10 @@
                     })
                 },
                 // 查看广告位
-                handleViewAdPos: function () {
-                    layer.msg('开发中')
+                handleViewAdPos: function (item) {
+                    let title = item['name'] + '_广告位管理'
+                    let url = "{:api_url('/wechat/open.PublisherAgencyAdmin/adUnits')}" + '?authorizer_appid=' + item['authorizer_appid']
+                    this.openNewIframeByUrl(title, url)
                 },
                 // 同步流量主状态
                 handleSyncPublisherStatus: function (item) {

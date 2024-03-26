@@ -46,8 +46,13 @@
             </el-form>
         </el-card>
     </div>
-
 </div>
+
+<style>
+    p {
+        margin: 0;
+    }
+</style>
 
 <script>
     $(document).ready(function () {
@@ -59,15 +64,7 @@
                     version_desc: '',
                     privacy_api_not_use: '1',
                 },
-                itemList: [
-                    // {
-                    //     first_class: '工具',
-                    //     second_class: '查询',
-                    //     third_class: '办公文件',
-                    //     selected: true,
-                    //     tag: '',
-                    // }
-                ],
+                itemList: [],
             },
             mounted: function () {
                 this.form.authorizer_appid = this.getUrlQuery('authorizer_appid');
@@ -136,9 +133,3 @@
         })
     });
 </script>
-
-<style>
-    p {
-        margin: 0;
-    }
-</style>

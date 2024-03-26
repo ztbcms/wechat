@@ -30,6 +30,16 @@ class PublisherAgency
     }
 
     /**
+     * 获取小程序Application实例
+     * @param $authorizer_appid
+     * @return \EasyWeChat\MiniProgram\Application
+     */
+    private function miniProgramApp($authorizer_appid)
+    {
+        return $this->openService->miniProgramAgency($authorizer_appid)->getApp();
+    }
+
+    /**
      * 查询分账比例
      * @see https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/percentage/GetShareRatio.html
      * @param $appid string 1、如果为服务商的APPID，则返回的是服务商此时生效的默认分账比例；2、如果为小程序的APPID，则返回的是小程序此时生效的分账比例，且分账比例为服务商分账比例，即服务商在该小程序的广告收益中的占比。
@@ -77,7 +87,7 @@ class PublisherAgency
     // 检测是否能开通流量主
     function agencyCheckCanOpenPublisher($authorizer_appid)
     {
-        $miniProgramApp = $this->openService->miniProgramAgency($authorizer_appid)->getApp();
+        $miniProgramApp = $this->miniProgramApp($authorizer_appid);
         return $miniProgramApp->httpPostJson('/wxa/operationams', [], [
             'action' => 'agency_check_can_open_publisher'
         ]);
@@ -86,46 +96,131 @@ class PublisherAgency
     // 开通流量主
     function agencyCreatePublisher($authorizer_appid)
     {
-        $miniProgramApp = $this->openService->miniProgramAgency($authorizer_appid)->getApp();
+        $miniProgramApp = $this->miniProgramApp($authorizer_appid);
         return $miniProgramApp->httpPostJson('/wxa/getdefaultamsinfo', [], [
             'action' => 'agency_create_publisher'
         ]);
     }
 
     // 获取广告位（除封面广告位）或指定广告单元的信息
-    function getAdunitList()
+    function getAdunitList($authorizer_appid, $page, $page_size, $ad_slot = '', $ad_unit_id = '')
     {
-
+        $miniProgramApp = $this->miniProgramApp($authorizer_appid);
+        $data = ['page' => intval($page),
+            'page_size' => intval($page_size)];
+        if (!empty($ad_slot)) {
+            $data['ad_slot'] = $ad_slot;
+        }
+        if (!empty($ad_unit_id)) {
+            $data['ad_unit_id'] = $ad_unit_id;
+        }
+        return $miniProgramApp->httpPostJson('/wxa/operationams', $data, [
+            'action' => 'agency_get_adunit_list'
+        ]);
     }
 
     // 获取封面广告位状态
-    function getCoverAdposStatus()
+    function getCoverAdposStatus($authorizer_appid)
     {
-
+        $miniProgramApp = $this->miniProgramApp($authorizer_appid);
+        return $miniProgramApp->httpPostJson('/wxa/operationams', [], [
+            'action' => 'agency_get_cover_adpos_status'
+        ]);
     }
 
     // 设置封面广告位开关状态
-    function setCoverAdposStatus()
+    // status 开关状态：1开启，4关闭
+    function setCoverAdposStatus($authorizer_appid, $status)
     {
-
+        $status = intval($status);
+        if (!in_array($status, [1, 4])) {
+            throw new \Exception('status 参数错误');
+        }
+        $miniProgramApp = $this->miniProgramApp($authorizer_appid);
+        return $miniProgramApp->httpPostJson('/wxa/operationams', [
+            'status' => $status,
+        ], [
+            'action' => 'agency_set_cover_adpos_status'
+        ]);
     }
 
     // 创建广告单元
-    function agencyCreateAdunit()
+    function agencyCreateAdunit($authorizer_appid, $name, $type, $video_duration_min = 0, $video_duration_max = 0, $tmpl_type = '', $tmpl_id = '')
     {
-
+        $data = [
+            'name' => $name,
+            'type' => $type,
+        ];
+        if (!empty($video_duration_min)) {
+            $data['video_duration_min'] = $video_duration_min;
+        }
+        if (!empty($video_duration_max)) {
+            $data['video_duration_max'] = $video_duration_max;
+        }
+        if (!empty($tmpl_type)) {
+            $data['tmpl_type'] = $tmpl_type;
+        }
+        if (!empty($tmpl_id)) {
+            $data['tmpl_id'] = intval($tmpl_id);
+        }
+        $miniProgramApp = $this->miniProgramApp($authorizer_appid);
+        return $miniProgramApp->httpPostJson('/wxa/operationams', $data, [
+            'action' => 'agency_create_adunit'
+        ]);
     }
 
-    // 更新广告单元
-    function agencyUpdateAdunit()
+    /**
+     * 更新广告单元
+     * @param $authorizer_appid
+     * @param $name
+     * @param $ad_unit_id
+     * @param $status string 广告单元开关状态：AD_UNIT_STATUS_ON开通，AD_UNIT_STATUS_OFF关闭
+     * @param $video_duration_min
+     * @param $video_duration_max
+     * @param $tmpl_type
+     * @param $tmpl_id
+     * @return mixed
+     */
+    function agencyUpdateAdunit($authorizer_appid, $ad_unit_id, $name, $status, $video_duration_min = 0, $video_duration_max = 0, $tmpl_type = '', $tmpl_id = '')
     {
-
+        $data = [
+            'ad_unit_id' => $ad_unit_id,
+            'name' => $name,
+            'status' => $status,
+        ];
+        if (!empty($video_duration_min)) {
+            $data['video_duration_min'] = $video_duration_min;
+        }
+        if (!empty($video_duration_max)) {
+            $data['video_duration_max'] = $video_duration_max;
+        }
+        if (!empty($tmpl_type)) {
+            $data['tmpl_type'] = $tmpl_type;
+        }
+        if (!empty($tmpl_id)) {
+            $data['tmpl_id'] = $tmpl_id;
+        }
+        $miniProgramApp = $this->miniProgramApp($authorizer_appid);
+        return $miniProgramApp->httpPostJson('/wxa/operationams', $data, [
+            'action' => 'agency_update_adunit'
+        ]);
     }
 
-    // 获取广告单元代码
-    function getAdunitCode()
+    /**
+     * 获取广告单元代码
+     * @param $authorizer_appid
+     * @param $ad_unit_id string 广告位 ID
+     * @return mixed
+     */
+    function getAdunitCode($authorizer_appid, $ad_unit_id)
     {
-
+        $data = [
+            'ad_unit_id' => $ad_unit_id,
+        ];
+        $miniProgramApp = $this->miniProgramApp($authorizer_appid);
+        return $miniProgramApp->httpPostJson('/wxa/operationams', $data, [
+            'action' => 'agency_get_adunit_code'
+        ]);
     }
 
     /**
