@@ -56,19 +56,19 @@
             <el-col :span="3">
                 <div style="text-align: center">
                     <h5>人均停留时长 (秒)</h5>
-                    <p class="text-regular">{{ formatNumber(dailyVisitTrend.stay_time_uv) }}</p>
+                    <p class="text-regular">{{ dailyVisitTrend.stay_time_uv }}</p>
                 </div>
             </el-col>
             <el-col :span="3">
                 <div style="text-align: center">
                     <h5>次均停留时长 (秒)</h5>
-                    <p class="text-regular">{{ formatNumber(dailyVisitTrend.stay_time_session) }}</p>
+                    <p class="text-regular">{{ dailyVisitTrend.stay_time_session }}</p>
                 </div>
             </el-col>
             <el-col :span="3">
                 <div style="text-align: center">
                     <h5>平均访问深度</h5>
-                    <p class="text-regular">{{ formatNumber(dailyVisitTrend.visit_depth) }}</p>
+                    <p class="text-regular">{{ dailyVisitTrend.visit_depth }}</p>
                 </div>
             </el-col>
 
