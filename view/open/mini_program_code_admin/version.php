@@ -112,11 +112,16 @@
                             <el-button type="text" @click="handleSubmitCode">上传代码</el-button>
                         </p>
                         <p>
+                            <el-button type="text" @click="handleSubmitAudit">提交审核</el-button>
+                        </p>
+                        <p>
                             <el-button type="text" @click="handleGetTrialQRCode">体验版二维码</el-button>
                         </p>
                         <p>
-                            <el-button type="text" @click="handleSubmitAudit">提交审核</el-button>
+                            <el-button type="text" @click="handleAddTester">添加体验者</el-button>
                         </p>
+
+
                     </div>
                 </div>
             </template>
@@ -310,6 +315,24 @@
                         end: function () {
                             that.getVersionInfo()
                         }
+                    })
+                },
+                // 添加体验者
+                handleAddTester: function () {
+                    let that = this
+                    layer.prompt({
+                        title: '请输入体验者微信号',
+                    }, function (value, index, elem) {
+                        const data = {
+                            authorizer_appid: that.authorizer_appid,
+                            wechatid: value,
+                        }
+                        that.httpPost("/wechat/open.MiniProgramAdmin/addTester", data, function (res) {
+                            layer.msg(res.msg)
+                            if (res.status) {
+                                layer.close(index);
+                            }
+                        })
                     })
                 },
             }
