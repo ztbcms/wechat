@@ -7,6 +7,8 @@ namespace app\wechat\controller\open;
 
 use app\common\controller\AdminController;
 use app\common\libs\helper\ArrayHelper;
+use app\common\service\kv\KV;
+use app\wechat\libs\open\CacheKeyBuilder;
 use app\wechat\libs\utils\RequestUtils;
 use app\wechat\service\OpenService;
 use think\Request;
@@ -176,7 +178,28 @@ class MiniProgramCodeAdmin extends AdminController
             if (!RequestUtils::isRquestSuccessed($resp)) {
                 return self::returnErrorJson(RequestUtils::buildErrorMsg($resp));
             }
+            // 缓存上传记录
+            KV::setKv(CacheKeyBuilder::makeLastSubmitInfoKey($authorizer_appid), serialize([
+                'template_id' => $template_id,
+                'ext_json' => $ext_json,
+                'user_version' => $user_version,
+                'user_desc' => $user_desc,
+            ]));
             return self::returnSuccessJson([], '上传成功');
+        }
+        // 获取最近的上传信息
+        if ($action == 'getLastSubmitInfo') {
+            $authorizer_appid = input('authorizer_appid', '');
+            if (empty($authorizer_appid)) {
+                return self::returnErrorJson('参数错误');
+            }
+            $res = KV::getKv(CacheKeyBuilder::makeLastSubmitInfoKey($authorizer_appid));
+            if (!is_null($res)) {
+                $res = unserialize($res);
+            } else {
+                $res = [];
+            }
+            return self::returnSuccessJson($res);
         }
         return view('submitCode');
     }

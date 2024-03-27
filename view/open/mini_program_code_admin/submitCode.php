@@ -9,7 +9,7 @@
                     <span>{{ form.authorizer_appid }}</span>
                 </el-form-item>
                 <el-form-item label="代码模板" required>
-                    <el-select v-model="form.template_id" placeholder="请选择代码模板">
+                    <el-select v-model="form.template_id" placeholder="请选择代码模板" @change="onTemplateChange">
                         <el-option
                                 v-for="item in templateList"
                                 :key="item.template_id"
@@ -85,6 +85,7 @@
             mounted: function () {
                 this.form.authorizer_appid = this.getUrlQuery('authorizer_appid');
                 this.getTemplateList()
+                this.getLastSubmitInfo()
             },
             methods: {
                 getTemplateList: function () {
@@ -98,6 +99,18 @@
                         }
                     })
                 },
+                getLastSubmitInfo: function () {
+                    let that = this;
+                    const data = {
+                        _action: 'getLastSubmitInfo',
+                        authorizer_appid: this.form.authorizer_appid
+                    }
+                    this.httpGet("/wechat/open.MiniProgramCodeAdmin/submitCode", data, function (res) {
+                        if(res.status && res.data){
+                            that.form.ext_json = res.data.ext_json || ''
+                        }
+                    })
+                },
                 handleSubmit: function () {
                     let that = this;
                     const data = this.form
@@ -105,6 +118,18 @@
                     this.httpPost("/wechat/open.MiniProgramCodeAdmin/submitCode", data, function (res) {
                        layer.msg(res.msg)
                     })
+                },
+                // 模板选择时
+                onTemplateChange: function(){
+                    let selectItem = null
+                    for(let i=0;i<this.templateList.length;i++){
+                        if(this.templateList[i].template_id == this.form.template_id){
+                            selectItem = this.templateList[i]
+                            break
+                        }
+                    }
+                    this.form.user_version = selectItem['user_version']
+                    this.form.user_desc = 'Release ' + selectItem['user_version']
                 },
             }
         })
