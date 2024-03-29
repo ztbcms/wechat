@@ -90,6 +90,12 @@ class PublisherAgencyAdmin extends AdminController
             $res = PublisherAgencyService::syncAuthorizerPublisherStatus($authorizer_appid);
             return json($res);
         }
+        // 开通小程序流量主
+        if ($action == 'createPublisher') {
+            $authorizer_appid = input('post.authorizer_appid');
+            $res = PublisherAgencyService::createPublisher($authorizer_appid);
+            return json($res);
+        }
         return view('list');
     }
 

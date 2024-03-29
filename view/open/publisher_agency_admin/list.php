@@ -58,7 +58,8 @@
                         </template>
                     </div>
                     <div v-if="props.row.publisher_status == 0">
-                        <el-button type="text" @click="handleSyncPublisherStatus(props.row)">同步</el-button>
+                        <el-button type="text" @click="handleSyncPublisherStatus(props.row)">检测条件</el-button>
+                        <el-button type="text" @click="handleCreatePublisher(props.row)">开通流量主</el-button>
                     </div>
                 </template>
             </el-table-column>
@@ -333,6 +334,22 @@
                     let that = this
                     const data = {
                         _action: 'syncPublisherStatus',
+                        authorizer_appid: item.authorizer_appid,
+                    }
+                    this.httpPost("/wechat/open.PublisherAgencyAdmin/list", data, function (res) {
+                        layer.msg(res.msg)
+                        if (res.status) {
+                            setTimeout(function () {
+                                that.getList()
+                            }, 1000)
+                        }
+                    })
+                },
+                // 同步流量主状态
+                handleCreatePublisher: function (item) {
+                    let that = this
+                    const data = {
+                        _action: 'createPublisher',
                         authorizer_appid: item.authorizer_appid,
                     }
                     this.httpPost("/wechat/open.PublisherAgencyAdmin/list", data, function (res) {
