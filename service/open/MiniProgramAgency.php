@@ -208,7 +208,7 @@ class MiniProgramAgency
      */
     function getVisitStatus()
     {
-        return $this->miniProgramApp->httpPost('wxa/getvisitstatus');
+        return $this->miniProgramApp->httpPostJson('wxa/getvisitstatus', []);
     }
 
     /**

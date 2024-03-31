@@ -46,10 +46,17 @@ class MiniProgramCodeAdmin extends AdminController
             // 线上版信息
             $release_info = null;
             if (isset($resp1['release_info'])) {
+                // 有线上版本才获取 visit_status
+                $resp2 = $miniProgramAgency->getVisitStatus();
+                if (!RequestUtils::isRquestSuccessed($resp2)) {
+                    return self::returnErrorJson(RequestUtils::buildErrorMsg($resp2));
+                }
                 $release_info = [
                     'time' => date('Y-m-d H:i', $resp1['release_info']['release_time']),
                     'version' => $resp1['release_info']['release_version'],
                     'desc' => $resp1['release_info']['release_desc'],
+                    // 小程序服务状态  0表示已暂停服务（包含主动暂停服务违规被暂停服务）。1表示未暂停服务。
+                    'visit_status' => $resp2['status'],
                 ];
             }
             // 审核版本信息
@@ -136,6 +143,18 @@ class MiniProgramCodeAdmin extends AdminController
             $openService = OpenService::getInstnace();
             $miniProgramAgency = $openService->miniProgramAgency($authorizer_appid);
             $resp = $miniProgramAgency->release();
+            if (!RequestUtils::isRquestSuccessed($resp)) {
+                return self::returnErrorJson(RequestUtils::buildErrorMsg($resp));
+            }
+            return self::returnSuccessJson([], '操作成功');
+        }
+        // 设置服务状态
+        if ($action == 'setVisitStatus') {
+            $authorizer_appid = input('post.authorizer_appid', '');
+            $action = input('post.action', '');
+            $openService = OpenService::getInstnace();
+            $miniProgramAgency = $openService->miniProgramAgency($authorizer_appid);
+            $resp = $miniProgramAgency->setVisitStatus($action);
             if (!RequestUtils::isRquestSuccessed($resp)) {
                 return self::returnErrorJson(RequestUtils::buildErrorMsg($resp));
             }

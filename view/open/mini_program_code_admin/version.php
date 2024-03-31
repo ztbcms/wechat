@@ -12,6 +12,18 @@
                         <p style="font-size: 20px;padding-top: 14px;">{{ release_info.version }}</p>
                     </div>
                     <div class="submit_info">
+                        <div class="submit_info-item">
+                            <label class="submit_info-title text-secondary">服务状态</label>
+                            <span class="submit_info-value">
+                                 <template v-if="release_info.visit_status === 0">
+                                    <span style="color: red;">已暂停服务</span>
+                                </template>
+                                <template v-if="release_info.visit_status === 1">
+                                    正常
+                                </template>
+                            </span>
+                        </div>
+
                         <div class="submit_info-item"><label
                                     class="submit_info-title text-secondary">发布时间</label><span
                                     class="submit_info-value">{{ release_info.time }}</span>
@@ -22,6 +34,14 @@
                     <div class="action">
                         <p>
                             <el-button type="text" @click="handleRevertCodeRelease">版本回退</el-button>
+                        </p>
+                        <p>
+                            <template v-if="release_info.visit_status === 0">
+                                <el-button type="text" @click="handleSetVisitStatus('open')">启用服务</el-button>
+                            </template>
+                            <template v-if="release_info.visit_status === 1">
+                                <el-button type="text" @click="handleSetVisitStatus('close')">暂停服务</el-button>
+                            </template>
                         </p>
                     </div>
                 </div>
@@ -334,6 +354,25 @@
                             }
                         })
                     })
+                },
+                // 服务启用、暂停
+                handleSetVisitStatus: function (action) {
+                    let that = this
+                    let msg = (action === 'open') ? '确认启用服务？' : '确认暂停服务？'
+                    layer.confirm(msg, function (index) {
+                        layer.close(index);
+                        const data = {
+                            _action: 'setVisitStatus',
+                            authorizer_appid: that.authorizer_appid,
+                            action: action,
+                        }
+                        that.httpPost("/wechat/open.MiniProgramCodeAdmin/version", data, function (res) {
+                            layer.msg(res.msg)
+                            if (res.status) {
+                                that.getVersionInfo()
+                            }
+                        })
+                    });
                 },
             }
         })
