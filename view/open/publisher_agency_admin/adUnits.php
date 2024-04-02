@@ -20,14 +20,12 @@
         <template v-if="searchForm.ad_slot == 'SLOT_ID_WEAPP_COVER'">
             <div>
                 <p style="font-size: 15px;">当前状态：
-                    <template v-if="coverAdposStatus.status == 0">
-                        <span>-</span>
-                    </template>
                     <template v-if="coverAdposStatus.status == 1">
                         <span>开启中</span>
                         <el-button type="text" @click="handleSetCoverAdposStatus(4)">关闭</el-button>
                     </template>
-                    <template v-if="coverAdposStatus.status == 4">
+                    <!--PS.0表示未设置过，默认关闭-->
+                    <template v-if="coverAdposStatus.status == 4 || coverAdposStatus.status == 0">
                         <span>关闭中</span>
                         <el-button type="text" @click="handleSetCoverAdposStatus(1)">开启</el-button>
                     </template>
