@@ -26,7 +26,7 @@
 
                 <el-form-item label="广告时长" v-if="form.ad_slot === 'SLOT_ID_WEAPP_REWARD_VIDEO'">
                     <el-radio-group v-model="form.video_range">
-                        <template v-for="item in video_range" :key="item.value">
+                        <template v-for="item in video_range">
                             <el-radio :label="item.value">{{ item.name }}</el-radio>
                         </template>
                     </el-radio-group>

@@ -384,9 +384,9 @@ class PublisherAgencyService extends BaseService
         if (!$publisher) {
             return self::createReturn(false, null, '找不到流量主记录：' . $authorizer_appid);
         }
-        // 开通成功（code=0）或者已开通(Code=2021)均视为已开通状态，否则未开通
         $resp = OpenService::getInstnace()->publisherAgency()->agencyCreatePublisher($authorizer_appid);
-        if (!RequestUtils::isRquestSuccessed($resp) && $resp['ret'] !== 2021) {
+        // 开通成功（code=0）或者已开通(Code=2021)均视为已开通状态，否则未开通
+        if (!RequestUtils::isRquestSuccessed($resp) && (isset($resp['ret']) && $resp['ret'] !== 2021)) {
             return self::createReturn(false, $resp, RequestUtils::buildErrorMsg($resp));
         }
         $publisher->save(['publisher_status' => OpenPublisher::PUBLISH_STATUS_YSE]);
