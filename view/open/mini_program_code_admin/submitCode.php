@@ -4,7 +4,7 @@
             <div slot="header" class="clearfix">
                 <span>上传代码</span>
             </div>
-            <el-form :model="form" label-width="100px" size="small" style="max-width: 500px;">
+            <el-form :model="form" label-width="100px" size="small" style="width: 45%">
                 <el-form-item label="APPID">
                     <span>{{ form.authorizer_appid }}</span>
                 </el-form-item>
