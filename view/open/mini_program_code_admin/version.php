@@ -409,7 +409,8 @@
     }
 
     .version_content .submit_info {
-        flex: 1
+        flex: 1;
+        padding: 0 8px;
     }
 
     .version_content .submit_info .submit_info-item {
