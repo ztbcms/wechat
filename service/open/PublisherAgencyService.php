@@ -386,7 +386,7 @@ class PublisherAgencyService extends BaseService
         }
         $resp = OpenService::getInstnace()->publisherAgency()->agencyCreatePublisher($authorizer_appid);
         // 开通成功（code=0）或者已开通(Code=2021)均视为已开通状态，否则未开通
-        if (!RequestUtils::isRquestSuccessed($resp) && (isset($resp['ret']) && $resp['ret'] !== 2021)) {
+        if (!RequestUtils::isRquestSuccessed($resp) && !(isset($resp['ret']) && $resp['ret'] === 2021)) {
             return self::createReturn(false, $resp, RequestUtils::buildErrorMsg($resp));
         }
         $publisher->save(['publisher_status' => OpenPublisher::PUBLISH_STATUS_YSE]);
