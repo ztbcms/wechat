@@ -2,7 +2,7 @@
     <div id="app" v-cloak>
         <el-card>
             <div slot="header" class="clearfix">
-                <span>小程序域名管理</span>
+                <span>小程序隐私保护指引</span>
             </div>
 
             <div style="margin-bottom: 20px;">
@@ -12,7 +12,8 @@
                         type="info"
                         :closable="false">
                     <p style="font-weight: bold">
-                        参考文档 <a href="https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/product/privacy_setting.html">配置小程序用户隐私保护指引</a>
+                        参考文档 <a
+                                href="https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/product/privacy_setting.html">配置小程序用户隐私保护指引</a>
                         、<a href="https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/privacy-management/setPrivacySetting.html">设置小程序用户隐私保护指引</a>
                     </p>
                 </el-alert>
@@ -29,6 +30,17 @@
                                     :autosize="{minRows: 8}"
                                     placeholder="">
                             </el-input>
+                            <div v-if="privacy_list.length > 0">
+                                <p>代码检测出来的用户信息类型:</p>
+                                <p>
+                                    <template v-for="(item, index) in privacy_list">
+                                        <span>{{ item }}</span><span>{{ privacy_desc_map[item] }}</span>
+                                        <template v-if="index < privacy_list.length - 1">
+                                            <span>、</span>
+                                        </template>
+                                    </template>
+                                </p>
+                            </div>
                         </el-form-item>
 
 
@@ -49,6 +61,17 @@
                                     :autosize="{minRows: 8}"
                                     placeholder="">
                             </el-input>
+                            <div v-if="privacy_list.length > 0">
+                                <p>代码检测出来的用户信息类型:</p>
+                                <p>
+                                    <template v-for="(item, index) in privacy_list">
+                                        <span>{{ item }}</span><span>{{ privacy_desc_map[item] }}</span>
+                                        <template v-if="index < privacy_list.length - 1">
+                                            <span>、</span>
+                                        </template>
+                                    </template>
+                                </p>
+                            </div>
                         </el-form-item>
 
 
@@ -79,6 +102,9 @@
                 prd_form: {
                     json: '',
                 },
+                // 代码检测出来的用户信息类型
+                privacy_list: [],
+                privacy_desc_map: {},
             },
             mounted: function () {
                 this.authorizer_appid = this.getUrlQuery('authorizer_appid');
@@ -103,6 +129,16 @@
                             if (that.tabName === '2') {
                                 that.dev_form.json = JSON.stringify(res.data.setting, null, 4)
                             }
+                            that.privacy_list = res.data.privacy_list
+                            let map = {}
+                            if (res.data.privacy_desc && res.data.privacy_desc.privacy_desc_list) {
+                                for (let i = 0; i < res.data.privacy_desc.privacy_desc_list.length; i++) {
+                                    let item = res.data.privacy_desc.privacy_desc_list[i]
+                                    map[item['privacy_key']] = item['privacy_desc']
+                                }
+                            }
+                            that.privacy_desc_map = map
+
                         } else {
                             layer.alert(res.msg)
                         }

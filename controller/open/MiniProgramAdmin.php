@@ -48,10 +48,11 @@ class MiniProgramAdmin extends AdminController
             return self::returnSuccessJson([
                 'setting' => [
                     'owner_setting' => $resp['owner_setting'],
-                    'privacy_list' => $resp['privacy_list'],
                     'sdk_privacy_info_list' => $resp['sdk_privacy_info_list'],
                     'setting_list' => $resp['setting_list'],
                 ],
+                // 代码检测出来的用户信息类型（privacy_key）
+                'privacy_list' => $resp['privacy_list'],
                 // array<object>用户信息类型对应的中英文描述
                 'privacy_desc' => $resp['privacy_desc'],
             ], '操作成功');
