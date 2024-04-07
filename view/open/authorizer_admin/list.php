@@ -120,6 +120,8 @@
                         </el-button>
                         <el-button @click="handleMiniProgramAnalysis(props.row)" type="text" size="mini">数据分析
                         </el-button>
+                        <el-button @click="handleMiniProgramPrivacySetting(props.row)" type="text" size="mini">隐私指引
+                        </el-button>
                     </template>
                     <!--小程序 E-->
                 </template>
@@ -254,6 +256,12 @@
                             layer.msg(res.msg)
                         }
                     })
+                },
+                // 隐私指引
+                handleMiniProgramPrivacySetting: function(item){
+                    let title = item['name'] + '_隐私指引设置'
+                    let url = "{:api_url('/wechat/open.MiniProgramAdmin/privacySetting')}" + '?authorizer_appid=' + item['authorizer_appid']
+                    this.openNewIframeByUrl(title, url)
                 },
             }
         });

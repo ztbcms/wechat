@@ -317,4 +317,45 @@ class MiniProgramAgency
         ];
         return $this->miniProgramApp->httpPostJson('datacube/getweanalysisappiddailyvisittrend', $data, []);
     }
+
+    // 用户隐私保护指引管理 S
+
+
+    /**
+     * 设置小程序用户隐私保护指引
+     *
+     * @param $privacy_ver int 用户隐私保护指引的版本，1表示现网版本；2表示开发版。默认是2开发版。
+     * @param $setting_list array<object> 要收集的用户信息配置
+     * @param $owner_setting object 收集方（开发者）信息配置
+     * @param $sdk_privacy_info_list array<object> 引用了第三方sdk的信息说明
+     * @return mixed
+     */
+    function setPrivacySetting($privacy_ver, $setting_list, $owner_setting, $sdk_privacy_info_list)
+    {
+        $data = [
+            'privacy_ver' => $privacy_ver,
+            'owner_setting' => $owner_setting,
+        ];
+        if(!empty($setting_list)){
+            $data['setting_list'] = $setting_list;
+        }
+        if(!empty($sdk_privacy_info_list)){
+            $data['sdk_privacy_info_list'] = $sdk_privacy_info_list;
+        }
+        return $this->miniProgramApp->httpPostJson('cgi-bin/component/setprivacysetting', $data, []);
+    }
+
+    /**
+     * 获取小程序用户隐私保护指引
+     *
+     * @param $privacy_ver int 1表示现网版本，即，传1则该接口返回的内容是现网版本的；2表示开发版，即，传2则该接口返回的内容是开发版本的。默认是2。
+     */
+    function getPrivacySetting($privacy_ver){
+        $data = [
+            'privacy_ver' => $privacy_ver,
+        ];
+        return $this->miniProgramApp->httpPostJson('cgi-bin/component/getprivacysetting', $data, []);
+    }
+
+    // 用户隐私保护指引管理 E
 }
