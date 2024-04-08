@@ -16,6 +16,14 @@
                                 href="https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/product/privacy_setting.html">配置小程序用户隐私保护指引</a>
                         、<a href="https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/privacy-management/setPrivacySetting.html">设置小程序用户隐私保护指引</a>
                     </p>
+                    <p>说明：</p>
+                    <p>
+                        1、开发版指的是通过setprivacysetting接口已经配置的用户隐私保护指引内容，但是还没发布到现网，还没正式生效的版本。</p>
+                    <p>2、现网版本指的是已经在小程序现网版本已经生效的用户隐私保护指引内容。</p>
+                    <p>
+                        3、如果小程序已有一个现网版，可以通过该接口（privacy_ver=1）直接修改owner_setting里除了ext_file_media_id之外的信息，修改后即可生效。</p>
+                    <p>4、如果需要修改其他信息，则只能修改开发版（privacy_ver=2），然后提交代码审核，审核通过之后发布生效。</p>
+                    <p>5、当该小程序还没有现网版的隐私保护指引时却传了privacy_ver=1，则会出现 86074 报错</p>
                 </el-alert>
             </div>
 
@@ -46,8 +54,7 @@
 
                         <!--操作区域-->
                         <el-form-item label="" style="margin-top: 10px;padding-top: 10px;">
-                            <el-button type="primary" size="mini" @click="handleSubmit">保存并提交
-                            </el-button>
+                            <el-button type="primary" size="mini" @click="handleSubmit">保存配置</el-button>
                         </el-form-item>
                     </el-form>
                 </el-tab-pane>
@@ -77,8 +84,13 @@
 
                         <!--操作区域-->
                         <el-form-item label="" style="margin-top: 10px;padding-top: 10px;">
-                            <el-button type="primary" size="mini" @click="handleSubmit">保存并提交
-                            </el-button>
+                            <div>
+                                <el-button type="primary" size="mini" @click="handleSubmit">保存配置
+                                </el-button>
+                                <el-button type="success" size="mini" @click="handleSubmitAudit">提交审核
+                                </el-button>
+                            </div>
+                            <p>* 配置后，需重新提交代码审核，审核通过且需要重新发布上线后才会在小程序端生效。</p>
                         </el-form-item>
                     </el-form>
                 </el-tab-pane>
@@ -144,21 +156,13 @@
                         }
                     })
                 },
-                handleSubmit: function () {
-                    let that = this
-                    const data = {
-                        _action: 'setPrivacySetting',
-                        authorizer_appid: this.authorizer_appid,
-                        privacy_ver: this.tabName,
-                        json: that.tabName === '1' ? this.prd_form.json : this.dev_form.json,
-                    }
-                    this.httpPost("/wechat/open.MiniProgramAdmin/privacySetting", data, function (res) {
-                        if (res.status) {
-                            layer.msg(res.msg)
-                        } else {
-                            // 高亮错误的项
-                            layer.alert(res.msg)
-                        }
+                // 提交审核
+                handleSubmitAudit: function () {
+                    layer.open({
+                        type: 2,
+                        title: '',
+                        content: "{:api_url('wechat/open.MiniProgramCodeAdmin/submitAudit')}?authorizer_appid=" + this.authorizer_appid,
+                        area: ['70%', '80%'],
                     })
                 },
             }
