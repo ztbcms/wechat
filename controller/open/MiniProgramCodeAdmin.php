@@ -78,10 +78,6 @@ class MiniProgramCodeAdmin extends AdminController
                     'submit_audit_time' => date('Y-m-d H:i', $resp2['submit_audit_time']),  // 时间戳，提交审核的时间
                 ];
             }
-            // 当线上版和审核版本一致，则没必要显示审核版
-            if (!is_null($release_info) && !is_null($audit_info) && $release_info['version'] == $audit_info['user_version']) {
-                $audit_info = null;
-            }
             $ret = [
                 'exp_info' => $exp_info,
                 'release_info' => $release_info,
