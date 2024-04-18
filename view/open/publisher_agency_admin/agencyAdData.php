@@ -98,7 +98,7 @@
         <el-divider></el-divider>
         <h4 style="margin: 0px 0px 8px;">广告指标明细</h4>
         <el-tabs v-model="searchForm.ad_slot" @tab-click="handleSwitchAdSlot">
-            <el-tab-pane label="全部" name="0"></el-tab-pane>
+            <el-tab-pane label="整体" name="0"></el-tab-pane>
             <el-tab-pane label="封面广告" name="SLOT_ID_WEAPP_COVER"></el-tab-pane>
             <el-tab-pane label="Banner" name="SLOT_ID_WEAPP_BANNER"></el-tab-pane>
             <el-tab-pane label="激励视频" name="SLOT_ID_WEAPP_REWARD_VIDEO"></el-tab-pane>
@@ -133,6 +133,7 @@
                     prop="req_succ_count"
                     label="拉取数"
                     sortable
+                    align="right"
                     min-width="60">
                 <template slot-scope="props">
                     <div>{{ formatNumber(props.row.req_succ_count) }}</div>
@@ -142,6 +143,7 @@
                     prop="exposure_count"
                     label="曝光量"
                     sortable
+                    align="right"
                     min-width="60">
                 <template slot-scope="props">
                     <div>{{ formatNumber(props.row.exposure_count) }}</div>
@@ -160,6 +162,7 @@
                     prop="click_count"
                     label="点击量"
                     sortable
+                    align="right"
                     min-width="60">
                 <template slot-scope="props">
                     <div>{{ formatNumber(props.row.click_count) }}</div>
@@ -169,6 +172,7 @@
                     prop="click_rate"
                     label="点击率"
                     sortable
+                    align="right"
                     min-width="60">
                 <template slot-scope="props">
                     <div>{{ props.row.click_rate }}%</div>
@@ -178,6 +182,7 @@
                     prop="income"
                     label="单日总广告收入(元)"
                     sortable
+                    align="right"
                     min-width="70">
                 <template slot-scope="props">
                     <div>{{ formatNumber(props.row.income) }}</div>
@@ -187,6 +192,7 @@
                     prop="publisher_income"
                     label="小程序分账后收入(元)"
                     sortable
+                    align="right"
                     min-width="70">
                 <template slot-scope="props">
                     <div>{{ formatNumber(props.row.publisher_income) }}</div>
@@ -196,6 +202,7 @@
                     prop="agency_income"
                     label="服务商分账后收入(元)"
                     sortable
+                    align="right"
                     min-width="70">
                 <template slot-scope="props">
                     <div>{{ formatNumber(props.row.agency_income) }}</div>
@@ -205,6 +212,7 @@
                     prop="ecpm"
                     label="eCPM"
                     sortable
+                    align="right"
                     min-width="60">
             </el-table-column>
         </el-table>

@@ -291,7 +291,7 @@
                 handleViewItemAdData: function (item) {
                     layer.open({
                         type: 2,
-                        title: '广告数据',
+                        title: item['name'] + '_广告数据',
                         content: '/wechat/open.PublisherAgencyAdmin/adData?authorizer_appid=' + item.authorizer_appid,
                         area: ['90%', '90%'],
                     })
@@ -300,7 +300,7 @@
                 handleViewAgencyAdData: function () {
                     layer.open({
                         type: 2,
-                        title: '广告数据',
+                        title: '服务商广告数据',
                         content: '/wechat/open.PublisherAgencyAdmin/agencyAdData',
                         area: ['90%', '90%'],
                     })
@@ -309,7 +309,7 @@
                 handleViewItemSettlement: function (item) {
                     layer.open({
                         type: 2,
-                        title: '结算数据',
+                        title: item['name'] + '_结算数据',
                         content: '/wechat/open.PublisherAgencyAdmin/settlement?authorizer_appid=' + item.authorizer_appid,
                         area: ['90%', '90%'],
                     })
@@ -318,7 +318,7 @@
                 handleViewAgencySettlement: function () {
                     layer.open({
                         type: 2,
-                        title: '结算数据',
+                        title: '服务商结算数据',
                         content: '/wechat/open.PublisherAgencyAdmin/agencySettlement',
                         area: ['90%', '90%'],
                     })

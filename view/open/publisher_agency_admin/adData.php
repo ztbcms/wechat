@@ -93,51 +93,60 @@
                     min-width="80">
             </el-table-column>
             <el-table-column
-                    prop="slot_id"
-                    label="广告位ID/类型"
-                    min-width="100">
-                <template slot-scope="props">
-                    <div>{{ props.row.slot_id }}</div>
-                    <div style="font-weight: bold;">{{ props.row.ad_slot_text }}</div>
-                </template>
-            </el-table-column>
-            <el-table-column
+                    prop="req_succ_count"
                     label="拉取数"
+                    sortable
+                    align="right"
                     min-width="60">
                 <template slot-scope="props">
                     <div>{{ formatNumber(props.row.req_succ_count) }}</div>
                 </template>
             </el-table-column>
             <el-table-column
+                    prop="exposure_count"
                     label="曝光量"
+                    sortable
+                    align="right"
                     min-width="60">
                 <template slot-scope="props">
                     <div>{{ formatNumber(props.row.exposure_count) }}</div>
                 </template>
             </el-table-column>
             <el-table-column
+                    prop="exposure_rate"
                     label="曝光率"
+                    sortable
+                    align="right"
                     min-width="60">
                 <template slot-scope="props">
                     <div>{{ props.row.exposure_rate }}%</div>
                 </template>
             </el-table-column>
             <el-table-column
+                    prop="click_count"
                     label="点击量"
+                    sortable
+                    align="right"
                     min-width="60">
                 <template slot-scope="props">
                     <div>{{ formatNumber(props.row.click_count) }}</div>
                 </template>
             </el-table-column>
             <el-table-column
+                    prop="click_rate"
                     label="点击率"
+                    sortable
+                    align="right"
                     min-width="60">
                 <template slot-scope="props">
                     <div>{{ props.row.click_rate }}%</div>
                 </template>
             </el-table-column>
             <el-table-column
+                    prop="publisher_income"
                     label="收入(元)"
+                    sortable
+                    align="right"
                     min-width="60">
                 <template slot-scope="props">
                     <div>{{ formatNumber(props.row.publisher_income) }}</div>
@@ -146,6 +155,8 @@
             <el-table-column
                     prop="ecpm"
                     label="eCPM(元)"
+                    sortable
+                    align="right"
                     min-width="60">
             </el-table-column>
         </el-table>
@@ -193,7 +204,7 @@
             },
             mounted: function () {
                 this.searchForm.authorizer_appid = this.getUrlQuery('authorizer_appid')
-                this.searchForm.date = [this.getDate(6), this.getDate(0)];
+                this.searchForm.date = [this.getDate(7), this.getDate(1)];
                 this.search();
             },
             methods: {
