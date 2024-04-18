@@ -110,6 +110,7 @@
         <el-table
                 :data="lists"
                 highlight-current-row
+                :default-sort="{prop: 'agency_income', order: 'descending'}"
                 style="width: 100%">
             <el-table-column
                     prop="date"
@@ -117,64 +118,84 @@
                     min-width="80">
             </el-table-column>
             <el-table-column
-                    prop="slot_id"
-                    label="广告位类型"
-                    min-width="60">
+                    label="流量主"
+                    min-width="100">
                 <template slot-scope="props">
-                    <div style="font-weight: bold;">{{ props.row.ad_slot_text }}</div>
+                    <template v-if="props.row.publisher_info">
+                        <div style="font-weight: bold;">{{ props.row.publisher_info.name }}</div>
+                    </template>
+                    <template v-else>
+                        <span>-</span>
+                    </template>
                 </template>
             </el-table-column>
             <el-table-column
+                    prop="req_succ_count"
                     label="拉取数"
+                    sortable
                     min-width="60">
                 <template slot-scope="props">
                     <div>{{ formatNumber(props.row.req_succ_count) }}</div>
                 </template>
             </el-table-column>
             <el-table-column
+                    prop="exposure_count"
                     label="曝光量"
+                    sortable
                     min-width="60">
                 <template slot-scope="props">
                     <div>{{ formatNumber(props.row.exposure_count) }}</div>
                 </template>
             </el-table-column>
             <el-table-column
+                    prop="exposure_rate"
                     label="曝光率"
+                    sortable
                     min-width="60">
                 <template slot-scope="props">
                     <div>{{ props.row.exposure_rate }}%</div>
                 </template>
             </el-table-column>
             <el-table-column
+                    prop="click_count"
                     label="点击量"
+                    sortable
                     min-width="60">
                 <template slot-scope="props">
                     <div>{{ formatNumber(props.row.click_count) }}</div>
                 </template>
             </el-table-column>
             <el-table-column
+                    prop="click_rate"
                     label="点击率"
+                    sortable
                     min-width="60">
                 <template slot-scope="props">
                     <div>{{ props.row.click_rate }}%</div>
                 </template>
             </el-table-column>
             <el-table-column
+                    prop="income"
                     label="单日总广告收入(元)"
+                    sortable
                     min-width="70">
                 <template slot-scope="props">
                     <div>{{ formatNumber(props.row.income) }}</div>
                 </template>
             </el-table-column>
             <el-table-column
+                    prop="publisher_income"
                     label="小程序分账后收入(元)"
+                    sortable
                     min-width="70">
                 <template slot-scope="props">
                     <div>{{ formatNumber(props.row.publisher_income) }}</div>
                 </template>
             </el-table-column>
             <el-table-column
+                    prop="agency_income"
                     label="服务商分账后收入(元)"
+                    sortable
                     min-width="70">
                 <template slot-scope="props">
                     <div>{{ formatNumber(props.row.agency_income) }}</div>
@@ -183,6 +204,7 @@
             <el-table-column
                     prop="ecpm"
                     label="eCPM"
+                    sortable
                     min-width="60">
             </el-table-column>
         </el-table>
@@ -232,7 +254,7 @@
             },
             mounted: function () {
                 this.searchForm.authorizer_appid = this.getUrlQuery('authorizer_appid')
-                this.searchForm.date = [this.getDate(6), this.getDate(0)];
+                this.searchForm.date = [this.getDate(1), this.getDate(1)];
                 this.search();
             },
             methods: {

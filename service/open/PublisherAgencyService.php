@@ -5,6 +5,7 @@
 
 namespace app\wechat\service\open;
 
+use app\common\libs\helper\ArrayHelper;
 use app\common\service\BaseService;
 use app\wechat\libs\open\Constant;
 use app\wechat\libs\utils\RequestUtils;
@@ -211,8 +212,17 @@ class PublisherAgencyService extends BaseService
         if (!RequestUtils::isRquestSuccessed($resp)) {
             return self::createReturn(false, null, RequestUtils::buildErrorMsg($resp));
         }
+        // 获取流量主信息
+        $publisher_appids = array_unique(ArrayHelper::arrayTakeKeyValue($resp['list'] ?? [], 'publisher_appid'));
+        $publisherMap = [];
+        if(!empty($publisher_appids)){
+            $publishers = OpenAuthorizer::where([
+                ['authorizer_appid', 'IN', $publisher_appids]
+            ])->field('name,authorizer_appid')->select()->toArray();
+            $publisherMap = ArrayHelper::arrayToMap($publishers, 'authorizer_appid');
+        }
         $ret = [
-            'list' => array_map(function ($item) {
+            'list' => array_map(function ($item) use($publisherMap) {
                 return [
                     'publisher_appid' => $item['publisher_appid'],
                     'ad_slot' => $item['ad_slot'] ?? '',
@@ -227,6 +237,8 @@ class PublisherAgencyService extends BaseService
                     'publisher_income' => $item['publisher_income'] / 100, //单位转换 分 => 元
                     'agency_income' => $item['agency_income'] / 100, //单位转换 分 => 元
                     'ecpm' => ceil($item['ecpm'] / 100),
+                    // 流量主信息
+                    'publisher_info' => $publisherMap[$item['publisher_appid']] ?? null,
                 ];
             }, $resp['list'] ?? []),
             'summary' => (function ($item) {
