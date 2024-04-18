@@ -25,4 +25,9 @@ class OpenPublisher extends Model
     {
         return self::where('authorizer_appid', $appid)->find();
     }
+
+    // 关联授权用户信息
+    function authorizerInfo(){
+        return $this->hasOne(OpenAuthorizer::class, 'authorizer_appid', 'authorizer_appid');
+    }
 }

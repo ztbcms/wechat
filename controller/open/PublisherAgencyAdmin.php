@@ -32,7 +32,7 @@ class PublisherAgencyAdmin extends AdminController
                 $where [] = ['authorizer_appid', '=', $appid];
             }
             $model = new OpenPublisher();
-            $lists = $model->where($where)->order('id', 'DESC')->page($page, $page_size)->select();
+            $lists = $model->where($where)->with(['authorizerInfo'])->order('id', 'DESC')->page($page, $page_size)->select();
             $total_items = $model->where($where)->count();
             return self::returnSuccessJson([
                 'items' => $lists,

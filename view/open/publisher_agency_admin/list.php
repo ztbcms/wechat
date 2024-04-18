@@ -40,7 +40,7 @@
                     label="小程序/APPID"
                     min-width="100">
                 <template slot-scope="props">
-                    <div>{{ props.row.name }}</div>
+                    <div>{{ props.row.authorizerInfo.name }}</div>
                     <div>{{ props.row.authorizer_appid }}</div>
                 </template>
             </el-table-column>
