@@ -156,6 +156,24 @@
                         }
                     })
                 },
+                // 保存配置
+                handleSubmit: function () {
+                    let that = this
+                    const data = {
+                        _action: 'setPrivacySetting',
+                        authorizer_appid: this.authorizer_appid,
+                        privacy_ver: this.tabName,
+                        json: that.tabName === '1' ? this.prd_form.json : this.dev_form.json,
+                    }
+                    this.httpPost("/wechat/open.MiniProgramAdmin/privacySetting", data, function (res) {
+                        if (res.status) {
+                            layer.msg(res.msg)
+                        } else {
+                            // 高亮错误的项
+                            layer.alert(res.msg)
+                        }
+                    })
+                },
                 // 提交审核
                 handleSubmitAudit: function () {
                     layer.open({
