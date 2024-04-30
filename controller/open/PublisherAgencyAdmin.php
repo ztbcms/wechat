@@ -96,6 +96,16 @@ class PublisherAgencyAdmin extends AdminController
             $res = PublisherAgencyService::createPublisher($authorizer_appid);
             return json($res);
         }
+        // 确认已开通流量主
+        if ($action == 'confirmEnablePublisher') {
+            $authorizer_appid = input('post.authorizer_appid');
+            $publisher = OpenPublisher::getByAppid($authorizer_appid);
+            if (!$publisher) {
+                return self::createReturn(false, null, '找不到流量主记录：' . $authorizer_appid);
+            }
+            $publisher->save(['publisher_status' => OpenPublisher::PUBLISH_STATUS_YSE]);
+            return json(self::createReturn(true, null, '操作成功'));
+        }
         return view('list');
     }
 
