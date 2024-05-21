@@ -83,6 +83,8 @@ class MiniProgramCodeAdmin extends AdminController
                 'release_info' => $release_info,
                 'audit_info' => $audit_info,
             ];
+            // 缓存数据
+            KV::setKv(CacheKeyBuilder::makeVersionInfo($authorizer_appid), json_encode($ret));
             return self::returnSuccessJson($ret);
         }
         // 查询体验二维码

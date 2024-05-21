@@ -7,6 +7,8 @@ namespace app\wechat\controller\open;
 
 
 use app\common\controller\AdminController;
+use app\common\service\kv\KV;
+use app\wechat\libs\open\CacheKeyBuilder;
 use app\wechat\model\open\OpenAuthorizer;
 use app\wechat\service\open\OpenAuthorizerService;
 use think\Request;
@@ -29,7 +31,10 @@ class AuthorizerAdmin extends AdminController
             $page = input('page', 1);
             $page_size = input('page_size', 10);
             $appid = input('appid', '');
-            $account_type = input('account_type', '');
+            $account_type = input('account_type');
+            if(is_null($account_type)){
+                return self::returnErrorJson('参数异常');
+            }
 
             $where = [];
             if (!empty($appid)) {
@@ -39,7 +44,14 @@ class AuthorizerAdmin extends AdminController
                 $where [] = ['account_type', '=', $account_type];
             }
             $model = new OpenAuthorizer();
-            $lists = $model->where($where)->append(['account_status_text'])->order('id', 'DESC')->page($page, $page_size)->select();
+            $lists = $model->where($where)->append(['account_status_text'])->order('id', 'DESC')->page($page, $page_size)->select()->toArray();
+            // 小程序
+            if($account_type == OpenAuthorizer::ACCOUNT_TYPE_MINI_PROGRAM){
+                foreach ($lists as &$item){
+                    $versionInfo = KV::getKv(CacheKeyBuilder::makeVersionInfo($item['authorizer_appid']));
+                    $item['versionInfo'] = json_decode($versionInfo, true);
+                }
+            }
             $total_items = $model->where($where)->count();
             return self::returnSuccessJson([
                 'items' => $lists,

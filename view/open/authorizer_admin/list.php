@@ -38,15 +38,13 @@
                 style="width: 100%">
 
             <el-table-column
-                    prop="authorizer_appid"
-                    label="APPID"
+                    label="账号"
                     min-width="100">
-            </el-table-column>
+                <template slot-scope="props">
+                    <p style="font-weight: bold;margin: 0;">{{props.row.name}}</p>
+                    <p style="margin: 0;">{{props.row.authorizer_appid}}</p>
+                </template>
 
-            <el-table-column
-                    prop="name"
-                    label="名称"
-                    min-width="100">
             </el-table-column>
 
             <el-table-column
@@ -104,6 +102,24 @@
             </el-table-column>
 
             <el-table-column
+                    v-if="searchForm.account_type === '1'"
+                    label="小程序版本"
+                    min-width="100">
+                <template slot-scope="props">
+                    <p  style="margin:0;font-size: 12px;">
+                        线上:
+                        <span v-if="props.row.versionInfo && props.row.versionInfo.release_info" style="font-weight: bold;">{{ props.row.versionInfo.release_info.version }}</span>
+                        <span v-else>-</span>
+
+                    </p>
+                    <p style="margin:0;">
+                        <el-button @click="handleMiniProgramVersion(props.row)" type="text" size="mini">版本管理
+                        </el-button>
+                    </p>
+                </template>
+            </el-table-column>
+
+            <el-table-column
                     fixed="right"
                     width="200"
                     align="center"
@@ -114,8 +130,6 @@
                     <el-button @click="handleViewAuthorizerInfo(props.row)" type="text" size="mini">查看详情</el-button>
                     <!--小程序 S-->
                     <template v-if="props.row.account_type == 1">
-                        <el-button @click="handleMiniProgramVersion(props.row)" type="text" size="mini">版本管理
-                        </el-button>
                         <el-button @click="handleMiniProgramDomain(props.row)" type="text" size="mini">域名管理
                         </el-button>
                         <el-button @click="handleMiniProgramAnalysis(props.row)" type="text" size="mini">数据分析
