@@ -31,6 +31,7 @@ class AuthorizerAdmin extends AdminController
             $page = input('page', 1);
             $page_size = input('page_size', 10);
             $appid = input('appid', '');
+            $name = input('name');
             $account_type = input('account_type');
             if(is_null($account_type)){
                 return self::returnErrorJson('参数异常');
@@ -39,6 +40,9 @@ class AuthorizerAdmin extends AdminController
             $where = [];
             if (!empty($appid)) {
                 $where [] = ['authorizer_appid', '=', $appid];
+            }
+            if (!empty($name)) {
+                $where [] = ['name', 'like', "%{$name}%"];
             }
             if ($account_type !== '') {
                 $where [] = ['account_type', '=', $account_type];

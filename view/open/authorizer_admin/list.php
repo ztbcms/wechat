@@ -20,6 +20,9 @@
                 <el-form-item label="APPID">
                     <el-input v-model="searchForm.appid" placeholder="不支持模糊搜索"></el-input>
                 </el-form-item>
+                <el-form-item label="名称">
+                    <el-input v-model="searchForm.name" placeholder=""></el-input>
+                </el-form-item>
                 <el-form-item label="">
                     <el-button type="primary" @click="search">查询</el-button>
                     <el-button type="success" @click="handleBatchSyncAuthorizerInfo">批量拉取授权用户</el-button>
@@ -162,6 +165,7 @@
             data: {
                 searchForm: {
                     appid: '',
+                    name: '',
                     account_type: '1',
                 },
                 lists: [],
@@ -186,6 +190,7 @@
                         page: this.currentPage,
                         _action: 'getList',
                         appid: this.searchForm.appid,
+                        name: this.searchForm.name,
                         account_type: this.searchForm.account_type,
                     }
                     this.httpGet("/wechat/open.AuthorizerAdmin/list", data, function (res) {
