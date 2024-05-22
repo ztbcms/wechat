@@ -67,7 +67,7 @@
                     <div class="submit_info">
                         <div class="submit_info-item"><label class="submit_info-title text-secondary">审核状态</label>
                             <span class="submit_info-value">
-                                <template v-if="audit_info.status == 0">审核成功</template>
+                                <template v-if="audit_info.status == 0">审核通过</template>
                                 <template v-if="audit_info.status == 1">审核被拒绝</template>
                                 <template v-if="audit_info.status == 2">审核中</template>
                                 <template v-if="audit_info.status == 3">已撤回</template>
