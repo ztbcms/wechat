@@ -11,7 +11,7 @@ use app\common\exception\BaseApiException;
 use app\Request;
 use app\wechat\model\mini\WechatMiniSubscribeMessage;
 use app\wechat\model\WechatAuthToken;
-use app\wechat\service\{WxpayService, OfficeService, MiniService};
+use app\wechat\service\{OfficeService, MiniService};
 use Psr\SimpleCache\InvalidArgumentException;
 use think\facade\{Cache, View};
 use think\response\{Json, Redirect};
@@ -30,7 +30,7 @@ class Index extends BaseController
      * /wechat/index/oauth/appid/{公众号appid}?redirect_url={授权后跳转URl}
      * snsapi_userinfo （弹出授权页面，可通过openid拿到昵称、性别、所在地。并且， 即使在未关注的情况下，只要用户授权，也能获取其信息 ）
      * @param $appid
-     * @param  Request  $request
+     * @param Request $request
      * @throws Throwable
      */
     function oauth($appid, Request $request)
@@ -40,10 +40,10 @@ class Index extends BaseController
         if (!$redirectUrl) {
             throw new BaseApiException('未设置回调URL');
         }
-        $token = md5(time().rand(100000, 999999));
-        Cache::set($token, $redirectUrl, 3*60);
+        $token = md5(time() . rand(100000, 999999));
+        Cache::set('Redirect:' . $token, $redirectUrl, 3 * 60);
         //统一回调到 callback 处理
-        $url = api_url("/wechat/index/callback", [])."/appid/{$appid}/token/{$token}";
+        $url = api_url("/wechat/index/callback", []) . "/appid/{$appid}/token/{$token}";
         $response = $office->getApp()->oauth->scopes(['snsapi_userinfo'])
             ->redirect($url);
         $response->send();
@@ -54,7 +54,7 @@ class Index extends BaseController
      * /wechat/index/oauthBase/appid/{公众号appid}?redirect_url={授权后跳转URl}
      * snsapi_base （不弹出授权页面，直接跳转，只能获取用户openid）
      * @param $appid
-     * @param  Request  $request
+     * @param Request $request
      * @throws Throwable
      */
     public function oauthBase($appid, Request $request)
@@ -64,13 +64,11 @@ class Index extends BaseController
 
         if (!$redirectUrl) {
             throw new BaseApiException('未设置回调URL');
-        } else {
-            session('redirect_url', $redirectUrl);
         }
-        $token = md5(time().rand(100000, 999999));
-        Cache::set($token, $redirectUrl, 30);
+        $token = md5(time() . rand(100000, 999999));
+        Cache::set('Redirect:' . $token, $redirectUrl, 30);
         //统一回调到 callback 处理
-        $url = api_url("/wechat/index/callback", [])."/appid/{$appid}/token/{$token}";
+        $url = api_url("/wechat/index/callback", []) . "/appid/{$appid}/token/{$token}";
         $response = $office->getApp()->oauth->scopes(['snsapi_base'])
             ->redirect($url);
         $response->send();
@@ -85,7 +83,7 @@ class Index extends BaseController
      */
     function callback($appid, $token)
     {
-        $redirectUrl = Cache::pull($token);
+        $redirectUrl = Cache::pull('Redirect:' . $token);
         $office = new OfficeService($appid);
         $autoTokenModel = $office->user()->oauth();
         if (!$redirectUrl) {
@@ -94,9 +92,9 @@ class Index extends BaseController
         if ($autoTokenModel->code) {
             //创建token成功，返回带code（这是系统自己生成的code）
             if (strpos($redirectUrl, '?')) {
-                $redirectUrl .= "&code=".$autoTokenModel->code;
+                $redirectUrl .= "&code=" . $autoTokenModel->code;
             } else {
-                $redirectUrl .= "?code=".$autoTokenModel->code;
+                $redirectUrl .= "?code=" . $autoTokenModel->code;
             }
             return redirect($redirectUrl);
         } else {
@@ -108,7 +106,7 @@ class Index extends BaseController
     /**
      * 获取前端网页调用配置
      * @param $appid
-     * @param  Request  $request
+     * @param Request $request
      * @return Json
      * @throws Throwable
      * @throws InvalidArgumentException
@@ -198,7 +196,7 @@ class Index extends BaseController
 
     /**
      * 返回订阅消息
-     * @param  string  $appid
+     * @param string $appid
      * @return Json
      */
     function subscribe(string $appid): Json
@@ -212,18 +210,5 @@ class Index extends BaseController
 
         return self::makeJsonReturn(true,
             ['template_ids' => $template_ids, 'need_subscribe' => true, 'show_tip' => false], 'ok');
-    }
-
-    /**
-     * 调用微信支付（小程序）
-     * @throws Throwable
-     */
-    function wxpay(string $appid): Json
-    {
-        $open_id = request()->param('open_id', 'oizoj0eS812Fms7ejAyQth4rIjsk');
-        $wxpay = new WxpayService($appid);
-        $notify_url = api_url("/wechat/index/wxpayNotify");
-        $res = $wxpay->unity()->getMiniPayConfig($open_id, time(), 1, $notify_url);
-        return self::makeJsonReturn(true, ['config' => $res]);
     }
 }
