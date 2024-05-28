@@ -36,8 +36,8 @@ CREATE TABLE `cms_wechat_auth_token`
     `create_time`      int(11) DEFAULT '0' COMMENT '创建时间',
     `delete_time`      int(11) DEFAULT '0' COMMENT '删除时间',
     PRIMARY KEY (`id`) USING BTREE,
-    INDEX `token`(`token`, `expire_time`) USING BTREE,
-    INDEX `token_2`(`token`) USING BTREE
+    KEY `code` (`code`),
+    KEY `token` (`token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
