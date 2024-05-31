@@ -222,7 +222,7 @@ class PublisherAgencyAdmin extends AdminController
             $ad_unit_id = input('post.ad_unit_id');
             $name = input('post.name');
             $ad_unit_status = input('post.ad_unit_status');
-            $status = $ad_unit_status == 1 ? 'AD_UNIT_STATUS_ON' : 'AD_UNIT_STATUS_OFF';
+            $status = intval($ad_unit_status) === 1 ? 'AD_UNIT_STATUS_ON' : 'AD_UNIT_STATUS_OFF';
             $resp = OpenService::getInstnace()->publisherAgency()->agencyUpdateAdunit($authorizer_appid, $ad_unit_id, $name, $status);
             if (!RequestUtils::isRquestSuccessed($resp)) {
                 return self::createReturn(false, $resp, RequestUtils::buildErrorMsg($resp));

@@ -229,7 +229,7 @@
                         authorizer_appid: that.searchForm.authorizer_appid,
                         ad_unit_id: item.ad_unit_id,
                         ad_unit_name: item.ad_unit_name,
-                        ad_unit_status: item.ad_unit_status === 1 ? 2 : 1,
+                        ad_unit_status: parseInt(item.ad_unit_status) === 1 ? 2 : 1,
                     }
                     that.httpPost("/wechat/open.PublisherAgencyAdmin/adUnits", data, function (res) {
                         layer.msg(res.msg)
