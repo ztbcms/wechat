@@ -292,7 +292,7 @@
                 handleViewItemAdData: function (item) {
                     layer.open({
                         type: 2,
-                        title: item['name'] + '_广告数据',
+                        title: item.authorizerInfo.name + '_广告数据',
                         content: '/wechat/open.PublisherAgencyAdmin/adData?authorizer_appid=' + item.authorizer_appid,
                         area: ['90%', '90%'],
                     })
@@ -310,7 +310,7 @@
                 handleViewItemSettlement: function (item) {
                     layer.open({
                         type: 2,
-                        title: item['name'] + '_结算数据',
+                        title: item.authorizerInfo.name + '_结算数据',
                         content: '/wechat/open.PublisherAgencyAdmin/settlement?authorizer_appid=' + item.authorizer_appid,
                         area: ['90%', '90%'],
                     })
@@ -326,7 +326,7 @@
                 },
                 // 查看广告位
                 handleViewAdPos: function (item) {
-                    let title = item['name'] + '_广告位管理'
+                    let title = item.authorizerInfo.name + '_广告位管理'
                     let url = "{:api_url('/wechat/open.PublisherAgencyAdmin/adUnits')}" + '?authorizer_appid=' + item['authorizer_appid']
                     this.openNewIframeByUrl(title, url)
                 },
