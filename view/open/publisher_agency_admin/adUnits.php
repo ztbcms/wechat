@@ -88,6 +88,7 @@
                         <p style="font-size: 15px;">{{ props.row.video_duration_min }}-
                             <template v-if="props.row.video_duration_max == 86400">不限</template>
                             <template v-else>{{ props.row.video_duration_max }}秒</template>
+                            <el-button type="text" @click="handleToRewardAdDuration(props.$index)">设置</el-button>
                         </p>
                     </template>
                 </el-table-column>
@@ -115,6 +116,25 @@
         </template>
         <!--非封面广告 E-->
     </el-card>
+
+    <!-- 设置激励广告时长 S  -->
+    <el-dialog title="激励广告设置" :visible.sync="rewardAdDialogVisible">
+        <el-form>
+            <el-form-item label="广告展示时长" label-width="120">
+                <el-select v-model="rewardAdDialogForm.video_duration" placeholder="请选择活动区域">
+                    <el-option label="6-15秒" value="6-15"></el-option>
+                    <el-option label="6-30秒" value="6-30"></el-option>
+                    <el-option label="6-60秒" value="6-60"></el-option>
+                    <el-option label="6-不限" value="6-86400"></el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="rewardAdDialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="handleUpdateRewardAdDuration">确 定</el-button>
+        </div>
+    </el-dialog>
+    <!-- 设置激励广告时长 E  -->
 </div>
 <style>
     p {
@@ -139,6 +159,12 @@
                 // 封面广告
                 coverAdposStatus: {
                     status: 0,
+                },
+                currentSelectIndex: -1,
+                // 激励广告设置框 显示状态
+                rewardAdDialogVisible: false,
+                rewardAdDialogForm: {
+                    video_duration: '',
                 }
             },
             mounted: function () {
@@ -225,7 +251,7 @@
                 handleUpdateAdUnitStatus: function (item) {
                     let that = this
                     const data = {
-                        _action: 'setAdUnitStatus',
+                        _action: 'setAdUnit',
                         authorizer_appid: that.searchForm.authorizer_appid,
                         ad_unit_id: item.ad_unit_id,
                         ad_unit_name: item.ad_unit_name,
@@ -272,6 +298,34 @@
                         }
                     })
                 },
+                handleToRewardAdDuration: function (index) {
+                    this.currentSelectIndex = index
+                    let item = this.lists[this.currentSelectIndex]
+                    this.rewardAdDialogForm.video_duration = item['video_duration_min'] + '-' + item['video_duration_max'];
+                    this.rewardAdDialogVisible = true
+
+                },
+                handleUpdateRewardAdDuration: function () {
+                    let item = this.lists[this.currentSelectIndex]
+                    let duration = this.rewardAdDialogForm.video_duration.split('-')
+                    let that = this
+                    const data = {
+                        _action: 'setAdUnit',
+                        authorizer_appid: that.searchForm.authorizer_appid,
+                        ad_unit_id: item.ad_unit_id,
+                        ad_unit_name: item.ad_unit_name,
+                        ad_unit_status: parseInt(item.ad_unit_status),
+                        video_duration_min: duration[0],
+                        video_duration_max: duration[1],
+                    }
+                    that.httpPost("/wechat/open.PublisherAgencyAdmin/adUnits", data, function (res) {
+                        layer.msg(res.msg)
+                        if (res.status) {
+                            that.rewardAdDialogVisible = false
+                            that.getData()
+                        }
+                    })
+                }
             }
         });
     })

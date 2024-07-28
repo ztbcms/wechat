@@ -217,13 +217,19 @@ class PublisherAgencyAdmin extends AdminController
             return self::createReturn(true, $resp);
         }
         // 更新广告位
-        if ($action == 'setAdUnitStatus') {
+        if ($action == 'setAdUnit') {
             $authorizer_appid = input('post.authorizer_appid');
             $ad_unit_id = input('post.ad_unit_id');
-            $name = input('post.name');
+            $ad_unit_name = input('post.ad_unit_name');
             $ad_unit_status = input('post.ad_unit_status');
             $status = intval($ad_unit_status) === 1 ? 'AD_UNIT_STATUS_ON' : 'AD_UNIT_STATUS_OFF';
-            $resp = OpenService::getInstnace()->publisherAgency()->agencyUpdateAdunit($authorizer_appid, $ad_unit_id, $name, $status);
+            $video_duration_min = intval(input('post.video_duration_min'));
+            $video_duration_max = intval(input('post.video_duration_max'));
+            if ($video_duration_min > 0) {
+                $resp = OpenService::getInstnace()->publisherAgency()->agencyUpdateAdunit($authorizer_appid, $ad_unit_id, $ad_unit_name, $status, $video_duration_min, $video_duration_max);
+            } else {
+                $resp = OpenService::getInstnace()->publisherAgency()->agencyUpdateAdunit($authorizer_appid, $ad_unit_id, $ad_unit_name, $status);
+            }
             if (!RequestUtils::isRquestSuccessed($resp)) {
                 return self::createReturn(false, $resp, RequestUtils::buildErrorMsg($resp));
             }
