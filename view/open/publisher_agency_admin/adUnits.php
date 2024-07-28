@@ -81,7 +81,7 @@
                 </el-table-column>
 
                 <el-table-column
-                        v-if="lists.lenght > 0 && lists[0]['ad_slot'] === 'SLOT_ID_WEAPP_REWARD_VIDEO'"
+                        v-if="lists.length > 0 && lists[0]['ad_slot'] === 'SLOT_ID_WEAPP_REWARD_VIDEO'"
                         label="广告时长"
                         min-width="100">
                     <template slot-scope="props">
