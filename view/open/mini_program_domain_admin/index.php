@@ -9,10 +9,10 @@
                 <el-alert
                         style="margin-bottom: 15px;"
                         title=""
-                        type="info"
+                        type="success"
                         :closable="false">
                     <p style="font-weight: bold">
-                        请确保以下的域名均在微信开放平台-第三方平台-开发设置-服务器域名白名单中
+                        请确保以下的域名均在微信开放平台-第三方平台-开发设置-服务器域名白名单中，否则会无法添加域名。
                     </p>
                 </el-alert>
             </div>
