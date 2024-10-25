@@ -51,6 +51,10 @@
                         prop="ad_unit_id"
                         label="广告单元ID"
                         min-width="80">
+                    <template slot-scope="props">
+                        <p style="font-size: 15px;">{{ props.row.ad_unit_id }}</p>
+                        <el-button type="text" @click="handleCopyAdUnitId(props.row)">复制</el-button>
+                    </template>
                 </el-table-column>
                 <el-table-column
                         label="开关状态"
@@ -325,6 +329,20 @@
                             that.getData()
                         }
                     })
+                },
+                // 复制广告单元ID
+                handleCopyAdUnitId: function (row) {
+                    this.copyText(row.ad_unit_id)
+                },
+                //  复制内容
+                copyText: function(text){
+                    var aux = document.createElement("input");
+                    aux.setAttribute("value", text);
+                    document.body.appendChild(aux);
+                    aux.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(aux);
+                    layer.msg('复制成功')
                 }
             }
         });
