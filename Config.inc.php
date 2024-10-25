@@ -16,7 +16,7 @@ return [
     //作者邮箱
     'authoremail' => 'hi@ztbcms.com',
     //版本号，请不要带除数字外的其他字符
-    'version'     => '2.5.0',
+    'version'     => '2.5.1',
     //适配最低CMS版本，
     'adaptation'  => '4.0.0',
     //签名
