@@ -97,7 +97,7 @@ class PublisherAgency
     function agencyCreatePublisher($authorizer_appid)
     {
         $miniProgramApp = $this->miniProgramApp($authorizer_appid);
-        return $miniProgramApp->httpPostJson('/wxa/getdefaultamsinfo', [], [
+        return $miniProgramApp->httpPostJson('/wxa/operationams', [], [
             'action' => 'agency_create_publisher'
         ]);
     }
