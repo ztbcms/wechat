@@ -14,6 +14,9 @@
     <script src="/statics/admin/vue/vue.js"></script>
     <script src="/statics/admin/vue/vue-common.js"></script>
 
+    <!--  qrcode  -->
+    <script src="/statics/admin/qrcode/qrcode.js"></script>
+
     <script>
         (function (vue) {
             //引入vue mixin
@@ -55,7 +58,7 @@
                 <button class="weui-btn weui-btn_primary weui-btn_mini" @click="getQrcode">重新获取</button>
             </template>
             <template v-if="status == 3">
-                <img :src="qrcode" style="width: 200px">
+                <div id="qrcode"></div>
                 <p class="msg">使用微信扫一扫登录</p>
             </template>
             <template v-if="status == 4">
@@ -207,6 +210,20 @@
                             that.timoutId = setTimeout(that.doExipredCode, that.ttl * 1000)
                             that.intervalId = setInterval(that.checkCode, that.checkCodeRepeatTime)
                             that.status = 3
+                            // 生成二维码
+                            that.$nextTick(function () {
+                                let el = document.getElementById("qrcode")
+                                el.innerHTML = '';
+                                let config = {
+                                    text: res.data.qrcode,
+                                    width: 200,
+                                    height: 200,
+                                    colorDark: "#000000",
+                                    colorLight: "#ffffff",
+                                    correctLevel: QRCode.CorrectLevel.L,
+                                }
+                                new QRCode(el, config)
+                            })
                         } else {
                             that.status = 2
                         }
