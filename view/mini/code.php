@@ -121,8 +121,8 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="小程序码类型">
-                        <el-radio v-model="createCodeType" label="limit">限制类</el-radio>
                         <el-radio v-model="createCodeType" label="unlimit">无限类</el-radio>
+                        <el-radio v-model="createCodeType" label="limit">限制类</el-radio>
                     </el-form-item>
                     <el-form-item label="页面路径">
                         <el-input v-model="createCodePath" placeholder="请输入小程序页面路径 pages/index/main"></el-input>
@@ -185,7 +185,7 @@
                 totalItems: 0,
                 createDialogVisible: false,
                 createAppId: 0,
-                createCodeType: 'limit',
+                createCodeType: 'unlimit',
                 createCodePath: '',
                 createCodeScene: '',
                 miniOffices: []

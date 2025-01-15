@@ -26,9 +26,12 @@ $ composer require intervention/image 2 -vvv
 获取用户手机号码：`$mini_service->user()->getPhoneNumberByCode($code, $iv, $encrypted_data)`
 
 ### 小程序码
+
 获取有限制小程序码：`$mini_service->qrcode()->getMiniCode($path.$scene)`
 
 获取无限制小程序码：`$mini_service->qrcode()->getUnlimitMiniCode($scene, $opstional)`
+
+获取无限制小程序码(Base64格式图片)：`$mini_service->qrcode()->getUnlimitMiniCodeInBase64($scene, $opstional)`
 
 ### 订阅消息
 同步订阅消息模板：`$mini_service->subscribe()->syncSubscribeMessageList();`
