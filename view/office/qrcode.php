@@ -1,3 +1,4 @@
+<script src="/statics/admin/qrcode/qrcode.js"></script>
 <div id="app" v-cloak>
     <el-card>
         <div slot="header" class="clearfix">
@@ -35,8 +36,7 @@
                         align="center"
                         min-width="100">
                     <template slot-scope="scope">
-                        <img class="avatar" @click="showImageDialogVisible=true;showImageUrl=scope.row.qrcode_base64"
-                             :src="scope.row.qrcode_base64" alt="">
+                        <el-link type="primary" @click="viewQrcode(scope.row)">点击查看</el-link>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -110,12 +110,12 @@
     </el-card>
     <el-dialog
             :visible.sync="showImageDialogVisible"
-            width="300px">
-        <div>
-            <img style="width: 100%;" :src="showImageUrl" alt="">
+            width="300px" center>
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <div id="qrcode"></div>
         </div>
         <div slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="showImageDialogVisible = false">确 定</el-button>
+            <el-button type="primary" @click="showImageDialogVisible = false">关 闭</el-button>
         </div>
     </el-dialog>
     <div>
@@ -125,7 +125,7 @@
                 width="500px">
             <div>
                 <el-form label-width="120px">
-                    <el-form-item label="选择小公众号">
+                    <el-form-item label="公众号">
                         <el-select v-model="createAppId" placeholder="请选择公众号">
                             <el-option v-for="item in offices" :label="item.application_name"
                                        :value="item.app_id"></el-option>
@@ -297,6 +297,21 @@
                             }
                         }
                     })
+                },
+                viewQrcode: function (row) {
+                  this.showImageDialogVisible = true;
+                  this.$nextTick(function(){
+                    let el = document.getElementById("qrcode")
+                    el.innerHTML = '';
+                    let qrcode = new QRCode(el, {
+                        text: row.qrcode_url,
+                        width: 200,
+                        height: 200,
+                        colorDark : "#000000",
+                        colorLight : "#ffffff",
+                        correctLevel : QRCode.CorrectLevel.H
+                    });
+                  })
                 }
             }
         })
