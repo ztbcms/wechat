@@ -222,9 +222,9 @@ class Office extends AdminController
                         //将过期时间转化成秒
                         $expireTime = $expireTime * 86400;
 
-                        $res = $officeService->qrcode()->temporary($param, $expireTime);
+                        $res = $officeService->qrcode()->temporary($param, $expireTime, $category);
                     } else {
-                        $res = $officeService->qrcode()->forever($param);
+                        $res = $officeService->qrcode()->forever($param, $category);
                     }
                     return self::makeJsonReturn(true, $res, '');
                 }

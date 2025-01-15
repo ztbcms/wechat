@@ -213,7 +213,7 @@
                     var postData = {
                         app_id: this.createAppId,
                         type: this.createCodeType,
-                        category: this.createCodeType,
+                        category: this.createCategory,
                         expire_time: this.createExpireTime,
                         param: this.createCodeParam,
                         action : 'createCode',
