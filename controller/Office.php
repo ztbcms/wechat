@@ -348,11 +348,11 @@ class Office extends AdminController
                 $officeService = new OfficeService($appid);
                 switch ($msg['MsgType']) {
                     case 'event':
-                        $officeService->message()->handleEventMessage($msg);
+                        $officeService->message()->handleEventMessage($appid, $msg);
                         break;
                     default:
                         //其他消息形式都归到消息处理
-                        $officeService->message()->handleMessage($msg);
+                        $officeService->message()->handleMessage($appid, $msg);
                         break;
                 }
                 return self::makeJsonReturn(true, $msg, '操作完成');
