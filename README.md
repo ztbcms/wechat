@@ -59,7 +59,7 @@ $ composer require intervention/image 2 -vvv
 公众号配置：
 ```
 1. 获取公众号的 AppId 和 AppSecret 并在管理后台添加公众号应用
-2. 开启公众号服务器配置，配置入口为：/wechat/index/serverPush/app/{公众号appid} 
+2. 开启公众号服务器配置，配置入口为：/wechat/index/serverPush/appid/{公众号appid} 
 3. 检测是否配置正确：向公众号发送文字消息后，在管理后台的“内容消息”中可以看到回复的消息
 ```
 
@@ -80,9 +80,12 @@ Q:配置后没，发送消息，扫码都没有事件消息
 原理:授权完成后会跳转到`redirect_url`并携带`code=xxxx`的参数，可以通过`code`换取收取用户信息
 
 ### 模板消息
-同步消息模板：`$office_service->template()->sendTemplateMsg($touserOpenid, $templateId, $sendData, $page,$miniProgram)`
 
-发送模板消息：`$office_service->template()->getTemplateList()`
+同步消息模板：`$office_service->template()->getTemplateList()`
+
+发送模板消息：`$office_service->template()->sendTemplateMsg($touserOpenid, $templateId, $sendData, $page,$miniProgram)`
+
+
 
 ### 二维码
 创建临时二维码：`$office_service->qrcode()->forever($param)`
