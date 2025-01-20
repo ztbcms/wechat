@@ -71,7 +71,7 @@ class OfficeScanLogin extends BaseFrontController
             $qrcode = $officeService->qrcode()->temporary($login_code, $ttl, ScanLoginService::OFFICE_QRCODE_CATEGORY_SCAN_LOGIN, false);
             return self::makeJsonReturn(true, [
                 'code' => $login_code,
-                'qrcode' => $qrcode->qrcode_url,
+                'qrcode' => $qrcode['qrcode_content'],
                 'ttl' => $ttl,
             ]);
         } catch (\Throwable $e) {
