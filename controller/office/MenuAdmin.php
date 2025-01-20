@@ -47,7 +47,6 @@ class MenuAdmin extends AdminController
         if (empty($button_config) || empty($button_config['button'])) {
             return self::makeJsonReturn(false, null, '菜单配置异常(config/office_menu)');
         }
-//        dump($button_config['button']);exit;
         $res = $office_service->getApp()->menu->create($button_config['button']);
         return json($res);
     }
