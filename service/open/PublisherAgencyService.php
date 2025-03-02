@@ -290,7 +290,7 @@ class PublisherAgencyService extends BaseService
             ],
             'list' => array_map(function ($item) {
                 return [
-                    'date' => $item['date'],
+                    'date' => $item['date'] ?? '',
                     'zone' => $item['zone'],
                     'month' => $item['month'],
                     'order' => $item['order'],
