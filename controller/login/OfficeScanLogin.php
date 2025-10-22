@@ -6,6 +6,7 @@
 
 namespace app\wechat\controller\login;
 
+use app\common\service\jwt\JwtService;
 use app\Request;
 use app\wechat\controller\BaseFrontController;
 use app\wechat\service\login\ScanLoginService;
@@ -66,7 +67,7 @@ class OfficeScanLogin extends BaseFrontController
         $officeService = new OfficeService($app_id);
         try {
             // 字符串类型，长度限制为1到64,必须固定开头
-            $login_code = ScanLoginService::ScenePrefix.md5($app_id.generateUniqueId());
+            $login_code = ScanLoginService::ScenePrefix . md5($app_id . generateUniqueId());
             $ttl = 5 * 60;
             $qrcode = $officeService->qrcode()->temporary($login_code, $ttl, ScanLoginService::OFFICE_QRCODE_CATEGORY_SCAN_LOGIN, false);
             return self::makeJsonReturn(true, [
@@ -95,6 +96,37 @@ class OfficeScanLogin extends BaseFrontController
             'token' => $token,
         ]);
     }
+
+    /**
+     * 解析 code ，提取微信用户信息
+     * @return \think\response\Json
+     */
+    public function parserCode()
+    {
+        $code = input('post.code', '', 'trim');
+        try {
+            if (empty($code)) {
+                return self::makeJsonReturn(false, [], '参数异常');
+            }
+            $jwtService = new JwtService();
+            $res = $jwtService->parserToken($code);
+            if (!$res['status']) {
+                return self::makeJsonReturn(false, [], $res['msg']);
+            }
+            $info = $res['data'];
+            // 数据
+            $data = [
+                'app_id' => $info['app_id'],
+                'open_id' => $info['open_id'],
+                'uid' => $info['uid'],
+            ];
+            return self::makeJsonReturn(true, $data);
+        } catch (\Throwable $e) {
+            return self::makeJsonReturn(false, [], $e->getMessage());
+        }
+    }
+
+
 
     /**
      * 默认的登录完成页
