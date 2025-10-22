@@ -27,7 +27,8 @@ class Message
      */
     function handleEventMessage($appid, $message)
     {
-        if (config('office.save_server_push_msg')) {
+        // 检查是否启用事件消息记录
+        if (config('office.message_logging.event_messages', false)) {
             $postData = [
                 'app_id' => $this->office->getAppId(),
                 'to_user_name' => $message['ToUserName'] ?? '',
@@ -61,7 +62,8 @@ class Message
      */
     function handleMessage($appid, $message)
     {
-        if (config('office.save_server_push_msg')) {
+        // 检查是否启用普通消息记录
+        if (config('office.message_logging.regular_messages', false)) {
             $postData = [
                 'app_id' => $this->office->getAppId(),
                 'to_user_name' => $message['ToUserName'] ?? '',
