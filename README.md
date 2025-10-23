@@ -110,8 +110,8 @@ Q:配置后没，发送消息，扫码都没有事件消息
 大致流程：用户跳转到`扫码页`进行扫码,`扫码页`轮询扫码结果 -> 公众号平台推送 subscript 或 scan 带参数事件，系统自动登录 -> `扫码页`识别出已确认登录并跳转到自定义的URL(含参 code)
 
 1. 配置文件`config/wechat.php`中开功能并设置授权域名
-2. 访问扫码页`/wechat/login.OfficeScanLogin/index?appid={公众号AppID}redirect_url={授权完成后跳转链接}`。 PS：跳转链接可以先不填写，系统默认有个默认的链接，可以试试看
-3. 授权完成后跳转链接会携带一个code参数，你可以使用`JwtService::parserToken($code)`来获取授权用户的`app_id`、`open_id`、`uid`,这部分需要自行实现逻辑，本组件只负责实现扫码获取用户 openid。(NEW: 已新增验证 code 接口 /wechat/login.OfficeScanLogin/parserCode ,验证通过会返回`app_id`、`open_id`、`uid`)
+2. 访问扫码页`/wechat/login.OfficeScanLogin/index?appid={公众号AppID}&redirect_url={授权完成后跳转链接}`。 PS：跳转链接可以先不填写，系统默认有个默认的链接，可以试试看
+3. 授权完成后跳转链接会携带一个code参数，你可以使用`JwtService::parserToken($code)`来获取授权用户的`app_id`、`open_id`、`uid`,这部分需要自行实现逻辑，本组件只负责实现扫码获取用户 openid。(NEW: 已新增验证 code 接口 `/wechat/login.OfficeScanLogin/parserCode` ,验证通过会返回`app_id`、`open_id`、`uid`)
 > 拿到 code 参数后，根据自己的业务，尽快使用`JwtService::parserToken()`解析来换成实际业务的 token，因为 code 有短的时效性，过期后会失效
 
 ### 【拓展功能】PC网页授权扫码登录
