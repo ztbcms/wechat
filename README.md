@@ -63,6 +63,10 @@ $ composer require intervention/image 2 -vvv
 3. 检测是否配置正确：向公众号发送文字消息后，在管理后台的“内容消息”中可以看到回复的消息
 ```
 
+计划任务配置：
+- CleanMessageScript 清理消息日志
+- CleanQrcodeScript 清理过期的二维码
+
 常见问题：
 ```
 Q:配置后没，发送消息，扫码都没有事件消息
