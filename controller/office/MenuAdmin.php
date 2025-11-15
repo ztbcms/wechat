@@ -10,6 +10,15 @@ use app\wechat\service\OfficeService;
 
 class MenuAdmin extends AdminController
 {
+    /**
+     * 菜单设置页面
+     * @return \think\response\View
+     */
+    function index()
+    {
+        return view('index');
+    }
+
     // 当前菜单配置
     function getCurrentMenu()
     {
@@ -43,6 +52,24 @@ class MenuAdmin extends AdminController
             return self::makeJsonReturn(false, null, '参数异常 appid');
         }
         $office_service = new OfficeService($appid);
+        // 优先读取前端传入的按钮配置
+        $button = input('post.button/a', []);
+        if (empty($button)) {
+            $buttonJson = input('post.button_json', '', 'trim');
+            if (!empty($buttonJson)) {
+                $decoded = json_decode($buttonJson, true);
+                if (isset($decoded['button']) && is_array($decoded['button'])) {
+                    $button = $decoded['button'];
+                } elseif (is_array($decoded)) {
+                    $button = $decoded;
+                }
+            }
+        }
+        if (!empty($button)) {
+            $res = $office_service->getApp()->menu->create($button);
+            return json($res);
+        }
+        // 兼容：从配置文件读取
         $button_config = config('office_menu.' . $appid);
         if (empty($button_config) || empty($button_config['button'])) {
             return self::makeJsonReturn(false, null, '菜单配置异常(config/office_menu)');

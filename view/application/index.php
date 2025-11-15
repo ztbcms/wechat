@@ -37,7 +37,7 @@
                             min-width="80">
                         <template slot-scope="scope">
                             <span v-if="scope.row.account_type=='mini'">小程序</span>
-                            <span v-else>公众号</span>
+                            <span v-if="scope.row.account_type=='office'">公众号</span>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -75,6 +75,8 @@
                             min-width="180">
                         <template slot-scope="scope">
                             <template v-if="scope.row.account_type == 'office'">
+                                <el-button @click="gotoMenuAdmin(scope.row.app_id)" type="text" size="small">自定义菜单
+                                </el-button>
                                 <el-button @click="showOauthUrl(scope.row.app_id)" type="text" size="small">授权地址
                                 </el-button>
                                 <el-button @click="showOauthBase(scope.row.app_id)" type="text" size="small">静默授权地址
@@ -183,6 +185,17 @@
                     },
                     showOauthBase: function (app_id) {
                         layer.alert("{:api_url('/wechat/index/oauthBase',[],false)}/appid/" + app_id + '?redirect_url=https://baidu.com')
+                    },
+                    gotoMenuAdmin: function (app_id) {
+                        let url = "{:api_url('/wechat/office.MenuAdmin/index')}?appid=" + app_id
+                        layer.open({
+                            type: 2,
+                            title: '自定义菜单',
+                            shadeClose: true,
+                            shade: 0.8,
+                            area: ['70%', '90%'],
+                            content: url
+                        })
                     }
                 }
             })
