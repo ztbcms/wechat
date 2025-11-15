@@ -77,11 +77,15 @@ Q:配置后没，发送消息，扫码都没有事件消息
 
 公众号授权消息处理：`$office->user()->oauth()`,具体使用方法，可以到 `wechat/index/callback` 查看
 
-[拓展]模块已实现了用户授权和用户静默授权,你只需要构建链接接口
+#### [拓展]用户授权和用户静默授权
 1. 用户授权入口`/wechat/index/oauth/appid/{公众号appid}?redirect_url={授权后跳转URl}`
 2. 用户静默授权入口`/wechat/index/oauthBase/appid/{公众号appid}?redirect_url={授权后跳转URl}`
+  - `redirect_url` 将会携带 `code` 参数
+3. 解析 code 参数接口 `/wechat/index/parserCode`，通过 code 换取用户 appid, openid 等信息
 
-原理:授权完成后会跳转到`redirect_url`并携带`code=xxxx`的参数，可以通过`code`换取收取用户信息
+原理:授权完成后会跳转到`redirect_url`并携带`code=xxxx`的参数，可以通过`code`换取收取用户信息。
+
+作为开发者，构建参数进入用户授权入口获取 code ，通过 code 参数换成用户信息
 
 ### 模板消息
 
@@ -104,7 +108,7 @@ Q:配置后没，发送消息，扫码都没有事件消息
 
 处理事件消息：`$office_service->message()->handleEventMessage($message)`
 
-### 【拓展功能】公众号扫码登录功能
+### 【拓展功能】扫码关注公众号登录功能
 > 在 PC 端登录场景，用户扫码打开公众号关注页，关注公众号后登录，已关注的自动登录
 
 大致流程：用户跳转到`扫码页`进行扫码,`扫码页`轮询扫码结果 -> 公众号平台推送 subscript 或 scan 带参数事件，系统自动登录 -> `扫码页`识别出已确认登录并跳转到自定义的URL(含参 code)
@@ -114,7 +118,7 @@ Q:配置后没，发送消息，扫码都没有事件消息
 3. 授权完成后跳转链接会携带一个code参数，你可以使用`JwtService::parserToken($code)`来获取授权用户的`app_id`、`open_id`、`uid`,这部分需要自行实现逻辑，本组件只负责实现扫码获取用户 openid。(NEW: 已新增验证 code 接口 `/wechat/login.OfficeScanLogin/parserCode` ,验证通过会返回`app_id`、`open_id`、`uid`)
 > 拿到 code 参数后，根据自己的业务，尽快使用`JwtService::parserToken()`解析来换成实际业务的 token，因为 code 有短的时效性，过期后会失效
 
-### 【拓展功能】PC网页授权扫码登录
+### 【拓展功能】PC网页授权扫码静默登录
 > 在 PC 端登录场景，用户使用微信扫码，打开H5后微信静默授权后，PC端自动登录
 
 大致流程： PC端进入`扫码页`生成二维码入口，用户微信扫码后跳转到授权页并静默自动授权，PC在`扫码页`轮询扫码结果，授权后跳转到到自定义的URL(含参 code)

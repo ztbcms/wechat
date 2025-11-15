@@ -102,6 +102,42 @@ class Index extends BaseController
         }
     }
 
+    /**
+     * 解析 code 参数，换取用户信息
+     * 接口地址：/wechat/index/parserCode
+     * @param Request $request
+     * @return Json
+     */
+    function parserCode(Request $request)
+    {
+        $code = $request->get('code', '');
+        if (!$code) {
+            return self::makeJsonReturn(false, [], '缺少 code 参数');
+        }
+
+        try {
+            // 通过 code 查询授权信息
+            $authToken = WechatAuthToken::where('code', $code)
+                ->where('app_account_type', WechatAuthToken::ACCOUNT_TYPE_OFFICE)
+                ->where('expire_time', '>', time())
+                ->find();
+
+            if (!$authToken) {
+                return self::makeJsonReturn(false, [], 'code 无效或已过期');
+            }
+
+            // 返回用户信息
+            $userInfo = [
+                'app_id' => $authToken->app_id,
+                'open_id' => $authToken->open_id,
+            ];
+            $authToken->delete();
+
+            return self::makeJsonReturn(true, $userInfo);
+        } catch (Throwable $e) {
+            return self::makeJsonReturn(false, [], $e->getMessage());
+        }
+    }
 
     /**
      * 获取前端网页调用配置
