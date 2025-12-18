@@ -16,7 +16,7 @@ return [
         'channels' => [
             // 测试环境
             'dev' => [
-                'driver' => 'single',
+                'driver' => 'daily', // single、daily
                 'path' => runtime_path() . 'wxlog/open.log',
                 'level' => 'debug',
             ],
