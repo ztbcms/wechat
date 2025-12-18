@@ -248,6 +248,65 @@ class PublisherAgencyAdmin extends AdminController
         return view('adUnits');
     }
 
+    // 广告屏蔽设置
+    function adBlackList()
+    {
+        $action = input('_action');
+        $authorizer_appid = input('authorizer_appid');
+
+        // 获取屏蔽的广告主列表
+        if ($action == 'getBlackList') {
+            $resp = OpenService::getInstnace()->publisherAgency()->getBlackList($authorizer_appid);
+            if (!RequestUtils::isRquestSuccessed($resp)) {
+                return self::createReturn(false, $resp, RequestUtils::buildErrorMsg($resp));
+            }
+            return self::createReturn(true, [
+                'blacklist_biz' => $resp['blacklist_biz'] ?? [],
+                'blacklist_weapp' => $resp['blacklist_weapp'] ?? [],
+                'blacklist_ios' => $resp['blacklist_ios'] ?? [],
+                'blacklist_android' => $resp['blacklist_android'] ?? [],
+            ]);
+        }
+
+        // 设置屏蔽的广告主
+        if ($action == 'setBlackList') {
+            $op = intval(input('post.op'));
+            $list = input('post.list');
+            $listArr = json_decode($list, true);
+            if (empty($listArr)) {
+                return self::createReturn(false, null, '参数错误：list');
+            }
+            $resp = OpenService::getInstnace()->publisherAgency()->setBlackList($authorizer_appid, $op, $listArr);
+            if (!RequestUtils::isRquestSuccessed($resp)) {
+                return self::createReturn(false, $resp, RequestUtils::buildErrorMsg($resp));
+            }
+            return self::createReturn(true, null, '操作成功');
+        }
+
+        // 获取屏蔽的行业列表
+        if ($action == 'getAmsCategoryBlackList') {
+            $resp = OpenService::getInstnace()->publisherAgency()->getAmsCategoryBlackList($authorizer_appid);
+            if (!RequestUtils::isRquestSuccessed($resp)) {
+                return self::createReturn(false, $resp, RequestUtils::buildErrorMsg($resp));
+            }
+            return self::createReturn(true, [
+                'ams_category' => $resp['ams_category'] ?? '',
+            ]);
+        }
+
+        // 设置屏蔽的行业
+        if ($action == 'setAmsCategoryBlackList') {
+            $ams_category = input('post.ams_category', '');
+            $resp = OpenService::getInstnace()->publisherAgency()->setAmsCategoryBlackList($authorizer_appid, $ams_category);
+            if (!RequestUtils::isRquestSuccessed($resp)) {
+                return self::createReturn(false, $resp, RequestUtils::buildErrorMsg($resp));
+            }
+            return self::createReturn(true, null, '操作成功');
+        }
+
+        return view('adBlackList');
+    }
+
     // 添加或编辑广告位
     function addOrEditAdUnit()
     {

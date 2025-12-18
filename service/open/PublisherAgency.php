@@ -312,4 +312,77 @@ class PublisherAgency
         ];
         return $this->openApp->httpPostJson('wxa/getdefaultamsinfo', $data, ['action' => 'get_agency_settled_revenue']);
     }
+
+    // 广告屏蔽 START
+
+    /**
+     * 获取屏蔽的广告主
+     * @see https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/ad-black/GetBlackList.html
+     * @param $authorizer_appid string 小程序 APPID
+     * @return mixed
+     */
+    function getBlackList($authorizer_appid)
+    {
+        $miniProgramApp = $this->miniProgramApp($authorizer_appid);
+        return $miniProgramApp->httpPostJson('/wxa/operationams', [], [
+            'action' => 'agency_get_black_list'
+        ]);
+    }
+
+    /**
+     * 设置屏蔽的广告主
+     * @see https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/ad-black/SetBlackList.html
+     * @param $authorizer_appid string 小程序 APPID
+     * @param $op int 1：设置屏蔽 2：删除屏蔽
+     * @param $list array 屏蔽列表，格式为 [{"type":1,"id":"xxx"}]，type枚举：1=公众号(id为微信号)，2=iOS应用(id为APPID)，3=安卓应用(id为应用宝包名)，4=小程序/小游戏(id为原始ID)
+     * @return mixed
+     */
+    function setBlackList($authorizer_appid, $op, $list)
+    {
+        $miniProgramApp = $this->miniProgramApp($authorizer_appid);
+        return $miniProgramApp->httpPostJson('/wxa/operationams', [
+            'op' => intval($op),
+            'list' => json_encode($list, JSON_UNESCAPED_UNICODE),
+        ], [
+            'action' => 'agency_set_black_list'
+        ]);
+    }
+
+    /**
+     * 获取行业屏蔽信息
+     * @see https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/ad-black/GetAmsCategoryBlackList.html
+     * @param $authorizer_appid string 小程序 APPID
+     * @return mixed
+     */
+    function getAmsCategoryBlackList($authorizer_appid)
+    {
+        $miniProgramApp = $this->miniProgramApp($authorizer_appid);
+        return $miniProgramApp->httpPostJson('/wxa/operationams', [], [
+            'action' => 'agency_get_mp_amscategory_blacklist'
+        ]);
+    }
+
+    /**
+     * 设置行业屏蔽信息
+     * @see https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/ad-black/SetAmsCategoryBlackList.html
+     * @param $authorizer_appid string 小程序 APPID
+     * @param $ams_category string 屏蔽的行业类别，多个用|分隔，如：CHESS|ADULT_SUPPLIES
+     *        枚举值：CHESS(棋牌游戏)、ADULT_SUPPLIES(成人用品)、MEDICAL_HEALTH(医疗健康)、
+     *        INSURANCE(保险)、SECURITES(证券)、LOAN(贷款)、LIVING_SERVICES_BEAUTY(生活服务-丽人)、
+     *        LIVING_SERVICES_ENTERTAINMENT(生活服务-休闲娱乐)、LIVING_SERVICES_OTHERS(生活服务-其他)、
+     *        FOOD_INDUSTRY(餐饮)、RETAIL_AND_GENERAL_MERCHANDISE(零售和百货)、FOOD_AND_DRINK(食品饮料)、
+     *        TECHNICAL_SERVICE(通讯与IT服务)
+     * @return mixed
+     */
+    function setAmsCategoryBlackList($authorizer_appid, $ams_category)
+    {
+        $miniProgramApp = $this->miniProgramApp($authorizer_appid);
+        return $miniProgramApp->httpPostJson('/wxa/operationams', [
+            'ams_category' => $ams_category,
+        ], [
+            'action' => 'agency_set_mp_amscategory_blacklist'
+        ]);
+    }
+
+    // 广告屏蔽 END
 }

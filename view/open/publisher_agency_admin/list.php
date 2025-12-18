@@ -106,6 +106,14 @@
             </el-table-column>
 
             <el-table-column
+                    label="广告屏蔽"
+                    min-width="60">
+                <template slot-scope="props">
+                    <el-button @click="handleAdBlackList(props.row)" type="text">设置</el-button>
+                </template>
+            </el-table-column>
+
+            <el-table-column
                     fixed="right"
                     width="100"
                     align="center"
@@ -377,6 +385,12 @@
                             }, 1000)
                         }
                     })
+                },
+                // 广告屏蔽设置
+                handleAdBlackList: function (item) {
+                    let title = item.authorizerInfo.name + '_广告屏蔽设置'
+                    let url = "{:api_url('/wechat/open.PublisherAgencyAdmin/adBlackList')}" + '?authorizer_appid=' + item['authorizer_appid']
+                    this.openNewIframeByUrl(title, url)
                 },
             }
         });
