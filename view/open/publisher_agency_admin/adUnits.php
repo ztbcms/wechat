@@ -294,7 +294,7 @@
                             layer.open({
                                 type: 1,
                                 title: '广告单元代码',
-                                content: '<pre style="padding: 20px;">' + res.data.code + '</pre>',
+                                content: '<pre style="padding: 20px;">' + that.escapeHtml(res.data.code) + '</pre>',
                                 area: ['70%', '80%'],
                             })
                         } else {
@@ -343,6 +343,12 @@
                     document.execCommand("copy");
                     document.body.removeChild(aux);
                     layer.msg('复制成功')
+                },
+                // HTML转义，防止标签被解析
+                escapeHtml: function(text) {
+                    var div = document.createElement('div');
+                    div.appendChild(document.createTextNode(text));
+                    return div.innerHTML;
                 }
             }
         });
