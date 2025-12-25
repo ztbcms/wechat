@@ -161,7 +161,7 @@ class PublisherAgency
             $data['tmpl_type'] = $tmpl_type;
         }
         if (!empty($tmpl_id)) {
-            $data['tmpl_id'] = intval($tmpl_id);
+            $data['tmpl_id'] = $tmpl_id;
         }
         $miniProgramApp = $this->miniProgramApp($authorizer_appid);
         return $miniProgramApp->httpPostJson('/wxa/operationams', $data, [
