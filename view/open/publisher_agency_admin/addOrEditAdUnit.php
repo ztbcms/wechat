@@ -67,10 +67,10 @@
                 },
                 itemList: [],
                 ad_slot_types: [
-                    {name: 'Banner', value: 'SLOT_ID_WEAPP_BANNER'},
+                    {name: 'Banner(已下线)', value: 'SLOT_ID_WEAPP_BANNER'},
                     {name: '激励视频', value: 'SLOT_ID_WEAPP_REWARD_VIDEO'},
                     {name: '插屏广告', value: 'SLOT_ID_WEAPP_INTERSTITIAL'},
-                    {name: '视频广告', value: 'SLOT_ID_WEAPP_VIDEO_FEEDS'},
+                    {name: '视频广告(已下线)', value: 'SLOT_ID_WEAPP_VIDEO_FEEDS'},
                     {name: '视频贴片广告', value: 'SLOT_ID_WEAPP_VIDEO_BEGIN'},
                     {name: '模板广告', value: 'SLOT_ID_WEAPP_TEMPLATE'},
                 ],
