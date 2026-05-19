@@ -16,7 +16,7 @@ use think\facade\Cache;
  */
 class MiniScanLogin extends BaseApi
 {
-    protected $skillAuthActions = ['getLoginConfig', 'queryLoginCode'];
+    protected $skipAuthActions = ['getLoginConfig', 'queryLoginCode'];
 
     // 登录码有效期
     private const LOGIN_CODE_EXPIRE_TIME = 5 * 60;
