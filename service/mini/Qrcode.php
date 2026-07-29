@@ -13,7 +13,6 @@ use app\wechat\libs\WechatConfig;
 use app\wechat\model\mini\WechatMiniCode;
 use app\wechat\service\MiniService;
 use EasyWeChat\Kernel\Http\StreamResponse;
-use Intervention\Image\ImageManager;
 use think\facade\App;
 use think\Model;
 use Throwable;
@@ -53,9 +52,9 @@ class Qrcode
         if (!file_exists($file_path)) {
             $response = $this->mini->getApp()->app_code->get($path, $optional);
             throw_if(!($response instanceof StreamResponse), new \Exception('获取小程序码失败'));
-            // do write
-            $manager = new ImageManager();
-            $manager->make($response->getBody()->getContents())->save($file_path, 80);
+            $img = imagecreatefromstring($response->getBody()->getContents());
+            imagejpeg($img, $file_path, 80);
+            imagedestroy($img);
         }
         $min_code = WechatMiniCode::where('app_id', $this->mini->getAppId())->where('path', $path)->findOrEmpty();
         $min_code->app_id = $this->mini->getAppId();
@@ -105,9 +104,9 @@ class Qrcode
             // 不存在时重新生成
             $response = $this->mini->getApp()->app_code->getUnlimit($scene, $optional);
             throw_if(!($response instanceof StreamResponse), new \Exception('获取小程序码失败'));
-            // do write
-            $manager = new ImageManager();
-            $manager->make($response->getBody()->getContents())->save($file_path, 80);
+            $img = imagecreatefromstring($response->getBody()->getContents());
+            imagejpeg($img, $file_path, 80);
+            imagedestroy($img);
         }
         $min_code = WechatMiniCode::where('app_id', $this->mini->getAppId())
             ->where('path', $optional['page'])
@@ -152,12 +151,13 @@ class Qrcode
         }
         $response = $this->mini->getApp()->app_code->getUnlimit($scene, $optional);
         throw_if(!($response instanceof StreamResponse), new \Exception('获取小程序码失败'));
-        $manager = new ImageManager();
-        $image = $manager->make($response->getBody()->getContents());
-        // 图片压缩：缩小+降低质量
-        $image->resize($resize_width, $resize_width);
-        $stream = $image->stream('jpg', 80);
-        return 'data:image/jpg;base64,' . base64_encode($stream->getContents());
+        $img = imagecreatefromstring($response->getBody()->getContents());
+        $img = imagescale($img, $resize_width, $resize_width);
+        ob_start();
+        imagejpeg($img, null, 80);
+        $binary = ob_get_clean();
+        imagedestroy($img);
+        return 'data:image/jpg;base64,' . base64_encode($binary);
     }
 
 }
