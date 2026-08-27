@@ -11,6 +11,7 @@ use app\common\service\kv\KV;
 use app\wechat\libs\open\CacheKeyBuilder;
 use app\wechat\libs\utils\RequestUtils;
 use app\wechat\service\OpenService;
+use InvalidArgumentException;
 use think\Request;
 
 /**
@@ -18,6 +19,18 @@ use think\Request;
  */
 class MiniProgramCodeAdmin extends AdminController
 {
+    /** 审核图片最大字节数 */
+    private const AUDIT_IMAGE_MAX_SIZE = 2 * 1024 * 1024;
+
+    /** 审核视频最大字节数 */
+    private const AUDIT_VIDEO_MAX_SIZE = 10 * 1024 * 1024;
+
+    /** 审核图片扩展名 */
+    private const AUDIT_IMAGE_EXTENSIONS = ['png', 'jpeg', 'jpg', 'gif'];
+
+    /** 审核图片 MIME 类型 */
+    private const AUDIT_IMAGE_MIME_TYPES = ['image/png', 'image/jpeg', 'image/gif'];
+
     /**
      * 小程序版本管理
      */
@@ -230,6 +243,83 @@ class MiniProgramCodeAdmin extends AdminController
     function submitAudit(Request $request)
     {
         $action = input('_action', '', 'trim');
+        // 上传审核反馈图片
+        if ($action == 'uploadAuditFeedbackImage') {
+            if (!$request->isPost()) {
+                return self::returnErrorJson('请求方式错误');
+            }
+            $authorizer_appid = input('authorizer_appid', '', 'trim');
+            $file = request()->file('media');
+            if (empty($authorizer_appid)) {
+                return self::returnErrorJson('参数 authorizer_appid 不能为空');
+            }
+            if (empty($file)) {
+                return self::returnErrorJson('请选择要上传的审核反馈图片');
+            }
+
+            try {
+                $this->validateAuditFeedbackImage($file);
+                $miniProgramAgency = OpenService::getInstnace()->miniProgramAgency($authorizer_appid);
+                $resp = $miniProgramAgency->uploadAuditFeedbackImage($file->getPathname());
+            } catch (InvalidArgumentException $exception) {
+                return self::returnErrorJson($exception->getMessage());
+            } catch (\Throwable $exception) {
+                return self::returnErrorJson('审核反馈图片上传失败，请稍后重试');
+            }
+
+            if (!RequestUtils::isRquestSuccessed($resp)) {
+                return self::returnErrorJson(RequestUtils::buildErrorMsg($resp), $resp);
+            }
+            if (empty($resp['media_id'])) {
+                return self::returnErrorJson('微信未返回审核反馈图片 media_id');
+            }
+            return self::returnSuccessJson([
+                'media_id' => $resp['media_id'],
+                'type' => $resp['type'] ?? 'image',
+                'created_at' => $resp['created_at'] ?? 0,
+            ], '上传成功');
+        }
+        // 上传提审素材
+        if ($action == 'uploadMediaToCodeAudit') {
+            if (!$request->isPost()) {
+                return self::returnErrorJson('请求方式错误');
+            }
+            $authorizer_appid = input('authorizer_appid', '', 'trim');
+            $file = request()->file('media');
+            if (empty($authorizer_appid)) {
+                return self::returnErrorJson('参数 authorizer_appid 不能为空');
+            }
+            if (empty($file)) {
+                return self::returnErrorJson('请选择要上传的提审素材');
+            }
+
+            try {
+                $mediaType = $this->validateCodeAuditMedia($file);
+                $miniProgramAgency = OpenService::getInstnace()->miniProgramAgency($authorizer_appid);
+                $resp = $miniProgramAgency->uploadMediaToCodeAudit($file->getPathname());
+            } catch (InvalidArgumentException $exception) {
+                return self::returnErrorJson($exception->getMessage());
+            } catch (\Throwable $exception) {
+                return self::returnErrorJson('提审素材上传失败，请稍后重试');
+            }
+
+            if (!RequestUtils::isRquestSuccessed($resp)) {
+                return self::returnErrorJson(RequestUtils::buildErrorMsg($resp), $resp);
+            }
+            if (empty($resp['mediaid'])) {
+                return self::returnErrorJson('微信未返回提审素材 mediaid');
+            }
+            if (!isset($resp['type']) || !in_array($resp['type'], ['image', 'video'], true)) {
+                return self::returnErrorJson('微信返回的提审素材类型异常');
+            }
+            if ($resp['type'] !== $mediaType) {
+                return self::returnErrorJson('微信返回的提审素材类型与上传文件不一致');
+            }
+            return self::returnSuccessJson([
+                'mediaid' => $resp['mediaid'],
+                'type' => $resp['type'],
+            ], '上传成功');
+        }
         // 查询小程序类目信息
         if ($action == 'getCategoryList') {
             $authorizer_appid = input('authorizer_appid', '');
@@ -242,23 +332,63 @@ class MiniProgramCodeAdmin extends AdminController
         }
         // 提交审核
         if ($action == 'submitAudit') {
-            $authorizer_appid = input('authorizer_appid', '');
-            $item_list = input('item_list', '');
+            $authorizer_appid = input('authorizer_appid', '', 'trim');
+            $item_list = input('item_list', []);
             $version_desc = input('version_desc', '');
             $privacy_api_not_use = input('privacy_api_not_use', '');
-            if (empty($authorizer_appid) || empty($item_list)) {
+            $feedback_info = input('feedback_info', '');
+            $feedback_stuff_ids = input('feedback_stuff_ids', []);
+            $preview_pic_id_list = input('preview_pic_id_list', []);
+            $preview_video_id_list = input('preview_video_id_list', []);
+            if (empty($authorizer_appid) || !is_array($item_list) || empty($item_list)) {
                 return self::returnErrorJson('参数错误');
             }
             if (count($item_list) > 5) {
                 return self::returnErrorJson('审核项列表最多选择5个');
             }
+
+            try {
+                if (!is_string($feedback_info)) {
+                    throw new InvalidArgumentException('审核反馈内容格式错误');
+                }
+                $feedback_info = trim($feedback_info);
+                if (mb_strlen($feedback_info, 'UTF-8') > 200) {
+                    throw new InvalidArgumentException('审核反馈内容最多填写200个字符');
+                }
+                $feedback_stuff_ids = $this->normalizeMediaIdList($feedback_stuff_ids, '审核反馈图片');
+                if (count($feedback_stuff_ids) > 5) {
+                    throw new InvalidArgumentException('审核反馈图片最多上传5张');
+                }
+                $preview_pic_id_list = $this->normalizeMediaIdList($preview_pic_id_list, '提审截图');
+                $preview_video_id_list = $this->normalizeMediaIdList($preview_video_id_list, '操作录屏');
+            } catch (InvalidArgumentException $exception) {
+                return self::returnErrorJson($exception->getMessage());
+            }
+
+            $feedback_info = $feedback_info === '' ? null : $feedback_info;
+            $feedback_stuff = empty($feedback_stuff_ids) ? null : implode('|', $feedback_stuff_ids);
+            $preview_info = null;
+            if (!empty($preview_pic_id_list) || !empty($preview_video_id_list)) {
+                $preview_info = [
+                    'video_id_list' => $preview_video_id_list,
+                    'pic_id_list' => $preview_pic_id_list,
+                ];
+            }
             $privacy_api_not_use = $privacy_api_not_use == '1';
 
             $openService = OpenService::getInstnace();
             $miniProgramAgency = $openService->miniProgramAgency($authorizer_appid);
-            $resp = $miniProgramAgency->submitAudit($item_list, null, null, $version_desc, null, null, $privacy_api_not_use);
+            $resp = $miniProgramAgency->submitAudit(
+                $item_list,
+                $feedback_info,
+                $feedback_stuff,
+                $version_desc,
+                $preview_info,
+                null,
+                $privacy_api_not_use
+            );
             if (!RequestUtils::isRquestSuccessed($resp)) {
-                return self::returnErrorJson(RequestUtils::buildErrorMsg($resp));
+                return self::returnErrorJson(RequestUtils::buildErrorMsg($resp), $resp);
             }
             return self::returnSuccessJson([], '提交成功');
         }
@@ -287,6 +417,105 @@ class MiniProgramCodeAdmin extends AdminController
             return self::returnSuccessJson($resp, '检测通过');
         }
         return view('submitAudit');
+    }
+
+    /**
+     * 校验审核反馈图片
+     *
+     * @param mixed $file 上传文件
+     * @return void
+     * @throws InvalidArgumentException
+     */
+    private function validateAuditFeedbackImage($file): void
+    {
+        if (!$file->isValid()) {
+            throw new InvalidArgumentException('审核反馈图片上传失败或文件过大');
+        }
+
+        $extension = strtolower($file->getOriginalExtension());
+        $mimeType = strtolower($file->getMime());
+        $fileSize = (int)$file->getSize();
+        if (!in_array($extension, self::AUDIT_IMAGE_EXTENSIONS, true)
+            || !in_array($mimeType, self::AUDIT_IMAGE_MIME_TYPES, true)) {
+            throw new InvalidArgumentException('审核反馈图片仅支持PNG、JPEG、JPG、GIF格式');
+        }
+        if ($fileSize <= 0) {
+            throw new InvalidArgumentException('审核反馈图片不能为空文件');
+        }
+        if ($fileSize > self::AUDIT_IMAGE_MAX_SIZE) {
+            throw new InvalidArgumentException('审核反馈图片大小不能超过2MB');
+        }
+    }
+
+    /**
+     * 校验提审素材
+     *
+     * @param mixed $file 上传文件
+     * @return string 素材类型
+     * @throws InvalidArgumentException
+     */
+    private function validateCodeAuditMedia($file): string
+    {
+        if (!$file->isValid()) {
+            throw new InvalidArgumentException('提审素材上传失败或文件过大');
+        }
+
+        $extension = strtolower($file->getOriginalExtension());
+        $mimeType = strtolower($file->getMime());
+        $fileSize = (int)$file->getSize();
+        if ($fileSize <= 0) {
+            throw new InvalidArgumentException('提审素材不能为空文件');
+        }
+        if (in_array($extension, self::AUDIT_IMAGE_EXTENSIONS, true)) {
+            if (!in_array($mimeType, self::AUDIT_IMAGE_MIME_TYPES, true)) {
+                throw new InvalidArgumentException('提审图片文件类型不正确');
+            }
+            if ($fileSize > self::AUDIT_IMAGE_MAX_SIZE) {
+                throw new InvalidArgumentException('提审图片大小不能超过2MB');
+            }
+            return 'image';
+        }
+        if ($extension === 'mp4') {
+            if ($mimeType !== 'video/mp4') {
+                throw new InvalidArgumentException('操作录屏文件类型不正确');
+            }
+            if ($fileSize > self::AUDIT_VIDEO_MAX_SIZE) {
+                throw new InvalidArgumentException('操作录屏大小不能超过10MB');
+            }
+            return 'video';
+        }
+
+        throw new InvalidArgumentException('提审素材仅支持PNG、JPEG、JPG、GIF、MP4格式');
+    }
+
+    /**
+     * 规范化素材 ID 列表
+     *
+     * @param mixed $mediaIds 素材 ID 列表
+     * @param string $fieldName 字段名称
+     * @return array
+     * @throws InvalidArgumentException
+     */
+    private function normalizeMediaIdList($mediaIds, string $fieldName): array
+    {
+        if (!is_array($mediaIds)) {
+            throw new InvalidArgumentException($fieldName . '参数格式错误');
+        }
+
+        $result = [];
+        foreach ($mediaIds as $mediaId) {
+            if (!is_string($mediaId)) {
+                throw new InvalidArgumentException($fieldName . '参数格式错误');
+            }
+            $mediaId = trim($mediaId);
+            if ($mediaId !== '') {
+                if (strpos($mediaId, '|') !== false) {
+                    throw new InvalidArgumentException($fieldName . '参数格式错误');
+                }
+                $result[] = $mediaId;
+            }
+        }
+        return $result;
     }
 
 }

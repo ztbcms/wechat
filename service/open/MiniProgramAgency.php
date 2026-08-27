@@ -315,6 +315,45 @@ class MiniProgramAgency
     }
 
     /**
+     * 上传提审素材
+     *
+     * @param string $filePath 素材临时文件路径
+     * @return mixed
+     * @throws InvalidArgumentException
+     */
+    public function uploadMediaToCodeAudit(string $filePath)
+    {
+        if (trim($filePath) === '' || !is_file($filePath) || !is_readable($filePath)) {
+            throw new InvalidArgumentException('提审素材文件不存在或不可读');
+        }
+
+        return $this->miniProgramApp->httpUpload('wxa/uploadmedia', [
+            'media' => $filePath,
+        ]);
+    }
+
+    /**
+     * 上传代码审核反馈图片
+     *
+     * @param string $filePath 图片临时文件路径
+     * @return mixed
+     * @throws InvalidArgumentException
+     */
+    public function uploadAuditFeedbackImage(string $filePath)
+    {
+        if (trim($filePath) === '' || !is_file($filePath) || !is_readable($filePath)) {
+            throw new InvalidArgumentException('审核反馈图片不存在或不可读');
+        }
+
+        return $this->miniProgramApp->httpUpload(
+            'cgi-bin/media/upload',
+            ['media' => $filePath],
+            [],
+            ['type' => 'image']
+        );
+    }
+
+    /**
      * 提交代码审核
      * @see https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/submitAudit.html
      */
