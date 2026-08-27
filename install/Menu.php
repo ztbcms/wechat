@@ -179,6 +179,13 @@ return [
                 ],
             ],
             [
+                "route"  => "wechat/open.MiniProgramNameCheckAdmin/index",
+                "type"   => 1,
+                "status" => 1,
+                "name"   => "名称检测",
+                "remark" => "",
+            ],
+            [
                 "route"  => "wechat/open.PublisherAgencyAdmin/list",
                 "type"   => 0,
                 "status" => 1,

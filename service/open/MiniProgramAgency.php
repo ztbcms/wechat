@@ -68,6 +68,29 @@ class MiniProgramAgency
 
     // 小程序登录 E
 
+    // 基础信息管理 S
+
+    /**
+     * 检测小程序名称
+     *
+     * @param string $nickName 小程序名称
+     * @return mixed
+     * @throws InvalidArgumentException
+     */
+    public function checkNickName(string $nickName)
+    {
+        $nickName = trim($nickName);
+        if ($nickName === '') {
+            throw new InvalidArgumentException('参数 nickName 不能为空');
+        }
+
+        return $this->miniProgramApp->httpPostJson('cgi-bin/wxverify/checkwxverifynickname', [
+            'nick_name' => $nickName,
+        ]);
+    }
+
+    // 基础信息管理 E
+
     // 半屏小程序管理 S
 
     /**
