@@ -47,6 +47,27 @@ class MiniProgramAgency
         return $this->miniProgramApp;
     }
 
+    // 小程序登录 S
+
+    /**
+     * 使用小程序登录凭证获取会话信息
+     *
+     * @param string $jsCode 小程序登录凭证
+     * @return mixed
+     * @throws InvalidArgumentException
+     */
+    public function code2Session(string $jsCode)
+    {
+        $jsCode = trim($jsCode);
+        if ($jsCode === '') {
+            throw new InvalidArgumentException('参数 jsCode 不能为空');
+        }
+
+        return $this->miniProgramApp->auth->session($jsCode);
+    }
+
+    // 小程序登录 E
+
     // 半屏小程序管理 S
 
     /**

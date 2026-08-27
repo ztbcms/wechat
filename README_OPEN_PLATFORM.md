@@ -18,7 +18,55 @@ open_token=xxx
 open_aes_key=xxx
 ```
 
-### 2. 半屏小程序管理
+### 2. 代商家小程序登录
+
+#### 前置条件
+
+1. 小程序已经授权给当前第三方平台
+
+#### Service 调用示例
+
+```php
+use app\wechat\libs\utils\RequestUtils;
+use app\wechat\service\OpenService;
+
+$agency = OpenService::getInstnace()->miniProgramAgency($authorizerAppid);
+$response = $agency->code2Session($jsCode);
+
+if (!RequestUtils::isRquestSuccessed($response)) {
+    throw new \RuntimeException(RequestUtils::buildErrorMsg($response));
+}
+
+$openid = $response['openid'] ?? '';
+$unionid = $response['unionid'] ?? '';
+$sessionKey = $response['session_key'] ?? '';
+```
+
+
+#### 响应字段
+
+| 字段 | 是否一定返回 | 说明 |
+| --- | --- | --- |
+| `openid` | 成功时是 | 用户在当前授权小程序下的唯一标识 |
+| `session_key` | 成功时是 | 微信会话密钥，仅服务端使用 |
+| `unionid` | 否 | 满足微信 UnionID 返回条件时提供 |
+| `errcode` | 失败时是 | 微信错误码 |
+| `errmsg` | 失败时是 | 微信错误信息 |
+
+#### 常见错误
+
+| 错误码 | 说明 | 处理建议 |
+| --- | --- | --- |
+| `40029` | `js_code` 无效 | 确认 code 来自对应小程序且未重复使用 |
+| `41021` | 缺少 `component_access_token` | 检查开放平台配置和令牌获取状态 |
+| `45011` | 调用频率超限 | 限制重试频率，下一分钟再试 |
+| `61003` | 小程序未授权给当前第三方平台 | 检查本地授权状态和微信开放平台授权关系 |
+
+#### 安全提醒
+
+> `session_key` 不应返回给前端或通过网络在业务系统间随意传输。应由服务端使用 `openid` 建立业务登录关系，并向前端签发自身的登录凭证。
+
+### 3. 半屏小程序管理
 
 #### 前置条件
 
