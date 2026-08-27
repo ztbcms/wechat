@@ -124,7 +124,7 @@
 
             <el-table-column
                     fixed="right"
-                    width="200"
+                    width="260"
                     align="center"
                     label="操作">
                 <template slot-scope="props">
@@ -138,6 +138,13 @@
                         <el-button @click="handleMiniProgramAnalysis(props.row)" type="text" size="mini">数据分析
                         </el-button>
                         <el-button @click="handleMiniProgramPrivacySetting(props.row)" type="text" size="mini">隐私指引
+                        </el-button>
+                        <el-button
+                                @click="handleMiniProgramEmbedded(props.row)"
+                                type="text"
+                                size="mini"
+                                :disabled="props.row.authorization_status != 1">
+                            半屏小程序
                         </el-button>
                     </template>
                     <!--小程序 E-->
@@ -280,6 +287,13 @@
                 handleMiniProgramPrivacySetting: function(item){
                     let title = item['name'] + '_隐私指引设置'
                     let url = "{:api_url('/wechat/open.MiniProgramAdmin/privacySetting')}" + '?authorizer_appid=' + item['authorizer_appid']
+                    this.openNewIframeByUrl(title, url)
+                },
+                // 半屏小程序管理
+                handleMiniProgramEmbedded: function (item) {
+                    let title = item['name'] + '_半屏小程序'
+                    let url = "{:api_url('/wechat/open.MiniProgramEmbeddedAdmin/index')}"
+                        + '?authorizer_appid=' + encodeURIComponent(item['authorizer_appid'])
                     this.openNewIframeByUrl(title, url)
                 },
             }

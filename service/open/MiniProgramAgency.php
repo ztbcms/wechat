@@ -5,8 +5,10 @@
 
 namespace app\wechat\service\open;
 
+use app\wechat\libs\open\Constant;
 use app\wechat\model\open\OpenAuthorizer;
 use app\wechat\service\OpenService;
+use InvalidArgumentException;
 use think\Exception;
 
 /**
@@ -44,6 +46,152 @@ class MiniProgramAgency
     {
         return $this->miniProgramApp;
     }
+
+    // 半屏小程序管理 S
+
+    /**
+     * 添加半屏小程序
+     *
+     * @param string $embeddedAppid 半屏小程序 AppID
+     * @param string $applyReason 申请理由
+     * @return mixed
+     * @throws InvalidArgumentException
+     */
+    public function addEmbedded(string $embeddedAppid, string $applyReason = '')
+    {
+        $embeddedAppid = trim($embeddedAppid);
+        $applyReason = trim($applyReason);
+        if ($embeddedAppid === '') {
+            throw new InvalidArgumentException('参数 embeddedAppid 不能为空');
+        }
+        if (mb_strlen($applyReason, 'UTF-8') > 30) {
+            throw new InvalidArgumentException('参数 applyReason 不能超过 30 个字符');
+        }
+
+        $data = ['appid' => $embeddedAppid];
+        if ($applyReason !== '') {
+            $data['apply_reason'] = $applyReason;
+        }
+
+        return $this->miniProgramApp->httpPostJson('wxaapi/wxaembedded/add_embedded', $data);
+    }
+
+    /**
+     * 删除半屏小程序
+     *
+     * @param string $embeddedAppid 半屏小程序 AppID
+     * @return mixed
+     * @throws InvalidArgumentException
+     */
+    public function deleteEmbedded(string $embeddedAppid)
+    {
+        $embeddedAppid = trim($embeddedAppid);
+        if ($embeddedAppid === '') {
+            throw new InvalidArgumentException('参数 embeddedAppid 不能为空');
+        }
+
+        return $this->miniProgramApp->httpPostJson('wxaapi/wxaembedded/del_embedded', [
+            'appid' => $embeddedAppid,
+        ]);
+    }
+
+    /**
+     * 获取半屏小程序调用列表
+     *
+     * @param int $start 分页起始值
+     * @param int $num 拉取数量
+     * @return mixed
+     * @throws InvalidArgumentException
+     */
+    public function getEmbeddedList(int $start = 0, int $num = 10)
+    {
+        $this->validateEmbeddedListPagination($start, $num);
+
+        return $this->miniProgramApp->httpGet('wxaapi/wxaembedded/get_list', [
+            'start' => $start,
+            'num' => $num,
+        ]);
+    }
+
+    /**
+     * 取消授权小程序
+     *
+     * @param string $authorizedAppid 已授权小程序 AppID
+     * @return mixed
+     * @throws InvalidArgumentException
+     */
+    public function deleteAuthorizedEmbedded(string $authorizedAppid)
+    {
+        $authorizedAppid = trim($authorizedAppid);
+        if ($authorizedAppid === '') {
+            throw new InvalidArgumentException('参数 authorizedAppid 不能为空');
+        }
+
+        return $this->miniProgramApp->httpPostJson('wxaapi/wxaembedded/del_authorize', [
+            'appid' => $authorizedAppid,
+        ]);
+    }
+
+    /**
+     * 获取半屏小程序授权列表
+     *
+     * @param int $start 分页起始值
+     * @param int $num 拉取数量
+     * @return mixed
+     * @throws InvalidArgumentException
+     */
+    public function getOwnList(int $start = 0, int $num = 10)
+    {
+        $this->validateEmbeddedListPagination($start, $num);
+
+        return $this->miniProgramApp->httpGet('wxaapi/wxaembedded/get_own_list', [
+            'start' => $start,
+            'num' => $num,
+        ]);
+    }
+
+    /**
+     * 设置半屏小程序授权方式
+     *
+     * @param int $flag 授权方式
+     * @return mixed
+     * @throws InvalidArgumentException
+     */
+    public function setAuthorizedEmbedded(int $flag)
+    {
+        $allowedFlags = [
+            Constant::EMBEDDED_AUTH_CONFIRM,
+            Constant::EMBEDDED_AUTH_AUTO_APPROVE,
+            Constant::EMBEDDED_AUTH_AUTO_REJECT,
+        ];
+        if (!in_array($flag, $allowedFlags, true)) {
+            throw new InvalidArgumentException('参数 flag 只能为 0、1、2');
+        }
+
+        return $this->miniProgramApp->httpPostJson('wxaapi/wxaembedded/set_authorize', [
+            'flag' => $flag,
+        ]);
+    }
+
+    /**
+     * 校验半屏小程序列表分页参数
+     *
+     * @param int $start 分页起始值
+     * @param int $num 拉取数量
+     * @return void
+     * @throws InvalidArgumentException
+     */
+    private function validateEmbeddedListPagination(int $start, int $num): void
+    {
+        if ($start < 0) {
+            throw new InvalidArgumentException('参数 start 不能小于 0');
+        }
+        if ($num < 1 || $num > 1000) {
+            throw new InvalidArgumentException('参数 num 必须在 1 到 1000 之间');
+        }
+    }
+
+    // 半屏小程序管理 E
 
     /**
      * 设置授权小程序 Appid

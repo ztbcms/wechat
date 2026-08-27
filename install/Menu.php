@@ -168,6 +168,15 @@ return [
                 "type"   => 0,
                 "status" => 1,
                 "name"   => "授权账号",
+                "child"  => [
+                    [
+                        "route"  => "wechat/open.MiniProgramEmbeddedAdmin/index",
+                        "type"   => 1,
+                        "status" => 0,
+                        "name"   => "半屏小程序管理",
+                        "remark" => "",
+                    ],
+                ],
             ],
             [
                 "route"  => "wechat/open.PublisherAgencyAdmin/list",

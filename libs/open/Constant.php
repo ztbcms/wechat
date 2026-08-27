@@ -7,6 +7,15 @@ namespace app\wechat\libs\open;
 
 class Constant
 {
+    /** 需要管理员验证 */
+    const EMBEDDED_AUTH_CONFIRM = 0;
+
+    /** 自动通过授权 */
+    const EMBEDDED_AUTH_AUTO_APPROVE = 1;
+
+    /** 自动拒绝授权 */
+    const EMBEDDED_AUTH_AUTO_REJECT = 2;
+
     const SLOT_ID_WEAPP_BANNER = 'SLOT_ID_WEAPP_BANNER';
     const SLOT_ID_WEAPP_REWARD_VIDEO = 'SLOT_ID_WEAPP_REWARD_VIDEO';
     const SLOT_ID_WEAPP_INTERSTITIAL = 'SLOT_ID_WEAPP_INTERSTITIAL';
