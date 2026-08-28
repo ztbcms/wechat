@@ -2,14 +2,17 @@
 
 namespace app\wechat\service;
 
+use think\Exception;
+use think\facade\Log;
+use EasyWeChat\Factory;
+use EasyWeChat\Kernel\Exceptions\RuntimeException as EasyWeChatRuntimeException;
+use Symfony\Component\Cache\Adapter\RedisAdapter;
 use app\common\service\BaseService;
 use app\wechat\libs\WechatConfig;
 use app\wechat\service\open\MiniProgramAgency;
 use app\wechat\service\open\OpenAgency;
+use app\wechat\service\open\OpenWxcallbackComponentService;
 use app\wechat\service\open\PublisherAgency;
-use EasyWeChat\Factory;
-use Symfony\Component\Cache\Adapter\RedisAdapter;
-use think\Exception;
 
 /**
  * 第三方开放平台
@@ -79,7 +82,40 @@ class OpenService extends BaseService
      */
     public function getOpenApp()
     {
+        $this->ensureVerifyTicket();
         return $this->app;
+    }
+
+    /**
+     * 确保当前缓存中存在有效的 component_verify_ticket
+     *
+     * @return bool
+     * @throws EasyWeChatRuntimeException
+     */
+    public function ensureVerifyTicket(): bool
+    {
+        $verifyTicketService = $this->app['verify_ticket'];
+
+        try {
+            if ($verifyTicketService->getTicket() !== '') {
+                return true;
+            }
+        } catch (EasyWeChatRuntimeException $exception) {
+            if ($exception->getMessage() !== 'Credential "component_verify_ticket" does not exist in cache.') {
+                throw $exception;
+            }
+        }
+
+        $dbTicket = OpenWxcallbackComponentService::getLatestVerifyTicket();
+        if ($dbTicket === null || $dbTicket === '') {
+            Log::warning('数据库中不存在安全有效期内的 component_verify_ticket');
+            return false;
+        }
+
+        $verifyTicketService->setTicket($dbTicket);
+        Log::notice('已从数据库恢复 component_verify_ticket 缓存');
+
+        return true;
     }
 
     /**

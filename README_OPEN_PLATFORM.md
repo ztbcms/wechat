@@ -113,6 +113,24 @@ $agency->deleteAuthorizedEmbedded($authorizedAppid);
 - 服务商一天最多代 10 个小程序申请添加同一个半屏小程序
 
 
+### 4. component_verify_ticket 缓存恢复
+
+授权事件接收地址 `/wechat/open/wxcallback_component` 会将微信推送记录保存到 `{DB_PREFIX}wechat_open_wxcallback_component` 表。业务通过 `OpenService::getOpenApp()` 获取开放平台实例时，如果当前缓存中不存在 `component_verify_ticket`，系统会自动读取数据库中 11 小时安全窗口内最新的合法 Ticket 并回填缓存。
+
+缓存恢复仅处理 MySQL、Redis 服务均正常但 Ticket 缓存缺失的场景。数据库连接、Redis 连接或缓存写入异常会继续向上抛出，不会被恢复逻辑隐藏。
+
+恢复结果会记录以下日志：
+
+- Notice：已从数据库恢复 `component_verify_ticket` 缓存
+- Warning：数据库中不存在安全有效期内的 `component_verify_ticket`
+
+排查缓存恢复问题时，依次确认：
+
+1. 授权事件接收地址能够正常收到微信每 10 分钟推送的 Ticket
+2. 回调记录表中存在 11 小时内且 `body.ComponentVerifyTicket` 非空的记录
+3. Redis 服务和 EasyWeChat 缓存配置能够正常读写
+4. 执行 `cd tp6 && php tests/wechat_open_verify_ticket_db_fallback_test.php` 验证恢复流程
+
 ### 注意事项
 
 1. 建议开启 redis 作为 easywechat 缓存，可以本地和远程共用同一套配置（vertify_key等）
