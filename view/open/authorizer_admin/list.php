@@ -124,7 +124,7 @@
 
             <el-table-column
                     fixed="right"
-                    width="260"
+                    width="320"
                     align="center"
                     label="操作">
                 <template slot-scope="props">
@@ -136,6 +136,8 @@
                         <el-button @click="handleMiniProgramDomain(props.row)" type="text" size="mini">域名管理
                         </el-button>
                         <el-button @click="handleMiniProgramAnalysis(props.row)" type="text" size="mini">数据分析
+                        </el-button>
+                        <el-button @click="handleMiniProgramOperation(props.row)" type="text" size="mini">运维中心
                         </el-button>
                         <el-button @click="handleMiniProgramPrivacySetting(props.row)" type="text" size="mini">隐私指引
                         </el-button>
@@ -252,6 +254,13 @@
                 handleMiniProgramAnalysis: function (item) {
                     let title = item['name'] + '_数据分析'
                     let url = "{:api_url('/wechat/open.MiniProgramAnalysisAdmin/index')}" + '?authorizer_appid=' + item['authorizer_appid']
+                    this.openNewIframeByUrl(title, url)
+                },
+                // 小程序运维中心
+                handleMiniProgramOperation: function (item) {
+                    let title = item['name'] + '_运维中心'
+                    let url = "{:api_url('/wechat/open.MiniProgramOperationAdmin/index')}"
+                        + '?authorizer_appid=' + encodeURIComponent(item['authorizer_appid'])
                     this.openNewIframeByUrl(title, url)
                 },
                 // 全量拉取授权账号

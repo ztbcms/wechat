@@ -176,6 +176,13 @@ return [
                         "name"   => "半屏小程序管理",
                         "remark" => "",
                     ],
+                    [
+                        "route"  => "wechat/open.MiniProgramOperationAdmin/index",
+                        "type"   => 1,
+                        "status" => 0,
+                        "name"   => "运维中心",
+                        "remark" => "",
+                    ],
                 ],
             ],
             [

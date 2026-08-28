@@ -549,6 +549,138 @@ class MiniProgramAgency
         return $this->miniProgramApp->httpPostJson('datacube/getweanalysisappiddailyvisittrend', $data, []);
     }
 
+    // 运维中心 S
+
+    /**
+     * 获取小程序性能数据
+     *
+     * @param array $params 查询参数
+     * @return mixed
+     */
+    public function getPerformance(array $params)
+    {
+        $data = $this->filterOperationParams($params, [
+            'cost_time_type',
+            'default_start_time',
+            'default_end_time',
+            'device',
+            'is_download_code',
+            'scene',
+            'networktype',
+        ]);
+
+        return $this->miniProgramApp->httpPostJson('wxaapi/log/get_performance', $data);
+    }
+
+    /**
+     * 获取小程序访问来源
+     *
+     * @return mixed
+     */
+    public function getSceneList()
+    {
+        return $this->miniProgramApp->httpGet('wxaapi/log/get_scene');
+    }
+
+    /**
+     * 查询小程序实时日志
+     *
+     * @param array $params 查询参数
+     * @return mixed
+     */
+    public function realtimeLogSearch(array $params)
+    {
+        $query = $this->filterOperationParams($params, [
+            'date',
+            'begintime',
+            'endtime',
+            'start',
+            'limit',
+            'traceId',
+            'url',
+            'id',
+            'filterMsg',
+            'level',
+        ], true);
+
+        return $this->miniProgramApp->httpGet('wxaapi/userlog/userlog_search', $query);
+    }
+
+    /**
+     * 查询小程序 JS 错误列表
+     *
+     * @param array $params 查询参数
+     * @return mixed
+     */
+    public function getJsErrList(array $params)
+    {
+        $data = $this->filterOperationParams($params, [
+            'appVersion',
+            'errType',
+            'startTime',
+            'endTime',
+            'keyword',
+            'openid',
+            'orderby',
+            'desc',
+            'offset',
+            'limit',
+        ]);
+
+        return $this->miniProgramApp->httpPostJson('wxaapi/log/jserr_list', $data);
+    }
+
+    /**
+     * 查询小程序 JS 错误详情
+     *
+     * @param array $params 查询参数
+     * @return mixed
+     */
+    public function getJsErrDetail(array $params)
+    {
+        $data = $this->filterOperationParams($params, [
+            'startTime',
+            'endTime',
+            'errorMsgMd5',
+            'errorStackMd5',
+            'appVersion',
+            'sdkVersion',
+            'osName',
+            'clientVersion',
+            'openid',
+            'offset',
+            'limit',
+            'desc',
+        ]);
+
+        return $this->miniProgramApp->httpPostJson('wxaapi/log/jserr_detail', $data);
+    }
+
+    /**
+     * 过滤运维接口参数
+     *
+     * @param array $params 原始参数
+     * @param array $allowedKeys 允许字段
+     * @param bool $omitEmptyString 是否忽略空字符串
+     * @return array
+     */
+    private function filterOperationParams(array $params, array $allowedKeys, bool $omitEmptyString = false): array
+    {
+        $result = [];
+        foreach ($allowedKeys as $key) {
+            if (!array_key_exists($key, $params)) {
+                continue;
+            }
+            if ($omitEmptyString && $params[$key] === '') {
+                continue;
+            }
+            $result[$key] = $params[$key];
+        }
+        return $result;
+    }
+
+    // 运维中心 E
+
     // 用户隐私保护指引管理 S
 
 
