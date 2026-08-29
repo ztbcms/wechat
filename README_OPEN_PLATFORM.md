@@ -131,6 +131,29 @@ $agency->deleteAuthorizedEmbedded($authorizedAppid);
 3. Redis 服务和 EasyWeChat 缓存配置能够正常读写
 4. 执行 `cd tp6 && php tests/wechat_open_verify_ticket_db_fallback_test.php` 验证恢复流程
 
+### 5. 主动启动 Ticket 推送
+
+新环境尚未收到第一条 `component_verify_ticket`，或授权事件接收 URL 长期收不到推送时，可以主动请求微信启动或恢复 Ticket 推送服务。
+
+使用前确认：
+
+1. 微信开放平台已配置并启用授权事件接收 URL `/wechat/open/wxcallback_component`
+2. `open.app_id` 与 `open.secret` 配置正确
+
+后台主入口位于“微信第三方平台 > 开发调试 > 授权事件推送”。点击“启动 Ticket 推送”并确认后，在同页日志中检查是否收到新的 `component_verify_ticket`。
+
+SSH 或脚本场景可在 `tp6` 目录执行：
+
+```bash
+php think wechat:start-push-ticket
+```
+
+接口返回 `errcode = 0` 仅表示微信已接受请求，Ticket 仍会异步推送到授权事件接收 URL。
+
+上一节的方案一（MySQL 自动恢复）负责在系统内部从数据库回填 Ticket 缓存，本功能负责向微信重新请求 Ticket，两者互为补充且没有代码耦合。
+
+后台和命令均依赖 `OpenService` 能正常构造，不覆盖 Redis 宕机场景。此时可按微信官方接口说明，使用 curl 直接调用 `api_start_push_ticket`。
+
 ### 注意事项
 
 1. 建议开启 redis 作为 easywechat 缓存，可以本地和远程共用同一套配置（vertify_key等）

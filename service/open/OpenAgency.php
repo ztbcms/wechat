@@ -51,5 +51,35 @@ class OpenAgency
         return $this->openApp->getPreAuthorizationUrl($callbackUrl, $optional);
     }
 
+    /**
+     * 启动或恢复微信服务器推送 component_verify_ticket
+     *
+     * 本接口无需 component_access_token，必须走不带 token 的 HTTP 客户端
+     * 传输层异常向调用方抛出，由 Web 或 CLI 边界捕获
+     *
+     * @see wechat_api_docs/启动票据推送服务.md
+     * @return array 微信接口原始返回数组，或解码失败时的内部错误结构
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function startPushTicket(): array
+    {
+        $response = $this->openApp['http_client']->post('cgi-bin/component/api_start_push_ticket', [
+            'json' => [
+                'component_appid' => $this->openApp['config']['app_id'],
+                'component_secret' => $this->openApp['config']['secret'],
+            ],
+        ]);
+
+        $result = json_decode((string) $response->getBody(), true);
+        if (!is_array($result) || !isset($result['errcode'])) {
+            return [
+                'errcode' => -1,
+                'errmsg' => 'invalid wechat response',
+            ];
+        }
+
+        return $result;
+    }
+
 
 }

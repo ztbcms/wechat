@@ -11,7 +11,17 @@
                 :closable="false">
                 <p style="font-weight: bold">授权事件URL配置： /wechat/open/wxcallback_component</p>
                 <p style="font-weight: bold">⚠️注意：1、需要开启 Ticket 推送服务 2、Ticket每 10 分钟推送 1 次</p>
+                <p>新环境未收到首条 Ticket，或推送长时间中断时，可点击下方“启动 Ticket 推送”主动请求微信恢复推送</p>
+                <p>请求成功仅表示微信已接受请求，Ticket 仍会异步推送，请在下方日志中确认是否收到</p>
+                <p>CLI 方式：在 tp6 目录执行 <code>php think wechat:start-push-ticket</code>，适合 SSH 或脚本场景</p>
             </el-alert>
+            <el-button
+                type="warning"
+                :loading="startPushTicketLoading"
+                :disabled="startPushTicketLoading"
+                @click="startPushTicket">
+                启动 Ticket 推送
+            </el-button>
             <div class="filter-container" style="margin-top: 15px;">
                 <el-form :inline="true" :model="searchForm" size="small">
                     <el-form-item label="推送时间">
@@ -85,6 +95,7 @@
                 pageSize: 10,
                 pageCount: 0,
                 currentPage: 1,
+                startPushTicketLoading: false,
             },
             mounted: function () {
                 var that = this
@@ -107,6 +118,38 @@
                 search: function () {
                     this.currentPage = 1;
                     this.getList();
+                },
+
+                startPushTicket: function () {
+                    if (this.startPushTicketLoading) {
+                        return;
+                    }
+
+                    var that = this;
+                    this.$confirm(
+                        '微信接受请求后会向授权事件接收 URL 异步推送最新 Ticket，是否继续？',
+                        '启动 Ticket 推送',
+                        {
+                            confirmButtonText: '确定启动',
+                            cancelButtonText: '取消',
+                            type: 'warning',
+                        }
+                    ).then(function () {
+                        that.startPushTicketLoading = true;
+                        that.httpPost('/wechat/open.WxcallbackAdmin/component', {
+                            _action: 'startPushTicket',
+                        }, function (res) {
+                            that.startPushTicketLoading = false;
+                            if (res.status !== true) {
+                                that.$message.error(res.msg || '启动 Ticket 推送失败');
+                                return;
+                            }
+
+                            that.$message.success(res.msg || '微信已接受请求，Ticket 仍是异步推送');
+                            that.getList();
+                        });
+                    }).catch(function () {
+                    });
                 },
 
                 getList: function () {
