@@ -2,10 +2,10 @@
 
 ## 依赖
 
+本模块不再依赖 `overtrue/wechat`，改用维护分支 [Jayin/easywechat](https://github.com/Jayin/easywechat.git)，Composer 包名为 `w7corp/easywechat`。
+
 ```shell
-$ composer require overtrue/wechat 4.0 -vvv
-# 图片处理
-$ composer require intervention/image 2 -vvv
+composer require w7corp/easywechat:4.9.0.1 -vvv
 ```
 
 ## 配置
@@ -188,7 +188,6 @@ Tips: 你可以为订单页(`/user/order/detail`)的链接生成一个二维码�
 申请企业付款：`wxpay_service->mchpay()->doMchpayOrder()`
 
 执行企业付款：`wxpay_service->mchpay()->createMchpay($open_id,$amount,$description)`
-
 
 
 
