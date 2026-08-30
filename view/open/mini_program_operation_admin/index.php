@@ -1,18 +1,14 @@
 <div id="app" v-cloak class="operation-center">
     <section class="operation-hero">
         <div class="operation-hero__identity">
-            <span class="operation-hero__eyebrow">MINI PROGRAM / OPERATIONS</span>
             <h1>运维中心</h1>
-            <p>集中查看性能趋势、实时日志与 JS 异常，快速定位小程序线上问题</p>
+            <p>集中查看性能趋势、实时日志与脚本异常，快速定位小程序线上问题</p>
         </div>
         <div class="operation-hero__account">
-            <span class="status-pulse"></span>
-            <div>
-                <strong>{{ authorizerName || '未命名小程序' }}</strong>
-                <code>{{ authorizerAppid }}</code>
-            </div>
+            <span class="operation-hero__account-label">当前小程序</span>
+            <strong>{{ authorizerName || '未命名小程序' }}</strong>
+            <span>{{ authorizerAppid }}</span>
         </div>
-        <div class="operation-hero__grid" aria-hidden="true"></div>
     </section>
 
     <el-card class="operation-panel" shadow="never">
@@ -506,23 +502,26 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        min-height: 132px;
-        padding: 26px 32px;
+        min-height: 116px;
+        margin-bottom: 16px;
+        padding: 24px 28px;
         box-sizing: border-box;
         overflow: hidden;
         color: #fff;
-        background: var(--ops-ink);
-        border-radius: 4px 4px 0 0;
+        background: linear-gradient(115deg, #15392a 0%, #0d6b3d 58%, #08a955 100%);
+        border-radius: 10px;
+        box-shadow: 0 10px 28px rgba(13, 107, 61, .16);
     }
 
-    .operation-hero::before {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 7px;
-        height: 100%;
+    .operation-hero::after {
         content: '';
-        background: var(--ops-amber);
+        position: absolute;
+        right: -38px;
+        bottom: -90px;
+        width: 240px;
+        height: 240px;
+        border: 34px solid rgba(255, 255, 255, .08);
+        border-radius: 50%;
     }
 
     .operation-hero__identity,
@@ -531,7 +530,6 @@
         z-index: 2;
     }
 
-    .operation-hero__eyebrow,
     .tab-heading__index,
     .detail-record__number,
     .stack-block__title span {
@@ -539,81 +537,49 @@
         letter-spacing: .16em;
     }
 
-    .operation-hero__eyebrow {
-        display: block;
-        margin-bottom: 5px;
-        color: #8bc5b1;
-        font-size: 11px;
-        font-weight: 700;
-    }
-
     .operation-hero h1 {
         margin: 0;
-        font-family: "STSong", "Songti SC", serif;
-        font-size: 31px;
-        font-weight: 700;
-        letter-spacing: .08em;
+        font-size: 25px;
+        font-weight: 600;
+        letter-spacing: 1px;
     }
 
     .operation-hero p {
-        margin: 8px 0 0;
-        color: #abb8b3;
+        margin: 7px 0 0;
+        color: rgba(255, 255, 255, .78);
         font-size: 13px;
     }
 
     .operation-hero__account {
         display: flex;
-        align-items: flex-start;
-        gap: 12px;
-        min-width: 280px;
-        padding: 16px 18px;
-        background: rgba(255, 255, 255, .06);
-        border: 1px solid rgba(255, 255, 255, .12);
-        backdrop-filter: blur(4px);
+        flex-direction: column;
+        min-width: 230px;
+        padding: 13px 18px;
+        border: 1px solid rgba(255, 255, 255, .18);
+        border-radius: 8px;
+        background: rgba(0, 0, 0, .13);
+        backdrop-filter: blur(5px);
     }
 
-    .operation-hero__account strong,
-    .operation-hero__account code {
-        display: block;
+    .operation-hero__account-label {
+        margin-bottom: 4px;
+        color: rgba(255, 255, 255, .6);
+        font-size: 11px;
     }
 
     .operation-hero__account strong {
-        margin-bottom: 5px;
+        margin-bottom: 2px;
         font-size: 15px;
     }
 
-    .operation-hero__account code {
-        color: #91a59d;
+    .operation-hero__account > span:last-child {
+        color: rgba(255, 255, 255, .72);
         font-size: 12px;
     }
 
-    .status-pulse {
-        position: relative;
-        width: 9px;
-        height: 9px;
-        margin-top: 5px;
-        background: #43d19e;
-        border-radius: 50%;
-        box-shadow: 0 0 0 5px rgba(67, 209, 158, .13);
-    }
-
-    .operation-hero__grid {
-        position: absolute;
-        right: -45px;
-        bottom: -75px;
-        width: 360px;
-        height: 230px;
-        opacity: .13;
-        transform: rotate(-12deg);
-        background-image:
-                linear-gradient(rgba(255,255,255,.4) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,.4) 1px, transparent 1px);
-        background-size: 22px 22px;
-    }
-
     .operation-panel {
-        border: 0;
-        border-radius: 0 0 4px 4px;
+        border-color: var(--ops-line);
+        border-radius: 8px;
     }
 
     .operation-panel > .el-card__body {

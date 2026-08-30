@@ -69,15 +69,16 @@
         <el-table :data="results" border stripe empty-text="暂无检测结果" style="width: 100%;">
             <el-table-column type="index" label="#" width="56" align="center"></el-table-column>
             <el-table-column prop="name" label="名称" min-width="150"></el-table-column>
-            <el-table-column label="检测状态" width="120" align="center">
+            <el-table-column label="名称是否可用" width="130" align="center">
                 <template slot-scope="scope">
-                    <el-tag v-if="scope.row.success && !scope.row.hit_condition" type="success" size="small">
-                        未命中策略
+                    <el-tag v-if="scope.row.availability === 'available'" type="success" size="small">可用</el-tag>
+                    <el-tag v-else-if="scope.row.availability === 'conditional'" type="warning" size="small">
+                        需补充材料
                     </el-tag>
-                    <el-tag v-else-if="scope.row.success" type="warning" size="small">
-                        命中策略
+                    <el-tag v-else-if="scope.row.availability === 'unavailable'" type="danger" size="small">
+                        不可用
                     </el-tag>
-                    <el-tag v-else type="danger" size="small">检测失败</el-tag>
+                    <el-tag v-else type="danger" size="small">检测异常</el-tag>
                 </template>
             </el-table-column>
             <el-table-column label="命中关键字策略" width="140" align="center">
@@ -86,12 +87,12 @@
                     <span v-else>{{ scope.row.hit_condition ? '是' : '否' }}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="命中说明" min-width="300">
+            <el-table-column label="结果说明" min-width="300">
                 <template slot-scope="scope">
                     <div class="wording-cell">{{ scope.row.wording || '-' }}</div>
                 </template>
             </el-table-column>
-            <el-table-column label="错误信息" min-width="220">
+            <el-table-column label="接口详情" min-width="220">
                 <template slot-scope="scope">
                     <span :class="scope.row.error ? 'error-text' : ''">{{ scope.row.error || '-' }}</span>
                 </template>
@@ -336,6 +337,7 @@
                             that.results.push({
                                 name: name,
                                 success: false,
+                                availability: 'unknown',
                                 hit_condition: null,
                                 wording: '',
                                 error: '请求名称检测接口失败',
@@ -359,9 +361,12 @@
                     this.results.push({
                         name: name,
                         success: success,
-                        hit_condition: success ? Boolean(data.hit_condition) : null,
+                        availability: success ? (data.availability || 'unknown') : 'unknown',
+                        hit_condition: success && data.hit_condition !== null && data.hit_condition !== undefined
+                            ? Boolean(data.hit_condition)
+                            : null,
                         wording: success ? (data.wording || '') : '',
-                        error: success ? '' : this.formatError(response),
+                        error: success && !data.errcode ? '' : this.formatError(response),
                     });
                 },
 

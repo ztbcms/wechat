@@ -61,7 +61,8 @@
                                 <span>{{ item.funcscope_category.id }}</>
                             </template>
                             <p>具体参考：<a
-                                        href="https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/product/third_party_authority_instructions.html">权限集列表说明</a>
+                                        href="https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/product/third_party_authority_instructions.html"
+                                        target="_blank" rel="noopener noreferrer">权限集列表说明</a>
                             </p>
                         </div>
                     </div>

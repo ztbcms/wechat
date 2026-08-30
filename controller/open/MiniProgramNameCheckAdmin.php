@@ -15,6 +15,22 @@ use Throwable;
  */
 class MiniProgramNameCheckAdmin extends AdminController
 {
+    /** 名称不可用错误码与提示 */
+    private const UNAVAILABLE_ERROR_MESSAGES = [
+        53010 => '名称格式不合法，请修改后重试',
+        53012 => '该名称禁止使用，请更换其他名称',
+        53013 => '名称已被占用，请更换其他名称',
+        53014 => '名称已被占用，请更换其他名称',
+        53015 => '名称已被占用，请更换其他名称',
+        53016 => '名称已被占用，请更换其他名称',
+        53017 => '名称已被占用，请更换其他名称',
+        53018 => '名称命中微信号相关规则，请更换其他名称',
+        53019 => '名称处于保护期，请更换其他名称或稍后重试',
+        53020 => '名称处于保护期，请更换其他名称或稍后重试',
+        53021 => '名称不能包含超过 2 个空格，请修改后重试',
+        53022 => '名称不能包含连续空格，请修改后重试',
+    ];
+
     /**
      * 名称检测页面和操作入口
      *
@@ -90,15 +106,29 @@ class MiniProgramNameCheckAdmin extends AdminController
             return self::returnErrorJson('请求微信接口失败');
         }
 
+        $errorCode = (int) ($response['errcode'] ?? 0);
+        if (isset(self::UNAVAILABLE_ERROR_MESSAGES[$errorCode])) {
+            return self::returnSuccessJson([
+                'name' => $nickName,
+                'availability' => 'unavailable',
+                'hit_condition' => null,
+                'wording' => self::UNAVAILABLE_ERROR_MESSAGES[$errorCode],
+                'errcode' => $errorCode,
+                'errmsg' => (string) ($response['errmsg'] ?? ''),
+            ]);
+        }
+
         if (!RequestUtils::isRquestSuccessed($response)) {
             return self::returnErrorJson(RequestUtils::buildErrorMsg($response), $response);
         }
 
+        $hitCondition = (bool) ($response['hit_condition'] ?? false);
         return self::returnSuccessJson([
             'name' => $nickName,
-            'hit_condition' => (bool) ($response['hit_condition'] ?? false),
+            'availability' => $hitCondition ? 'conditional' : 'available',
+            'hit_condition' => $hitCondition,
             'wording' => (string) ($response['wording'] ?? ''),
-            'errcode' => (int) ($response['errcode'] ?? 0),
+            'errcode' => $errorCode,
             'errmsg' => (string) ($response['errmsg'] ?? ''),
         ]);
     }
