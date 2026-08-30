@@ -14,11 +14,11 @@
 - open: 支持主动启动 Ticket 推送
 - 更新模块依赖说明为 w7corp/easywechat
 
-### Fixes(required)
+### Fixes
 
 - open: 优化名称检测语义与后台页面展示
 - open: 修复提审素材文件类型丢失
 
-### database change(required)
+### database change
 
 无
