@@ -318,39 +318,93 @@ class MiniProgramAgency
      * 上传提审素材
      *
      * @param string $filePath 素材临时文件路径
+     * @param string $fileName 素材文件名
+     * @param string $mimeType 素材 MIME 类型
      * @return mixed
      * @throws InvalidArgumentException
      */
-    public function uploadMediaToCodeAudit(string $filePath)
+    public function uploadMediaToCodeAudit(string $filePath, string $fileName, string $mimeType)
     {
-        if (trim($filePath) === '' || !is_file($filePath) || !is_readable($filePath)) {
-            throw new InvalidArgumentException('提审素材文件不存在或不可读');
-        }
-
-        return $this->miniProgramApp->httpUpload('wxa/uploadmedia', [
-            'media' => $filePath,
-        ]);
+        return $this->uploadAuditMedia(
+            'wxa/uploadmedia',
+            $filePath,
+            $fileName,
+            $mimeType,
+            '提审素材文件不存在或不可读'
+        );
     }
 
     /**
      * 上传代码审核反馈图片
      *
      * @param string $filePath 图片临时文件路径
+     * @param string $fileName 图片文件名
+     * @param string $mimeType 图片 MIME 类型
      * @return mixed
      * @throws InvalidArgumentException
      */
-    public function uploadAuditFeedbackImage(string $filePath)
+    public function uploadAuditFeedbackImage(string $filePath, string $fileName, string $mimeType)
     {
-        if (trim($filePath) === '' || !is_file($filePath) || !is_readable($filePath)) {
-            throw new InvalidArgumentException('审核反馈图片不存在或不可读');
-        }
-
-        return $this->miniProgramApp->httpUpload(
+        return $this->uploadAuditMedia(
             'cgi-bin/media/upload',
-            ['media' => $filePath],
-            [],
+            $filePath,
+            $fileName,
+            $mimeType,
+            '审核反馈图片不存在或不可读',
             ['type' => 'image']
         );
+    }
+
+    /**
+     * 上传审核素材并保留文件类型信息
+     *
+     * @param string $url 请求路径
+     * @param string $filePath 素材临时文件路径
+     * @param string $fileName 素材文件名
+     * @param string $mimeType 素材 MIME 类型
+     * @param string $invalidFileMessage 文件不可读提示
+     * @param array $query 查询参数
+     * @return mixed
+     * @throws InvalidArgumentException
+     */
+    private function uploadAuditMedia(
+        string $url,
+        string $filePath,
+        string $fileName,
+        string $mimeType,
+        string $invalidFileMessage,
+        array $query = []
+    ) {
+        if (trim($filePath) === '' || !is_file($filePath) || !is_readable($filePath)) {
+            throw new InvalidArgumentException($invalidFileMessage);
+        }
+        if (trim($fileName) === '' || trim($mimeType) === '') {
+            throw new InvalidArgumentException('审核素材文件类型信息不能为空');
+        }
+
+        $contents = fopen($filePath, 'r');
+        if ($contents === false) {
+            throw new InvalidArgumentException('审核素材文件无法读取');
+        }
+
+        try {
+            return $this->miniProgramApp->request($url, 'POST', [
+                'query' => $query,
+                'multipart' => [[
+                    'name' => 'media',
+                    'contents' => $contents,
+                    'filename' => basename($fileName),
+                    'headers' => [
+                        'Content-Type' => $mimeType,
+                    ],
+                ]],
+                'connect_timeout' => 30,
+                'timeout' => 30,
+                'read_timeout' => 30,
+            ]);
+        } finally {
+            fclose($contents);
+        }
     }
 
     /**

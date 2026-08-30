@@ -260,7 +260,11 @@ class MiniProgramCodeAdmin extends AdminController
             try {
                 $this->validateAuditFeedbackImage($file);
                 $miniProgramAgency = OpenService::getInstnace()->miniProgramAgency($authorizer_appid);
-                $resp = $miniProgramAgency->uploadAuditFeedbackImage($file->getPathname());
+                $resp = $miniProgramAgency->uploadAuditFeedbackImage(
+                    $file->getPathname(),
+                    'audit-feedback.' . strtolower($file->getOriginalExtension()),
+                    strtolower($file->getMime())
+                );
             } catch (InvalidArgumentException $exception) {
                 return self::returnErrorJson($exception->getMessage());
             } catch (\Throwable $exception) {
@@ -296,7 +300,11 @@ class MiniProgramCodeAdmin extends AdminController
             try {
                 $mediaType = $this->validateCodeAuditMedia($file);
                 $miniProgramAgency = OpenService::getInstnace()->miniProgramAgency($authorizer_appid);
-                $resp = $miniProgramAgency->uploadMediaToCodeAudit($file->getPathname());
+                $resp = $miniProgramAgency->uploadMediaToCodeAudit(
+                    $file->getPathname(),
+                    'audit-media.' . strtolower($file->getOriginalExtension()),
+                    strtolower($file->getMime())
+                );
             } catch (InvalidArgumentException $exception) {
                 return self::returnErrorJson($exception->getMessage());
             } catch (\Throwable $exception) {
